@@ -48,7 +48,7 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
                         Component.text("> $timeLeft <"),
                         Title.Times.times(
                             Duration.ofSeconds(0),
-                            Duration.ofSeconds(10000),
+                            Duration.ofSeconds(100),
                             Duration.ofSeconds(0)
                             )
                         )
@@ -66,7 +66,7 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
                             Component.text("> $timeLeft <").color(NamedTextColor.GREEN),
                             Title.Times.times(
                                 Duration.ofSeconds(0),
-                                Duration.ofSeconds(10000),
+                                Duration.ofSeconds(100),
                                 Duration.ofSeconds(0)
                                 )
                             )
@@ -78,7 +78,7 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
                             Component.text("> $timeLeft <").color(NamedTextColor.YELLOW),
                             Title.Times.times(
                                 Duration.ofSeconds(0),
-                                Duration.ofSeconds(10000),
+                                Duration.ofSeconds(100),
                                 Duration.ofSeconds(0)
                                 )
                             )
@@ -90,7 +90,7 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
                             Component.text("> $timeLeft <").color(NamedTextColor.RED),
                             Title.Times.times(
                                 Duration.ofSeconds(0),
-                                Duration.ofSeconds(10000),
+                                Duration.ofSeconds(100),
                                 Duration.ofSeconds(0)
                                 )
                             )
@@ -153,8 +153,8 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
                         Component.text(""),
                         Title.Times.times(
                             Duration.ofSeconds(0),
-                            Duration.ofSeconds(70),
-                            Duration.ofSeconds(10)
+                            Duration.ofSeconds(3.5.toLong()),
+                            Duration.ofSeconds(0.5.toLong())
                             )
                         )
                     )
@@ -176,8 +176,8 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
                         Component.text(""),
                         Title.Times.times(
                             Duration.ofSeconds(0),
-                            Duration.ofSeconds(70),
-                            Duration.ofSeconds(10)
+                            Duration.ofSeconds(3.5.toLong()),
+                            Duration.ofSeconds(0.5.toLong())
                             )
                         )
                     )

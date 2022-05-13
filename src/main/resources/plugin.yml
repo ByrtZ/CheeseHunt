@@ -1,0 +1,6 @@
+name: CheeseHunt
+version: '1.0-SNAPSHOT'
+main: me.byrt.cheesehunt.Main
+api-version: 1.18
+authors: [ Byrt ]
+description: Cheese Hunt minigame created for a group of nerds.

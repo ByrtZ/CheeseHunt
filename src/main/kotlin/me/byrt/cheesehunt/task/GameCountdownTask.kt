@@ -154,7 +154,7 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
                         Title.Times.times(
                             Duration.ofSeconds(0),
                             Duration.ofSeconds(4),
-                            Duration.ofSeconds(0.5.toLong())
+                            Duration.ofSeconds(1)
                             )
                         )
                     )
@@ -177,7 +177,7 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
                         Title.Times.times(
                             Duration.ofSeconds(0),
                             Duration.ofSeconds(4),
-                            Duration.ofSeconds(0.5.toLong())
+                            Duration.ofSeconds(1)
                             )
                         )
                     )

@@ -35,7 +35,7 @@ class BlockBreakEvent : Listener {
             collector.sendMessage(Component.text("You collected a piece of cheese!").color(NamedTextColor.YELLOW))
             collector.playSound(collector.location, "scoreacquired", 1f, 1f)
         } else {
-            player.sendMessage(Component.text("${collector.name} collected a piece of cheese!"))
+            player.sendMessage(Component.text("${collector.name} collected a piece of cheese!").color(NamedTextColor.YELLOW))
             if(Main.getGame()?.getTeamManager()?.getPlayerTeam(player.uniqueId) == Team.RED && Main.getGame()?.getTeamManager()?.getPlayerTeam(collector.uniqueId) == Team.RED || Main.getGame()?.getTeamManager()?.getPlayerTeam(player.uniqueId) == Team.BLUE && Main.getGame()?.getTeamManager()?.getPlayerTeam(collector.uniqueId) == Team.BLUE) {
                 player.playSound(collector.location, "scoreacquired", 1f, 1f)
             } else if(Main.getGame()?.getTeamManager()?.getPlayerTeam(player.uniqueId) == Team.RED && Main.getGame()?.getTeamManager()?.getPlayerTeam(collector.uniqueId) == Team.BLUE || Main.getGame()?.getTeamManager()?.getPlayerTeam(player.uniqueId) == Team.BLUE && Main.getGame()?.getTeamManager()?.getPlayerTeam(collector.uniqueId) == Team.RED) {

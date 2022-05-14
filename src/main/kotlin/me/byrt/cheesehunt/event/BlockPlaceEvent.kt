@@ -48,7 +48,7 @@ class BlockPlaceEvent : Listener {
             placer.sendMessage(Component.text("You placed a piece of cheese!").color(NamedTextColor.YELLOW))
             placer.playSound(placer.location, "objectivecomplete", 1f, 1f)
         } else {
-            player.sendMessage(Component.text("${placer.name} placed a piece of cheese!"))
+            player.sendMessage(Component.text("${placer.name} placed a piece of cheese!").color(NamedTextColor.YELLOW))
             if(Main.getGame()?.getTeamManager()?.getPlayerTeam(player.uniqueId) == Team.RED && Main.getGame()?.getTeamManager()?.getPlayerTeam(placer.uniqueId) == Team.RED || Main.getGame()?.getTeamManager()?.getPlayerTeam(player.uniqueId) == Team.BLUE && Main.getGame()?.getTeamManager()?.getPlayerTeam(placer.uniqueId) == Team.BLUE) {
                 player.playSound(placer.location, "objectivecomplete", 1f, 1f)
             } else if(Main.getGame()?.getTeamManager()?.getPlayerTeam(player.uniqueId) == Team.RED && Main.getGame()?.getTeamManager()?.getPlayerTeam(placer.uniqueId) == Team.BLUE || Main.getGame()?.getTeamManager()?.getPlayerTeam(player.uniqueId) == Team.BLUE && Main.getGame()?.getTeamManager()?.getPlayerTeam(placer.uniqueId) == Team.RED) {

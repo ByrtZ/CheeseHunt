@@ -23,10 +23,10 @@ class PlayerHurtPlayerEvent : Listener {
                     e.isCancelled = true
                 }
             }
-
             if(Main.getGame()?.getTeamManager()?.isSpectator(e.entity.uniqueId) == true) {
                 e.isCancelled = true
             }
+            e.damage = 0.0
         }
     }
 }

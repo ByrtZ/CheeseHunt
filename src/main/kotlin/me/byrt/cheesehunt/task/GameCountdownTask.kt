@@ -45,10 +45,10 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
                 for (player in Bukkit.getOnlinePlayers()) {
                     player.showTitle(Title.title(
                         Component.text("The Hunt starts in").color(NamedTextColor.AQUA),
-                        Component.text("> $timeLeft <"),
+                        Component.text("►$timeLeft◄"),
                         Title.Times.times(
                             Duration.ofSeconds(0),
-                            Duration.ofSeconds(100),
+                            Duration.ofSeconds(5),
                             Duration.ofSeconds(0)
                             )
                         )
@@ -63,10 +63,10 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
                     if (timeLeft == 3) {
                         player.showTitle(Title.title(
                             Component.text("The Hunt starts in").color(NamedTextColor.AQUA),
-                            Component.text("> $timeLeft <").color(NamedTextColor.GREEN),
+                            Component.text("►$timeLeft◄").color(NamedTextColor.GREEN),
                             Title.Times.times(
                                 Duration.ofSeconds(0),
-                                Duration.ofSeconds(100),
+                                Duration.ofSeconds(5),
                                 Duration.ofSeconds(0)
                                 )
                             )
@@ -75,10 +75,10 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
                     if (timeLeft == 2) {
                         player.showTitle(Title.title(
                             Component.text("The Hunt starts in").color(NamedTextColor.AQUA),
-                            Component.text("> $timeLeft <").color(NamedTextColor.YELLOW),
+                            Component.text("►$timeLeft◄").color(NamedTextColor.YELLOW),
                             Title.Times.times(
                                 Duration.ofSeconds(0),
-                                Duration.ofSeconds(100),
+                                Duration.ofSeconds(5),
                                 Duration.ofSeconds(0)
                                 )
                             )
@@ -87,10 +87,10 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
                     if (timeLeft == 1) {
                         player.showTitle(Title.title(
                             Component.text("The Hunt starts in").color(NamedTextColor.AQUA),
-                            Component.text("> $timeLeft <").color(NamedTextColor.RED),
+                            Component.text("►$timeLeft◄").color(NamedTextColor.RED),
                             Title.Times.times(
                                 Duration.ofSeconds(0),
-                                Duration.ofSeconds(100),
+                                Duration.ofSeconds(5),
                                 Duration.ofSeconds(0)
                                 )
                             )
@@ -162,7 +162,6 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
                     player.allowFlight = true
                     player.isFlying = true
                     // player.inventory.clear()
-                    game.endRound()
                 }
                 game.setGameState(GameState.GAME_END)
             } else {
@@ -185,7 +184,6 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
                     player.allowFlight = true
                     player.isFlying = true
                     // player.inventory.clear()
-                    game.endRound()
                 }
                 game.setGameState(GameState.ROUND_END)
             }

@@ -7,6 +7,7 @@ class Game(private var plugin : Main) {
     private var gameState : GameState = GameState.IDLE
     private var roundState : RoundState = RoundState.ROUND_ONE
     private var timerState : TimerState = TimerState.INACTIVE
+    private var playerManager = PlayerManager(this)
     private var teamManager = TeamManager(this)
     private var itemManager = ItemManager(this)
     private var infoBoardManager = InfoBoardManager(this)
@@ -25,10 +26,12 @@ class Game(private var plugin : Main) {
                 if(roundState == RoundState.ROUND_ONE) {
                     gameCountdownTask.runTaskTimer(plugin, 0, 20)
                 }
+                roundStarting()
             }
             GameState.IN_GAME -> {
                 setTimerState(TimerState.ACTIVE)
                 gameCountdownTask.setTimeLeft(240)
+                startRound()
             }
             GameState.ROUND_END -> {
                 setTimerState(TimerState.ACTIVE)
@@ -61,6 +64,10 @@ class Game(private var plugin : Main) {
         this.timerState = timerState
     }
 
+    fun getPlayerManager() : PlayerManager {
+        return this.playerManager
+    }
+
     fun getTeamManager() : TeamManager {
         return this.teamManager
     }
@@ -77,11 +84,17 @@ class Game(private var plugin : Main) {
         return this.gameCountdownTask
     }
 
-    fun endRound() {
-        //TODO: END ROUND
+    private fun roundStarting() {
+        playerManager.setPlayersNotFlying()
+        playerManager.clearCheese()
+    }
+
+    private fun startRound() {
+        playerManager.giveItemsToPlayers()
     }
 
     fun cleanUp() {
+        playerManager.clearAllItems()
         infoBoardManager.destroyScoreboard()
     }
 }

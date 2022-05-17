@@ -272,6 +272,7 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
                 for (player in Bukkit.getOnlinePlayers()) {
                     player.sendMessage(Component.text("Thank you for playing! The server will be restarting shortly").color(NamedTextColor.YELLOW))
                 }
+                game.getBlockManager().resetBarriers()
                 cancel()
             }
         }

@@ -10,6 +10,7 @@ class Game(private var plugin : Main) {
     private var playerManager = PlayerManager(this)
     private var teamManager = TeamManager(this)
     private var itemManager = ItemManager(this)
+    private var blockManager = BlockManager(this)
     private var infoBoardManager = InfoBoardManager(this)
     private var gameCountdownTask = GameCountdownTask(this)
 
@@ -30,7 +31,7 @@ class Game(private var plugin : Main) {
             }
             GameState.IN_GAME -> {
                 setTimerState(TimerState.ACTIVE)
-                gameCountdownTask.setTimeLeft(240)
+                gameCountdownTask.setTimeLeft(60)
                 startRound()
             }
             GameState.ROUND_END -> {
@@ -76,6 +77,10 @@ class Game(private var plugin : Main) {
         return this.itemManager
     }
 
+    fun getBlockManager(): BlockManager {
+        return this.blockManager
+    }
+
     fun getInfoBoardManager(): InfoBoardManager {
         return this.infoBoardManager
     }
@@ -92,10 +97,12 @@ class Game(private var plugin : Main) {
 
     private fun startRound() {
         playerManager.giveItemsToPlayers()
+        blockManager.removeBarriers()
     }
 
     fun cleanUp() {
         playerManager.clearAllItems()
+        blockManager.resetBarriers()
         infoBoardManager.destroyScoreboard()
     }
 }

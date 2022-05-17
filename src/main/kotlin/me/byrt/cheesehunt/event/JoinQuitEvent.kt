@@ -19,7 +19,7 @@ class JoinQuitEvent : Listener {
         Main.getGame()?.getInfoBoardManager()?.showScoreboard(e.player)
         e.joinMessage(Component.text("${e.player.name} joined the game.").color(NamedTextColor.GRAY))
         if(Main.getGame()?.getGameState() == GameState.IDLE) {
-            e.player.teleport(Location(e.player.world, 0.0, -52.0 ,0.0, 0.0f, 0.0f))
+            e.player.teleport(Location(e.player.world, 0.5, -52.0 ,0.5, 0.0f, 0.0f))
         }
     }
     @EventHandler

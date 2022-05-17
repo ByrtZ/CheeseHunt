@@ -14,12 +14,15 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
+import org.bukkit.event.block.BlockDropItemEvent
+import org.bukkit.inventory.ItemStack
 
 @Suppress("unused")
-class BlockBreakEvent : Listener {
+class BlockBreakDropEvent : Listener {
     @EventHandler
     private fun onBlockBreak(e : BlockBreakEvent) {
         if(e.block.type == Material.SPONGE && Main.getGame()?.getRoundState() == RoundState.ROUND_TWO) {
+            e.player.inventory.addItem(ItemStack(Material.SPONGE, 1))
             e.player.world.spawnParticle(Particle.END_ROD, e.block.location.x + 0.5, e.block.location.y + 1, e.block.location.z + 0.5, 50, 0.0, 0.0, 0.0, 0.15)
             Bukkit.getOnlinePlayers().stream().forEach {
                     player: Player -> announcePlayerCollectedCheese(player, e.player)
@@ -42,5 +45,10 @@ class BlockBreakEvent : Listener {
                 player.playSound(collector.location, "enemy_complete", 1f, 1f)
             }
         }
+    }
+
+    @EventHandler
+    private fun onBlockItemDrop(e : BlockDropItemEvent) {
+        e.isCancelled = true
     }
 }

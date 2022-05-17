@@ -41,65 +41,125 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
                     player.playSound(player.location, Sound.MUSIC_DISC_BLOCKS, 1f, 1f)
                 }
             }
-            if (timeLeft in 4..10) {
-                for (player in Bukkit.getOnlinePlayers()) {
-                    player.showTitle(Title.title(
-                        Component.text("The Hunt starts in").color(NamedTextColor.AQUA),
-                        Component.text("►$timeLeft◄"),
-                        Title.Times.times(
-                            Duration.ofSeconds(0),
-                            Duration.ofSeconds(5),
-                            Duration.ofSeconds(0)
+            if(game.getRoundState() == RoundState.ROUND_ONE) { // Round one starting titles
+                if (timeLeft in 4..10) {
+                    for (player in Bukkit.getOnlinePlayers()) {
+                        player.showTitle(Title.title(
+                            Component.text("Hiding starts in").color(NamedTextColor.AQUA),
+                            Component.text("►$timeLeft◄").decoration(TextDecoration.BOLD, true),
+                            Title.Times.times(
+                                Duration.ofSeconds(0),
+                                Duration.ofSeconds(5),
+                                Duration.ofSeconds(0)
                             )
                         )
-                    )
-                    player.playSound(player.location, "clockticknormal", 1f, 1f)
+                        )
+                        player.playSound(player.location, "clockticknormal", 1f, 1f)
+                    }
                 }
-            }
-            if (timeLeft == 3 || timeLeft == 2 || timeLeft == 1) {
-                for (player in Bukkit.getOnlinePlayers()) {
-                    player.playSound(player.location, "123", 1f, 1f)
-                    player.playSound(player.location, "clocktickhigh", 1f, 1f)
-                    if (timeLeft == 3) {
-                        player.showTitle(Title.title(
-                            Component.text("The Hunt starts in").color(NamedTextColor.AQUA),
-                            Component.text("►$timeLeft◄").color(NamedTextColor.GREEN),
-                            Title.Times.times(
-                                Duration.ofSeconds(0),
-                                Duration.ofSeconds(5),
-                                Duration.ofSeconds(0)
+                if (timeLeft == 3 || timeLeft == 2 || timeLeft == 1) {
+                    for (player in Bukkit.getOnlinePlayers()) {
+                        player.playSound(player.location, "123", 1f, 1f)
+                        player.playSound(player.location, "clocktickhigh", 1f, 1f)
+                        if (timeLeft == 3) {
+                            player.showTitle(Title.title(
+                                Component.text("Hiding starts in").color(NamedTextColor.AQUA),
+                                Component.text("►$timeLeft◄").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true),
+                                Title.Times.times(
+                                    Duration.ofSeconds(0),
+                                    Duration.ofSeconds(5),
+                                    Duration.ofSeconds(0)
                                 )
                             )
-                        )
+                            )
+                        }
+                        if (timeLeft == 2) {
+                            player.showTitle(Title.title(
+                                Component.text("Hiding starts in").color(NamedTextColor.AQUA),
+                                Component.text("►$timeLeft◄").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, true),
+                                Title.Times.times(
+                                    Duration.ofSeconds(0),
+                                    Duration.ofSeconds(5),
+                                    Duration.ofSeconds(0)
+                                )
+                            )
+                            )
+                        }
+                        if (timeLeft == 1) {
+                            player.showTitle(Title.title(
+                                Component.text("Hiding starts in").color(NamedTextColor.AQUA),
+                                Component.text("►$timeLeft◄").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true),
+                                Title.Times.times(
+                                    Duration.ofSeconds(0),
+                                    Duration.ofSeconds(5),
+                                    Duration.ofSeconds(0)
+                                )
+                            )
+                            )
+                        }
                     }
-                    if (timeLeft == 2) {
+                }
+            } else if(game.getRoundState() == RoundState.ROUND_TWO) { // Round two starting titles
+                if (timeLeft in 4..10) {
+                    for (player in Bukkit.getOnlinePlayers()) {
                         player.showTitle(Title.title(
-                            Component.text("The Hunt starts in").color(NamedTextColor.AQUA),
-                            Component.text("►$timeLeft◄").color(NamedTextColor.YELLOW),
+                            Component.text("Hunting starts in").color(NamedTextColor.AQUA),
+                            Component.text("►$timeLeft◄").decoration(TextDecoration.BOLD, true),
                             Title.Times.times(
                                 Duration.ofSeconds(0),
                                 Duration.ofSeconds(5),
                                 Duration.ofSeconds(0)
-                                )
                             )
                         )
+                        )
+                        player.playSound(player.location, "clockticknormal", 1f, 1f)
                     }
-                    if (timeLeft == 1) {
-                        player.showTitle(Title.title(
-                            Component.text("The Hunt starts in").color(NamedTextColor.AQUA),
-                            Component.text("►$timeLeft◄").color(NamedTextColor.RED),
-                            Title.Times.times(
-                                Duration.ofSeconds(0),
-                                Duration.ofSeconds(5),
-                                Duration.ofSeconds(0)
+                }
+                if (timeLeft == 3 || timeLeft == 2 || timeLeft == 1) {
+                    for (player in Bukkit.getOnlinePlayers()) {
+                        player.playSound(player.location, "123", 1f, 1f)
+                        player.playSound(player.location, "clocktickhigh", 1f, 1f)
+                        if (timeLeft == 3) {
+                            player.showTitle(Title.title(
+                                Component.text("Hunting starts in").color(NamedTextColor.AQUA),
+                                Component.text("►$timeLeft◄").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true),
+                                Title.Times.times(
+                                    Duration.ofSeconds(0),
+                                    Duration.ofSeconds(5),
+                                    Duration.ofSeconds(0)
                                 )
                             )
-                        )
+                            )
+                        }
+                        if (timeLeft == 2) {
+                            player.showTitle(Title.title(
+                                Component.text("Hunting starts in").color(NamedTextColor.AQUA),
+                                Component.text("►$timeLeft◄").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, true),
+                                Title.Times.times(
+                                    Duration.ofSeconds(0),
+                                    Duration.ofSeconds(5),
+                                    Duration.ofSeconds(0)
+                                )
+                            )
+                            )
+                        }
+                        if (timeLeft == 1) {
+                            player.showTitle(Title.title(
+                                Component.text("Hunting starts in").color(NamedTextColor.AQUA),
+                                Component.text("►$timeLeft◄").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true),
+                                Title.Times.times(
+                                    Duration.ofSeconds(0),
+                                    Duration.ofSeconds(5),
+                                    Duration.ofSeconds(0)
+                                )
+                            )
+                            )
+                        }
                     }
                 }
             }
             if (timeLeft <= 0) {
-                // TODO: REMOVING BARRIERS FROM START OF MAPS
+                // TODO: REMOVING GLASS FROM START OF MAPS
                 for (player in Bukkit.getOnlinePlayers()) {
                     player.playSound(player.location, "go", 1f, 1f)
                     player.playSound(player.location, "clocktickhigh", 1f, 1f)

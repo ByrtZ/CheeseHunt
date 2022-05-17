@@ -1,12 +1,19 @@
 package me.byrt.cheesehunt.manager
 
+import me.byrt.cheesehunt.Main
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
+import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
 class PlayerManager(private var game : Game) {
+    private val redRoundOneSpawn = Location(Main.getPlugin().server.getWorld("Cheese"), 17.0, -43.0, 38.5, 0.0f, 0.0f)
+    private val blueRoundOneSpawn = Location(Main.getPlugin().server.getWorld("Cheese"), -63.0, -43.0, 38.5, 0.0f, 0.0f)
+    private val redRoundTwoSpawn = Location(Main.getPlugin().server.getWorld("Cheese"), -63.0, -52.0, 77.5, 180.0f, 0.0f)
+    private val blueRoundTwoSpawn = Location(Main.getPlugin().server.getWorld("Cheese"), 17.0, -52.0, 77.5, 180.0f, 0.0f)
+
     fun setPlayersNotFlying() {
         Bukkit.getOnlinePlayers().stream().filter { obj: Player -> obj.allowFlight }.forEach {
                 player: Player -> disableFlightPlayers(player)
@@ -52,5 +59,33 @@ class PlayerManager(private var game : Game) {
 
     private fun itemReset(player : Player) {
         player.inventory.clear()
+    }
+
+    fun teleportAllPlayers() {
+        Bukkit.getOnlinePlayers().stream().filter { player: Player? -> player?.let {
+            Main.getGame()?.getTeamManager()?.getPlayerTeam(it.uniqueId)
+        } != Team.SPECTATOR} .forEach{ player: Player -> teleportPlayers(player) }
+    }
+
+    private fun teleportPlayers(player : Player) {
+        if(Main.getGame()?.getTeamManager()?.isInRedTeam(player.uniqueId) == true) {
+            if(Main.getGame()?.getRoundState() == RoundState.ROUND_ONE) {
+                player.teleport(redRoundOneSpawn)
+            } else if(Main.getGame()?.getRoundState() == RoundState.ROUND_TWO) {
+                player.teleport(redRoundTwoSpawn)
+            } else {
+                Main.getPlugin().logger.info("[TELEPORTING ERROR] Something weird happened when trying to teleport players")
+            }
+        } else if(Main.getGame()?.getTeamManager()?.isInBlueTeam(player.uniqueId) == true) {
+            if(Main.getGame()?.getRoundState() == RoundState.ROUND_ONE) {
+                player.teleport(blueRoundOneSpawn)
+            } else if(Main.getGame()?.getRoundState() == RoundState.ROUND_TWO) {
+                player.teleport(blueRoundTwoSpawn)
+            } else {
+                Main.getPlugin().logger.info("[TELEPORTING ERROR] Something weird happened when trying to teleport players")
+            }
+        } else {
+            Main.getPlugin().logger.info("[TELEPORTING ERROR] Something weird happened when trying to teleport players")
+        }
     }
 }

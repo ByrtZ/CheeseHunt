@@ -87,6 +87,7 @@ class Game(private var plugin : Main) {
     private fun roundStarting() {
         playerManager.setPlayersNotFlying()
         playerManager.clearCheese()
+        playerManager.teleportAllPlayers()
     }
 
     private fun startRound() {

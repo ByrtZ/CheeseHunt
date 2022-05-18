@@ -1,6 +1,7 @@
 package me.byrt.cheesehunt.manager
 
 import me.byrt.cheesehunt.Main
+
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Location
@@ -15,7 +16,7 @@ class PlayerManager(private var game : Game) {
     private val blueRoundTwoSpawn = Location(Main.getPlugin().server.getWorld("Cheese"), 17.0, -52.0, 77.5, 180.0f, 0.0f)
 
     fun setPlayersNotFlying() {
-        Bukkit.getOnlinePlayers().stream().filter { obj: Player -> obj.allowFlight }.forEach {
+        Bukkit.getOnlinePlayers().stream().filter { player: Player -> player.allowFlight }.forEach {
                 player: Player -> disableFlightPlayers(player)
         }
     }
@@ -28,7 +29,7 @@ class PlayerManager(private var game : Game) {
     }
 
     fun giveItemsToPlayers() {
-        Bukkit.getOnlinePlayers().stream().filter { player: Player? -> player!!.gameMode == GameMode.SURVIVAL }
+        Bukkit.getOnlinePlayers().stream().filter { player: Player -> player.gameMode == GameMode.SURVIVAL }
             .forEach { player: Player -> giveItems(player) }
     }
 
@@ -44,27 +45,24 @@ class PlayerManager(private var game : Game) {
     }
 
     fun clearCheese() {
-        Bukkit.getOnlinePlayers().stream().filter { player: Player? -> player!!.gameMode == GameMode.ADVENTURE }
-            .forEach { player: Player -> clearItems(player) }
+        Bukkit.getOnlinePlayers().stream().filter { player: Player -> player.gameMode == GameMode.ADVENTURE }
+            .forEach { player: Player -> clearSpongeItems(player) }
     }
 
-    private fun clearItems(player : Player) {
+    private fun clearSpongeItems(player : Player) {
         player.inventory.remove(Material.SPONGE)
     }
 
     fun clearAllItems() {
-        Bukkit.getOnlinePlayers().stream().filter { player: Player? -> player!!.gameMode == GameMode.ADVENTURE }
-            .forEach { player: Player -> itemReset(player) }
-    }
-
-    private fun itemReset(player : Player) {
-        player.inventory.clear()
+        for(player in Bukkit.getOnlinePlayers()) {
+            player.inventory.clear()
+        }
     }
 
     fun teleportAllPlayers() {
         Bukkit.getOnlinePlayers().stream().filter { player: Player? -> player?.let {
-            Main.getGame()?.getTeamManager()?.getPlayerTeam(it.uniqueId)
-        } != Team.SPECTATOR} .forEach{ player: Player -> teleportPlayers(player) }
+            Main.getGame()?.getTeamManager()?.getPlayerTeam(it.uniqueId) } != Team.SPECTATOR}
+                .forEach{ player: Player -> teleportPlayers(player) }
     }
 
     private fun teleportPlayers(player : Player) {

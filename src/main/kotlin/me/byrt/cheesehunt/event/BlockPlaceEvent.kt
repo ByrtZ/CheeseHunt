@@ -19,24 +19,12 @@ class BlockPlaceEvent : Listener {
     @EventHandler
     private fun onBlockPlace(e : BlockPlaceEvent) {
         if(e.block.type == Material.SPONGE && Main.getGame()?.getRoundState() == RoundState.ROUND_ONE) {
-            val blockPlacedLoc = Location(e.block.location.world, e.block.location.x + 0.5, e.block.location.y + 2.0, e.block.location.z + 0.5)
-            val f: Firework = e.player.world.spawn(blockPlacedLoc, Firework::class.java)
-            val fm = f.fireworkMeta
-            fm.addEffect(
-                FireworkEffect.builder()
-                    .flicker(false)
-                    .trail(false)
-                    .with(FireworkEffect.Type.BALL)
-                    .withColor(Color.ORANGE)
-                    .withFade(Color.YELLOW)
-                    .build()
-            )
-            fm.power = 0
-            f.fireworkMeta = fm
-            f.detonate()
+            cheesePlacedFirework(e.block.location, e.player)
             Bukkit.getOnlinePlayers().stream().forEach {
                     player: Player -> announcePlayerPlacedCheese(player, e.player)
             }
+            incrementPlayerPlacedCheese(e.player)
+            checkCheesePlaced()
             e.isCancelled = false
         } else {
             e.isCancelled = true
@@ -55,5 +43,59 @@ class BlockPlaceEvent : Listener {
                 player.playSound(placer.location, "enemy_complete", 1f, 1f)
             }
         }
+    }
+
+    private fun incrementPlayerPlacedCheese(player : Player) {
+        when(Main.getGame()?.getTeamManager()?.getPlayerTeam(player.uniqueId)) {
+            Team.RED -> {
+                Main.getGame()?.getCheeseManager()?.incrementCheesePlaced(Team.RED)
+            }
+            Team.BLUE -> {
+                Main.getGame()?.getCheeseManager()?.incrementCheesePlaced(Team.BLUE)
+            }
+            Team.SPECTATOR -> {
+                Main.getPlugin().logger.info("[INCREMENTING ERROR] ${player.name} was not on team ${Team.SPECTATOR} when they placed cheese.")
+            }
+            null -> {
+                Main.getPlugin().logger.info("[INCREMENTING ERROR] ${player.name} was not on a team when they placed cheese.")
+            }
+        }
+    }
+
+    private fun checkCheesePlaced() {
+        if(Main.getGame()?.getCheeseManager()?.hasRedFinishedPlacing() == false && Main.getGame()?.getTeamManager()?.getRedTeam()?.size?.times(4) == Main.getGame()?.getCheeseManager()?.getRedCheesePlaced()) {
+            Main.getGame()?.getCheeseManager()?.setRedFinishedPlacing(true)
+            for(player in Bukkit.getOnlinePlayers()) { player.sendMessage(Component.text("Red team have placed all their cheese!")) }
+            if(Main.getGame()?.getCheeseManager()?.hasRedFinishedPlacing() == true && Main.getGame()?.getCheeseManager()?.hasBlueFinishedPlacing() == true) {
+                for(player in Bukkit.getOnlinePlayers()) { player.sendMessage(Component.text("All teams have placed their cheese!")) }
+                Main.getGame()?.getGameCountdownTask()?.setTimeLeft(0)
+            }
+        }
+        if(Main.getGame()?.getCheeseManager()?.hasBlueFinishedPlacing() == false && Main.getGame()?.getTeamManager()?.getBlueTeam()?.size?.times(4) == Main.getGame()?.getCheeseManager()?.getBlueCheesePlaced()) {
+            Main.getGame()?.getCheeseManager()?.setBlueFinishedPlacing(true)
+            for(player in Bukkit.getOnlinePlayers()) { player.sendMessage(Component.text("Blue team have placed all their cheese!")) }
+            if(Main.getGame()?.getCheeseManager()?.hasRedFinishedPlacing() == true && Main.getGame()?.getCheeseManager()?.hasBlueFinishedPlacing() == true) {
+                for(player in Bukkit.getOnlinePlayers()) { player.sendMessage(Component.text("All teams have placed their cheese!")) }
+                Main.getGame()?.getGameCountdownTask()?.setTimeLeft(0)
+            }
+        }
+    }
+
+    private fun cheesePlacedFirework(blockLoc : Location, player : Player) {
+        val blockPlacedLoc = Location(blockLoc.world, blockLoc.x + 0.5, blockLoc.y + 2.0, blockLoc.z + 0.5)
+        val f: Firework = player.world.spawn(blockPlacedLoc, Firework::class.java)
+        val fm = f.fireworkMeta
+        fm.addEffect(
+            FireworkEffect.builder()
+                .flicker(false)
+                .trail(false)
+                .with(FireworkEffect.Type.BALL)
+                .withColor(Color.ORANGE)
+                .withFade(Color.YELLOW)
+                .build()
+        )
+        fm.power = 0
+        f.fireworkMeta = fm
+        f.detonate()
     }
 }

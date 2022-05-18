@@ -34,7 +34,7 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
         // Update scoreboard timer
         game.getInfoBoardManager().updateScoreboardTimer(displayTime, previousDisplayTime, game.getGameState())
 
-        // Game/round starting front end
+        // Game/round starting front end //TODO: GAME TUTORIAL IN ROUND ONE STARTING PHASE
         if (game.getGameState() == GameState.STARTING && game.getTimerState() == TimerState.ACTIVE) {
             if (timeLeft == 10) {
                 for (player in Bukkit.getOnlinePlayers()) {

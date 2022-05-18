@@ -11,6 +11,7 @@ class Game(private var plugin : Main) {
     private var teamManager = TeamManager(this)
     private var itemManager = ItemManager(this)
     private var blockManager = BlockManager(this)
+    private var cheeseManager = CheeseManager(this)
     private var infoBoardManager = InfoBoardManager(this)
     private var gameCountdownTask = GameCountdownTask(this)
 
@@ -79,6 +80,10 @@ class Game(private var plugin : Main) {
 
     fun getBlockManager(): BlockManager {
         return this.blockManager
+    }
+
+    fun getCheeseManager(): CheeseManager {
+        return this.cheeseManager
     }
 
     fun getInfoBoardManager(): InfoBoardManager {

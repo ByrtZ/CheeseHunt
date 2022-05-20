@@ -7,7 +7,8 @@ import org.bukkit.Bukkit
 
 import java.util.*
 
-class TeamManager(game : Game) {
+@Suppress("unused")
+class TeamManager(private val game : Game) {
     private var redTeam = ArrayList<UUID>()
     private var blueTeam = ArrayList<UUID>()
     private var spectators = ArrayList<UUID>()

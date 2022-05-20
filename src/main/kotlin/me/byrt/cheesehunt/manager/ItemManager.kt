@@ -12,7 +12,8 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.LeatherArmorMeta
 
-class ItemManager(game : Game) {
+@Suppress("unused")
+class ItemManager(private val game : Game) {
     fun playerJoinTeamEquip(player : Player, team : Team) {
         when(team) {
             Team.RED -> {
@@ -40,7 +41,16 @@ class ItemManager(game : Game) {
                 player.inventory.boots = teamBBoots
             }
             Team.SPECTATOR -> {
-                //
+                val spectatorBoots = ItemStack(Material.LEATHER_BOOTS)
+                val spectatorBootsMeta: ItemMeta = spectatorBoots.itemMeta
+                spectatorBootsMeta.displayName(Component.text("Spectator Boots").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false))
+                spectatorBootsMeta.isUnbreakable = true
+                spectatorBootsMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_DYE, ItemFlag.HIDE_ATTRIBUTES)
+                spectatorBoots.itemMeta = spectatorBootsMeta
+                val lm: LeatherArmorMeta = spectatorBoots.itemMeta as LeatherArmorMeta
+                lm.setColor(Color.GRAY)
+                spectatorBoots.itemMeta = lm
+                player.inventory.boots = spectatorBoots
             }
         }
     }

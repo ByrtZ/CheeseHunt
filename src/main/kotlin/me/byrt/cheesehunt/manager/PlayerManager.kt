@@ -65,23 +65,23 @@ class PlayerManager(private var game : Game) {
 
     fun teleportAllPlayers() {
         Bukkit.getOnlinePlayers().stream().filter { player: Player? -> player?.let {
-            Main.getGame()?.getTeamManager()?.getPlayerTeam(it.uniqueId) } != Team.SPECTATOR}
+            Main.getGame().getTeamManager().getPlayerTeam(it.uniqueId) } != Team.SPECTATOR}
                 .forEach{ player: Player -> teleportPlayers(player) }
     }
 
     private fun teleportPlayers(player : Player) {
-        if(Main.getGame()?.getTeamManager()?.isInRedTeam(player.uniqueId) == true) {
-            if(Main.getGame()?.getRoundState() == RoundState.ROUND_ONE) {
+        if(Main.getGame().getTeamManager().isInRedTeam(player.uniqueId)) {
+            if(Main.getGame().getRoundState() == RoundState.ROUND_ONE) {
                 player.teleport(redRoundOneSpawn)
-            } else if(Main.getGame()?.getRoundState() == RoundState.ROUND_TWO) {
+            } else if(Main.getGame().getRoundState() == RoundState.ROUND_TWO) {
                 player.teleport(redRoundTwoSpawn)
             } else {
                 Main.getPlugin().logger.info("[TELEPORTING ERROR] Something weird happened when trying to teleport players")
             }
-        } else if(Main.getGame()?.getTeamManager()?.isInBlueTeam(player.uniqueId) == true) {
-            if(Main.getGame()?.getRoundState() == RoundState.ROUND_ONE) {
+        } else if(Main.getGame().getTeamManager().isInBlueTeam(player.uniqueId)) {
+            if(Main.getGame().getRoundState() == RoundState.ROUND_ONE) {
                 player.teleport(blueRoundOneSpawn)
-            } else if(Main.getGame()?.getRoundState() == RoundState.ROUND_TWO) {
+            } else if(Main.getGame().getRoundState() == RoundState.ROUND_TWO) {
                 player.teleport(blueRoundTwoSpawn)
             } else {
                 Main.getPlugin().logger.info("[TELEPORTING ERROR] Something weird happened when trying to teleport players")
@@ -93,7 +93,7 @@ class PlayerManager(private var game : Game) {
 
     fun setSpectatorsGameMode() {
         Bukkit.getOnlinePlayers().stream().filter { player: Player? -> player?.let {
-            Main.getGame()?.getTeamManager()?.getPlayerTeam(it.uniqueId) } == Team.SPECTATOR}
+            Main.getGame().getTeamManager().getPlayerTeam(it.uniqueId) } == Team.SPECTATOR}
             .forEach{ player: Player -> player.gameMode = GameMode.SPECTATOR }
     }
 }

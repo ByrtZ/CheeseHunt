@@ -18,7 +18,7 @@ import org.bukkit.event.block.BlockPlaceEvent
 class BlockPlaceEvent : Listener {
     @EventHandler
     private fun onBlockPlace(e : BlockPlaceEvent) {
-        if(e.block.type == Material.SPONGE && Main.getGame()?.getRoundState() == RoundState.ROUND_ONE && e.blockAgainst.type != Material.BARRIER) {
+        if(e.block.type == Material.SPONGE && Main.getGame().getRoundState() == RoundState.ROUND_ONE && e.blockAgainst.type != Material.BARRIER) {
             cheesePlacedFirework(e.block.location, e.player)
             Bukkit.getOnlinePlayers().stream().forEach {
                     player: Player -> announcePlayerPlacedCheese(player, e.player)
@@ -37,46 +37,43 @@ class BlockPlaceEvent : Listener {
             placer.playSound(placer.location, "objectivecomplete", 1f, 1f)
         } else {
             player.sendMessage(Component.text("${placer.name} placed a piece of cheese!").color(NamedTextColor.YELLOW))
-            if(Main.getGame()?.getTeamManager()?.getPlayerTeam(player.uniqueId) == Team.RED && Main.getGame()?.getTeamManager()?.getPlayerTeam(placer.uniqueId) == Team.RED || Main.getGame()?.getTeamManager()?.getPlayerTeam(player.uniqueId) == Team.BLUE && Main.getGame()?.getTeamManager()?.getPlayerTeam(placer.uniqueId) == Team.BLUE) {
+            if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Team.RED && Main.getGame().getTeamManager().getPlayerTeam(placer.uniqueId) == Team.RED || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Team.BLUE && Main.getGame().getTeamManager().getPlayerTeam(placer.uniqueId) == Team.BLUE) {
                 player.playSound(placer.location, "objectivecomplete", 1f, 1f)
-            } else if(Main.getGame()?.getTeamManager()?.getPlayerTeam(player.uniqueId) == Team.RED && Main.getGame()?.getTeamManager()?.getPlayerTeam(placer.uniqueId) == Team.BLUE || Main.getGame()?.getTeamManager()?.getPlayerTeam(player.uniqueId) == Team.BLUE && Main.getGame()?.getTeamManager()?.getPlayerTeam(placer.uniqueId) == Team.RED) {
+            } else if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Team.RED && Main.getGame().getTeamManager().getPlayerTeam(placer.uniqueId) == Team.BLUE || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Team.BLUE && Main.getGame().getTeamManager().getPlayerTeam(placer.uniqueId) == Team.RED) {
                 player.playSound(placer.location, "enemy_complete", 1f, 1f)
             }
         }
     }
 
     private fun incrementPlayerPlacedCheese(player : Player) {
-        when(Main.getGame()?.getTeamManager()?.getPlayerTeam(player.uniqueId)) {
+        when(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId)) {
             Team.RED -> {
-                Main.getGame()?.getCheeseManager()?.incrementCheesePlaced(Team.RED)
+                Main.getGame().getCheeseManager().incrementCheesePlaced(Team.RED)
             }
             Team.BLUE -> {
-                Main.getGame()?.getCheeseManager()?.incrementCheesePlaced(Team.BLUE)
+                Main.getGame().getCheeseManager().incrementCheesePlaced(Team.BLUE)
             }
             Team.SPECTATOR -> {
                 Main.getPlugin().logger.info("[INCREMENTING ERROR] ${player.name} was not on team ${Team.SPECTATOR} when they placed cheese.")
-            }
-            null -> {
-                Main.getPlugin().logger.info("[INCREMENTING ERROR] ${player.name} was not on a team when they placed cheese.")
             }
         }
     }
 
     private fun checkCheesePlaced() {
-        if(Main.getGame()?.getCheeseManager()?.hasRedFinishedPlacing() == false && Main.getGame()?.getTeamManager()?.getRedTeam()?.size?.times(4) == Main.getGame()?.getCheeseManager()?.getRedCheesePlaced()) {
-            Main.getGame()?.getCheeseManager()?.setRedFinishedPlacing(true)
+        if(!Main.getGame().getCheeseManager().hasRedFinishedPlacing() && Main.getGame().getTeamManager().getRedTeam().size.times(4) == Main.getGame().getCheeseManager().getRedCheesePlaced()) {
+            Main.getGame().getCheeseManager().setRedFinishedPlacing(true)
             for(player in Bukkit.getOnlinePlayers()) { player.sendMessage(Component.text("Red team have placed all their cheese!")) }
-            if(Main.getGame()?.getCheeseManager()?.hasRedFinishedPlacing() == true && Main.getGame()?.getCheeseManager()?.hasBlueFinishedPlacing() == true) {
+            if(Main.getGame().getCheeseManager().hasRedFinishedPlacing() && Main.getGame().getCheeseManager().hasBlueFinishedPlacing()) {
                 for(player in Bukkit.getOnlinePlayers()) { player.sendMessage(Component.text("All teams have placed their cheese!")) }
-                Main.getGame()?.getGameCountdownTask()?.setTimeLeft(0)
+                Main.getGame().getGameCountdownTask().setTimeLeft(0)
             }
         }
-        if(Main.getGame()?.getCheeseManager()?.hasBlueFinishedPlacing() == false && Main.getGame()?.getTeamManager()?.getBlueTeam()?.size?.times(4) == Main.getGame()?.getCheeseManager()?.getBlueCheesePlaced()) {
-            Main.getGame()?.getCheeseManager()?.setBlueFinishedPlacing(true)
+        if(!Main.getGame().getCheeseManager().hasBlueFinishedPlacing() && Main.getGame().getTeamManager().getBlueTeam().size.times(4) == Main.getGame().getCheeseManager().getBlueCheesePlaced()) {
+            Main.getGame().getCheeseManager().setBlueFinishedPlacing(true)
             for(player in Bukkit.getOnlinePlayers()) { player.sendMessage(Component.text("Blue team have placed all their cheese!")) }
-            if(Main.getGame()?.getCheeseManager()?.hasRedFinishedPlacing() == true && Main.getGame()?.getCheeseManager()?.hasBlueFinishedPlacing() == true) {
+            if(Main.getGame().getCheeseManager().hasRedFinishedPlacing() && Main.getGame().getCheeseManager().hasBlueFinishedPlacing()) {
                 for(player in Bukkit.getOnlinePlayers()) { player.sendMessage(Component.text("All teams have placed their cheese!")) }
-                Main.getGame()?.getGameCountdownTask()?.setTimeLeft(0)
+                Main.getGame().getGameCountdownTask().setTimeLeft(0)
             }
         }
     }

@@ -2,7 +2,8 @@ package me.byrt.cheesehunt.manager
 
 import me.byrt.cheesehunt.Main
 
-class CheeseManager(private var game : Game) {
+@Suppress("unused")
+class CheeseManager(private val game : Game) {
     private var redTotalCheesePlaced = 0
     private var blueTotalCheesePlaced = 0
     private var redTotalCheeseCollected = 0

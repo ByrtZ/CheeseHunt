@@ -1,10 +1,7 @@
 package me.byrt.cheesehunt.task
 
 import me.byrt.cheesehunt.Main
-import me.byrt.cheesehunt.manager.Game
-import me.byrt.cheesehunt.manager.GameState
-import me.byrt.cheesehunt.manager.RoundState
-import me.byrt.cheesehunt.manager.TimerState
+import me.byrt.cheesehunt.manager.*
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -159,12 +156,13 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
                 }
             }
             if (timeLeft <= 0) {
-                // TODO: REMOVING GLASS FROM START OF MAPS
                 for (player in Bukkit.getOnlinePlayers()) {
                     player.playSound(player.location, "go", 1f, 1f)
                     player.playSound(player.location, "clocktickhigh", 1f, 1f)
                     player.playSound(player.location, "music.rocket_spleef", 1f, 1f)
-                    player.gameMode = GameMode.SURVIVAL
+                    if(!game.getTeamManager().isSpectator(player.uniqueId)) {
+                        player.gameMode = GameMode.SURVIVAL
+                    }
                     player.resetTitle()
                 }
                 game.setGameState(GameState.IN_GAME)
@@ -218,10 +216,11 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
                             )
                         )
                     )
-                    player.gameMode = GameMode.ADVENTURE
-                    player.allowFlight = true
-                    player.isFlying = true
-                    // player.inventory.clear()
+                    if(!game.getTeamManager().isSpectator(player.uniqueId)) {
+                        player.gameMode = GameMode.ADVENTURE
+                        player.allowFlight = true
+                        player.isFlying = true
+                    }
                 }
                 game.setGameState(GameState.GAME_END)
             } else {
@@ -240,10 +239,11 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
                             )
                         )
                     )
-                    player.gameMode = GameMode.ADVENTURE
-                    player.allowFlight = true
-                    player.isFlying = true
-                    // player.inventory.clear()
+                    if(!game.getTeamManager().isSpectator(player.uniqueId)) {
+                        player.gameMode = GameMode.ADVENTURE
+                        player.allowFlight = true
+                        player.isFlying = true
+                    }
                 }
                 game.setGameState(GameState.ROUND_END)
             }
@@ -273,6 +273,7 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
                     player.sendMessage(Component.text("Thank you for playing! The server will be restarting shortly").color(NamedTextColor.YELLOW))
                 }
                 game.getBlockManager().resetBarriers()
+                game.getPlayerManager().clearAllItems()
                 cancel()
             }
         }

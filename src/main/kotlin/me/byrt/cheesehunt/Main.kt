@@ -20,7 +20,7 @@ import java.util.*
 import java.util.function.Consumer
 import java.util.function.Function
 
-private var game : Game? = null
+private lateinit var game : Game
 
 @Suppress("unused")
 class Main : JavaPlugin() {
@@ -29,12 +29,12 @@ class Main : JavaPlugin() {
         game = Game(this)
         setupCommands()
         setupEventListeners()
-        game?.getInfoBoardManager()?.buildScoreboard()
+        game.getInfoBoardManager().buildScoreboard()
     }
 
     override fun onDisable() {
         logger.info("Cleaning up...")
-        game?.cleanUp()
+        game.cleanUp()
     }
 
     private fun setupCommands() {
@@ -104,6 +104,6 @@ class Main : JavaPlugin() {
 
     companion object {
         fun getPlugin(): Plugin { return Bukkit.getPluginManager().getPlugin("CheeseHunt") as Plugin }
-        fun getGame(): Game? { return game }
+        fun getGame(): Game { return game }
     }
 }

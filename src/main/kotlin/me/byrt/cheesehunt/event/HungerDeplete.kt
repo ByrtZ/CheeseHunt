@@ -8,6 +8,7 @@ import org.bukkit.event.entity.FoodLevelChangeEvent
 class HungerDeplete : Listener {
     @EventHandler
     private fun onHungerDeplete(e : FoodLevelChangeEvent) {
+        e.entity.foodLevel = 20
         e.isCancelled = true
     }
 }

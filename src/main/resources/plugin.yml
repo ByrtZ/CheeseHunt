@@ -1,5 +1,5 @@
 name: CheeseHunt
-version: '1.0-SNAPSHOT'
+version: '1.0'
 main: me.byrt.cheesehunt.Main
 api-version: 1.18
 authors: [ Byrt ]

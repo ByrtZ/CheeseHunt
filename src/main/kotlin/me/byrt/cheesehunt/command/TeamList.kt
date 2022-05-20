@@ -23,16 +23,15 @@ class TeamList : BaseCommand {
         when(team) {
             Team.RED -> {
                 sender.sendMessage(Component.text("DISPLAYING $team TEAM UUIDS:").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true))
-                sender.sendMessage(Component.text("${Main.getGame()?.getTeamManager()?.getRedTeam()}"))
+                sender.sendMessage(Component.text("${Main.getGame().getTeamManager().getRedTeam()}"))
             }
             Team.BLUE -> {
                 sender.sendMessage(Component.text("DISPLAYING $team TEAM UUIDS:").color(NamedTextColor.BLUE).decoration(TextDecoration.BOLD, true))
-                sender.sendMessage(Component.text("${Main.getGame()?.getTeamManager()?.getBlueTeam()}"))
+                sender.sendMessage(Component.text("${Main.getGame().getTeamManager().getBlueTeam()}"))
             }
             Team.SPECTATOR -> {
-                sender.sendMessage(Component.text("This team is temporarily disabled.").color(NamedTextColor.RED))
-                /*sender.sendMessage(Component.text("DISPLAYING TEAM $team").color(NamedTextColor.GRAY).decoration(TextDecoration.BOLD, true))
-                sender.sendMessage(Component.text("${Main.getGame()?.getTeamManager()?.getSpectators()}"))*/
+                sender.sendMessage(Component.text("DISPLAYING $team TEAM UUIDS:").decoration(TextDecoration.BOLD, true))
+                sender.sendMessage(Component.text("${Main.getGame().getTeamManager().getSpectators()}"))
             }
         }
     }

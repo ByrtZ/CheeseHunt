@@ -23,7 +23,7 @@ import org.bukkit.inventory.ItemStack
 class BlockBreakDropEvent : Listener {
     @EventHandler
     private fun onBlockBreak(e : BlockBreakEvent) {
-        if(e.block.type == Material.SPONGE && Main.getGame()?.getRoundState() == RoundState.ROUND_TWO && Main.getGame()?.getGameState() == GameState.IN_GAME) {
+        if(e.block.type == Material.SPONGE && Main.getGame().getRoundState() == RoundState.ROUND_TWO && Main.getGame().getGameState() == GameState.IN_GAME) {
             Bukkit.getOnlinePlayers().stream().forEach {
                     player: Player -> announcePlayerCollectedCheese(player, e.player, e.block.location)
             }
@@ -43,70 +43,67 @@ class BlockBreakDropEvent : Listener {
             collector.playSound(collector.location, "scoreacquired", 1f, 1f)
         } else {
             player.sendMessage(Component.text("${collector.name} collected a piece of cheese!").color(NamedTextColor.YELLOW))
-            if(Main.getGame()?.getTeamManager()?.getPlayerTeam(player.uniqueId) == Team.RED && Main.getGame()?.getTeamManager()?.getPlayerTeam(collector.uniqueId) == Team.RED || Main.getGame()?.getTeamManager()?.getPlayerTeam(player.uniqueId) == Team.BLUE && Main.getGame()?.getTeamManager()?.getPlayerTeam(collector.uniqueId) == Team.BLUE) {
+            if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Team.RED && Main.getGame().getTeamManager().getPlayerTeam(collector.uniqueId) == Team.RED || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Team.BLUE && Main.getGame().getTeamManager().getPlayerTeam(collector.uniqueId) == Team.BLUE) {
                 player.playSound(collector.location, "scoreacquired", 1f, 1f)
-            } else if(Main.getGame()?.getTeamManager()?.getPlayerTeam(player.uniqueId) == Team.RED && Main.getGame()?.getTeamManager()?.getPlayerTeam(collector.uniqueId) == Team.BLUE || Main.getGame()?.getTeamManager()?.getPlayerTeam(player.uniqueId) == Team.BLUE && Main.getGame()?.getTeamManager()?.getPlayerTeam(collector.uniqueId) == Team.RED) {
+            } else if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Team.RED && Main.getGame().getTeamManager().getPlayerTeam(collector.uniqueId) == Team.BLUE || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Team.BLUE && Main.getGame().getTeamManager().getPlayerTeam(collector.uniqueId) == Team.RED) {
                 player.playSound(collector.location, "enemy_complete", 1f, 1f)
             }
         }
     }
 
     private fun incrementPlayerCollectedCheese(player : Player) {
-        when(Main.getGame()?.getTeamManager()?.getPlayerTeam(player.uniqueId)) {
+        when(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId)) {
             Team.RED -> {
-                Main.getGame()?.getCheeseManager()?.incrementCheeseCollected(Team.RED)
+                Main.getGame().getCheeseManager().incrementCheeseCollected(Team.RED)
             }
             Team.BLUE -> {
-                Main.getGame()?.getCheeseManager()?.incrementCheeseCollected(Team.BLUE)
+                Main.getGame().getCheeseManager().incrementCheeseCollected(Team.BLUE)
             }
             Team.SPECTATOR -> {
                 Main.getPlugin().logger.info("[INCREMENTING ERROR] ${player.name} was not on team ${Team.SPECTATOR} when they collected cheese.")
-            }
-            null -> {
-                Main.getPlugin().logger.info("[INCREMENTING ERROR] ${player.name} was not on a team when they collected cheese.")
             }
         }
     }
 
     private fun checkCheeseCollected() {
-        if(Main.getGame()?.getCheeseManager()?.hasRedFinishedCollecting() == false && Main.getGame()?.getCheeseManager()?.getBlueCheesePlaced() == Main.getGame()?.getCheeseManager()?.getRedCheeseCollected()) {
-            Main.getGame()?.getCheeseManager()?.setRedFinishedCollecting(true)
+        if(!Main.getGame().getCheeseManager().hasRedFinishedCollecting() && Main.getGame().getCheeseManager().getBlueCheesePlaced() == Main.getGame().getCheeseManager().getRedCheeseCollected()) {
+            Main.getGame().getCheeseManager().setRedFinishedCollecting(true)
             for(player in Bukkit.getOnlinePlayers()) {
                 player.sendMessage(Component.text("Red team have finished collecting all their cheese!"))
-                if(Main.getGame()?.getTeamManager()?.getPlayerTeam(player.uniqueId) == Team.RED) {
+                if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Team.RED) {
                     player.playSound(player.location, "bigscoreacquired", 1f, 1f)
-                    if(Main.getGame()?.getCheeseManager()?.hasBlueFinishedCollecting() != true) {
+                    if(!Main.getGame().getCheeseManager().hasBlueFinishedCollecting()) {
                         player.sendMessage(Component.text("Your team won the game!").color(NamedTextColor.GREEN))
                     }
                 }
-                if(Main.getGame()?.getTeamManager()?.getPlayerTeam(player.uniqueId) == Team.BLUE && Main.getGame()?.getCheeseManager()?.hasBlueFinishedCollecting() == false) {
+                if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Team.BLUE && !Main.getGame().getCheeseManager().hasBlueFinishedCollecting()) {
                     player.playSound(player.location, "teameliminated", 1f, 1f)
                     player.sendMessage(Component.text("Your team lost the game!").color(NamedTextColor.RED))
                 }
             }
-            if(Main.getGame()?.getCheeseManager()?.hasRedFinishedCollecting() == true && Main.getGame()?.getCheeseManager()?.hasBlueFinishedCollecting() == true) {
+            if(Main.getGame().getCheeseManager().hasRedFinishedCollecting() && Main.getGame().getCheeseManager().hasBlueFinishedCollecting()) {
                 for(player in Bukkit.getOnlinePlayers()) { player.sendMessage(Component.text("All teams have finished collecting their cheese!")) }
-                Main.getGame()?.getGameCountdownTask()?.setTimeLeft(0)
+                Main.getGame().getGameCountdownTask().setTimeLeft(0)
             }
         }
-        if(Main.getGame()?.getCheeseManager()?.hasBlueFinishedCollecting() == false && Main.getGame()?.getCheeseManager()?.getRedCheesePlaced() == Main.getGame()?.getCheeseManager()?.getBlueCheeseCollected()) {
-            Main.getGame()?.getCheeseManager()?.setBlueFinishedCollecting(true)
+        if(!Main.getGame().getCheeseManager().hasBlueFinishedCollecting() && Main.getGame().getCheeseManager().getRedCheesePlaced() == Main.getGame().getCheeseManager().getBlueCheeseCollected()) {
+            Main.getGame().getCheeseManager().setBlueFinishedCollecting(true)
             for(player in Bukkit.getOnlinePlayers()) {
                 player.sendMessage(Component.text("Blue team have finished collecting all their cheese!"))
-                if(Main.getGame()?.getTeamManager()?.getPlayerTeam(player.uniqueId) == Team.RED && Main.getGame()?.getCheeseManager()?.hasRedFinishedCollecting() == false) {
+                if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Team.RED && !Main.getGame().getCheeseManager().hasRedFinishedCollecting()) {
                     player.playSound(player.location, "teameliminated", 1f, 1f)
                     player.sendMessage(Component.text("Your team lost the game!").color(NamedTextColor.RED))
                 }
-                if(Main.getGame()?.getTeamManager()?.getPlayerTeam(player.uniqueId) == Team.BLUE) {
+                if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Team.BLUE) {
                     player.playSound(player.location, "bigscoreacquired", 1f, 1f)
-                    if(Main.getGame()?.getCheeseManager()?.hasRedFinishedCollecting() != true) {
+                    if(!Main.getGame().getCheeseManager().hasRedFinishedCollecting()) {
                         player.sendMessage(Component.text("Your team won the game!").color(NamedTextColor.GREEN))
                     }
                 }
             }
-            if(Main.getGame()?.getCheeseManager()?.hasRedFinishedCollecting() == true && Main.getGame()?.getCheeseManager()?.hasBlueFinishedCollecting() == true) {
+            if(Main.getGame().getCheeseManager().hasRedFinishedCollecting() && Main.getGame().getCheeseManager().hasBlueFinishedCollecting()) {
                 for(player in Bukkit.getOnlinePlayers()) { player.sendMessage(Component.text("All teams have finished collecting their cheese!")) }
-                Main.getGame()?.getGameCountdownTask()?.setTimeLeft(0)
+                Main.getGame().getGameCountdownTask().setTimeLeft(0)
             }
         }
     }

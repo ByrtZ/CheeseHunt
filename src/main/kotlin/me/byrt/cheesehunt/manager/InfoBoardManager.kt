@@ -9,7 +9,7 @@ import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 import org.bukkit.scoreboard.*
 
-class InfoBoardManager(private var game : Game) {
+class InfoBoardManager(private val game : Game) {
     private var currentGameText: Score? = null
     private var currentMapText: Score? = null
     private var currentRoundText: Score? = null
@@ -22,6 +22,7 @@ class InfoBoardManager(private var game : Game) {
     private var scoreboard: Scoreboard? = null
     private var cheeseHuntBoard: Objective? = null
 
+    //TODO: REFACTOR CHATCOLOR USAGES TO TEXT COMPONENTS AND MAKE VARIABLES LATEINIT
     fun buildScoreboard() {
         scoreboardManager = Bukkit.getScoreboardManager()
         scoreboard = scoreboardManager!!.mainScoreboard
@@ -36,7 +37,7 @@ class InfoBoardManager(private var game : Game) {
         currentGameText!!.score = 7
         currentMapText = cheeseHuntBoard!!.getScore(ChatColor.AQUA.toString() + "" + ChatColor.BOLD + "Map: " + ChatColor.RESET + "Classic")
         currentMapText!!.score = 6
-        currentRoundText = cheeseHuntBoard!!.getScore(ChatColor.AQUA.toString() + "" + ChatColor.BOLD + "Round: " + ChatColor.RESET + "None")
+        currentRoundText = cheeseHuntBoard!!.getScore(ChatColor.GREEN.toString() + "" + ChatColor.BOLD + "Round: " + ChatColor.RESET + "None")
         currentRoundText!!.score = 5
         gameStatusText = cheeseHuntBoard!!.getScore(ChatColor.RED.toString() + "" + ChatColor.BOLD + "Game status: " + ChatColor.RESET + "Waiting...")
         gameStatusText!!.score = 4
@@ -63,7 +64,7 @@ class InfoBoardManager(private var game : Game) {
             cheeseHuntBoard!!.scoreboard!!.resetScores(ChatColor.RED.toString() + "" + ChatColor.BOLD + "Game status: " + ChatColor.RESET + "Waiting...")
             cheeseHuntBoard!!.scoreboard!!.resetScores(ChatColor.RED.toString() + "" + ChatColor.BOLD + "Time left: " + ChatColor.RESET + "00:00")
             cheeseHuntBoard!!.scoreboard!!.resetScores(ChatColor.RED.toString() + "" + ChatColor.BOLD + "Next round: " + ChatColor.RESET + "00:00")
-            cheeseHuntBoard!!.scoreboard!!.resetScores(ChatColor.AQUA.toString() + "" + ChatColor.BOLD + "Round: " + ChatColor.RESET + "None")
+            cheeseHuntBoard!!.scoreboard!!.resetScores(ChatColor.GREEN.toString() + "" + ChatColor.BOLD + "Round: " + ChatColor.RESET + "None")
             cheeseHuntBoard!!.scoreboard!!.resetScores(ChatColor.RED.toString() + "" + ChatColor.BOLD + "Game ending: " + ChatColor.RESET + "00:00")
             cheeseHuntBoard!!.scoreboard!!.resetScores(ChatColor.RED.toString() + "" + ChatColor.BOLD + "Game status: " + ChatColor.RESET + "TIMER PAUSED")
             cheeseHuntBoard!!.scoreboard!!.resetScores(ChatColor.RED.toString() + "" + ChatColor.BOLD + "Game begins: " + ChatColor.RESET + "" + previousDisplayTime)
@@ -71,9 +72,9 @@ class InfoBoardManager(private var game : Game) {
             if (game.getRoundState() === RoundState.ROUND_ONE) {
                 gameStatusText = cheeseHuntBoard!!.getScore(ChatColor.RED.toString() + "" + ChatColor.BOLD + "Game begins: " + ChatColor.RESET + "" + displayTime)
                 gameStatusText!!.score = 4
-                cheeseHuntBoard!!.scoreboard?.resetScores(ChatColor.AQUA.toString() + "" + ChatColor.BOLD + "Round: " + ChatColor.RESET + "None")
-                cheeseHuntBoard!!.scoreboard?.resetScores(ChatColor.AQUA.toString() + "" + ChatColor.BOLD + "Round: " + ChatColor.RESET + "2/2")
-                currentRoundText = cheeseHuntBoard!!.getScore(ChatColor.AQUA.toString() + "" + ChatColor.BOLD + "Round: " + ChatColor.RESET + "1/2")
+                cheeseHuntBoard!!.scoreboard?.resetScores(ChatColor.GREEN.toString() + "" + ChatColor.BOLD + "Round: " + ChatColor.RESET + "None")
+                cheeseHuntBoard!!.scoreboard?.resetScores(ChatColor.GREEN.toString() + "" + ChatColor.BOLD + "Round: " + ChatColor.RESET + "2/2")
+                currentRoundText = cheeseHuntBoard!!.getScore(ChatColor.GREEN.toString() + "" + ChatColor.BOLD + "Round: " + ChatColor.RESET + "1/2")
                 currentRoundText!!.score = 5
             } else {
                 cheeseHuntBoard!!.scoreboard?.resetScores(ChatColor.RED.toString() + "" + ChatColor.BOLD + "Round begins: " + ChatColor.RESET + previousDisplayTime)
@@ -81,8 +82,8 @@ class InfoBoardManager(private var game : Game) {
                 gameStatusText!!.score = 4
 
                 if (game.getRoundState() === RoundState.ROUND_TWO) {
-                    cheeseHuntBoard!!.scoreboard?.resetScores(ChatColor.AQUA.toString() + "" + ChatColor.BOLD + "Round: " + ChatColor.RESET + "1/2")
-                    currentRoundText = cheeseHuntBoard!!.getScore(ChatColor.AQUA.toString() + "" + ChatColor.BOLD + "Round: " + ChatColor.RESET + "2/2")
+                    cheeseHuntBoard!!.scoreboard?.resetScores(ChatColor.GREEN.toString() + "" + ChatColor.BOLD + "Round: " + ChatColor.RESET + "1/2")
+                    currentRoundText = cheeseHuntBoard!!.getScore(ChatColor.GREEN.toString() + "" + ChatColor.BOLD + "Round: " + ChatColor.RESET + "2/2")
                     currentRoundText!!.score = 5
                 }
             }

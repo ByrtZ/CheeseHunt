@@ -3,17 +3,18 @@ package me.byrt.cheesehunt.manager
 import me.byrt.cheesehunt.Main
 import me.byrt.cheesehunt.task.GameCountdownTask
 
-class Game(private var plugin : Main) {
+@Suppress("unused")
+class Game(private val plugin : Main) {
     private var gameState : GameState = GameState.IDLE
     private var roundState : RoundState = RoundState.ROUND_ONE
     private var timerState : TimerState = TimerState.INACTIVE
-    private var playerManager = PlayerManager(this)
-    private var teamManager = TeamManager(this)
-    private var itemManager = ItemManager(this)
-    private var blockManager = BlockManager(this)
-    private var cheeseManager = CheeseManager(this)
-    private var infoBoardManager = InfoBoardManager(this)
-    private var gameCountdownTask = GameCountdownTask(this)
+    private val playerManager = PlayerManager(this)
+    private val teamManager = TeamManager(this)
+    private val itemManager = ItemManager(this)
+    private val blockManager = BlockManager(this)
+    private val cheeseManager = CheeseManager(this)
+    private val infoBoardManager = InfoBoardManager(this)
+    private val gameCountdownTask = GameCountdownTask(this)
 
     fun setGameState(newState : GameState) {
         this.gameState = newState

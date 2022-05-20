@@ -1,6 +1,7 @@
 package me.byrt.cheesehunt.event
 
 import me.byrt.cheesehunt.Main
+import me.byrt.cheesehunt.manager.GameState
 import me.byrt.cheesehunt.manager.RoundState
 import me.byrt.cheesehunt.manager.Team
 
@@ -22,7 +23,7 @@ import org.bukkit.inventory.ItemStack
 class BlockBreakDropEvent : Listener {
     @EventHandler
     private fun onBlockBreak(e : BlockBreakEvent) {
-        if(e.block.type == Material.SPONGE && Main.getGame()?.getRoundState() == RoundState.ROUND_TWO) {
+        if(e.block.type == Material.SPONGE && Main.getGame()?.getRoundState() == RoundState.ROUND_TWO && Main.getGame()?.getGameState() == GameState.IN_GAME) {
             Bukkit.getOnlinePlayers().stream().forEach {
                     player: Player -> announcePlayerCollectedCheese(player, e.player, e.block.location)
             }

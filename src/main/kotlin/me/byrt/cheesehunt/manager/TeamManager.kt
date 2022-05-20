@@ -1,7 +1,5 @@
 package me.byrt.cheesehunt.manager
 
-import me.byrt.cheesehunt.Main
-
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 
@@ -18,6 +16,7 @@ class TeamManager(game : Game) {
         when(team) {
             Team.RED -> {
                 if(blueTeam.contains(uuid)) { removeFromTeam(uuid, Team.BLUE) }
+                if(spectators.contains(uuid)) { removeFromTeam(uuid, Team.SPECTATOR) }
                 redTeam.add(uuid)
                 Bukkit.getServer().getPlayer(uuid)?.sendMessage(Component.text("You are now on the ")
                     .color(NamedTextColor.WHITE)
@@ -27,6 +26,7 @@ class TeamManager(game : Game) {
             }
             Team.BLUE -> {
                 if(redTeam.contains(uuid)) { removeFromTeam(uuid, Team.RED) }
+                if(spectators.contains(uuid)) { removeFromTeam(uuid, Team.SPECTATOR) }
                 blueTeam.add(uuid)
                 Bukkit.getServer().getPlayer(uuid)?.sendMessage(Component.text("You are now on the ")
                     .color(NamedTextColor.WHITE)
@@ -34,8 +34,11 @@ class TeamManager(game : Game) {
                         .color(NamedTextColor.BLUE))
                     .append(Component.text(".")))
             }
-            else -> {
-                Main.getPlugin().logger.info("[TEAM ERROR] Something weird happened when attempting to add someone to a team.")
+            Team.SPECTATOR -> {
+                if(redTeam.contains(uuid)) { removeFromTeam(uuid, Team.RED) }
+                if(blueTeam.contains(uuid)) { removeFromTeam(uuid, Team.BLUE) }
+                spectators.add(uuid)
+                Bukkit.getServer().getPlayer(uuid)?.sendMessage(Component.text("You are now a Spectator."))
             }
         }
     }
@@ -58,8 +61,9 @@ class TeamManager(game : Game) {
                         .color(NamedTextColor.BLUE))
                     .append(Component.text(".")))
             }
-            else -> {
-                Main.getPlugin().logger.info("[TEAM ERROR] Something weird happened when attempting to remove someone from a team.")
+            Team.SPECTATOR -> {
+                spectators.remove(uuid)
+                Bukkit.getServer().getPlayer(uuid)?.sendMessage(Component.text("You are no longer a Spectator."))
             }
         }
     }

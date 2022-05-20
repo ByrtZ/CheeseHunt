@@ -19,21 +19,13 @@ class JoinTeam : BaseCommand {
     @CommandDescription("Puts the specified player on the specified team.")
     @CommandPermission("cheesehunt.jointeam")
     fun joinTeam(sender : Player, @Argument("team") team : Team, @Argument("player") player : Player) {
-        if(team == Team.SPECTATOR) {
-            sender.sendMessage(Component.text("This team is temporarily disabled.").color(NamedTextColor.RED))
+        if(Main.getGame()?.getTeamManager()?.getPlayerTeam(player.uniqueId) == Team.RED && team == Team.RED || Main.getGame()?.getTeamManager()?.getPlayerTeam(player.uniqueId) == Team.BLUE && team == Team.BLUE || Main.getGame()?.getTeamManager()?.getPlayerTeam(player.uniqueId) == Team.SPECTATOR && team == Team.SPECTATOR) {
+            sender.sendMessage(Component.text("This player is already on team $team.").color(NamedTextColor.RED))
         } else {
-            if(Main.getGame()?.getTeamManager()?.getPlayerTeam(player.uniqueId) == Team.RED && team == Team.RED || Main.getGame()?.getTeamManager()?.getPlayerTeam(player.uniqueId) == Team.BLUE && team == Team.BLUE) {
-                sender.sendMessage(Component.text("This player is already on team $team.").color(NamedTextColor.RED))
-            }
-            else {
-                sender.sendMessage(Component.text("Attempting to add ${player.name} to $team...").color(NamedTextColor.GRAY))
-                sender.sendMessage(Component.text("[")
-                    .append(Component.text("TEAM UPDATE").color(NamedTextColor.YELLOW))
-                    .append(Component.text("] "))
-                    .append(Component.text("${player.name} added to ${team}.").color(NamedTextColor.WHITE)))
-                Main.getGame()?.getTeamManager()?.addToTeam(player.uniqueId, team)
-                Main.getGame()?.getItemManager()?.playerJoinTeamEquip(player, team)
-            }
+            sender.sendMessage(Component.text("Attempting to add ${player.name} to $team...").color(NamedTextColor.GRAY))
+            sender.sendMessage(Component.text("Successfully added ${player.name} to ${team}.").color(NamedTextColor.GREEN))
+            Main.getGame()?.getTeamManager()?.addToTeam(player.uniqueId, team)
+            Main.getGame()?.getItemManager()?.playerJoinTeamEquip(player, team)
         }
     }
 }

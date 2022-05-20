@@ -36,10 +36,14 @@ class PlayerManager(private var game : Game) {
     private fun giveItems(player: Player) {
         when(game.getRoundState()) {
             RoundState.ROUND_ONE -> {
-                player.inventory.addItem(ItemStack(Material.SPONGE, 4))
+                if(game.getTeamManager().getPlayerTeam(player.uniqueId) != Team.SPECTATOR) {
+                    player.inventory.addItem(ItemStack(Material.SPONGE, 4))
+                }
             }
             RoundState.ROUND_TWO -> {
-                player.inventory.addItem(ItemStack(Material.IRON_HOE, 1))
+                if(game.getTeamManager().getPlayerTeam(player.uniqueId) != Team.SPECTATOR) {
+                    player.inventory.addItem(ItemStack(Material.STONE_HOE, 1))
+                }
             }
         }
     }
@@ -85,5 +89,11 @@ class PlayerManager(private var game : Game) {
         } else {
             Main.getPlugin().logger.info("[TELEPORTING ERROR] Something weird happened when trying to teleport players")
         }
+    }
+
+    fun setSpectatorsGameMode() {
+        Bukkit.getOnlinePlayers().stream().filter { player: Player? -> player?.let {
+            Main.getGame()?.getTeamManager()?.getPlayerTeam(it.uniqueId) } == Team.SPECTATOR}
+            .forEach{ player: Player -> player.gameMode = GameMode.SPECTATOR }
     }
 }

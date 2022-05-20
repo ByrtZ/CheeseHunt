@@ -103,6 +103,7 @@ class Game(private var plugin : Main) {
     }
 
     private fun roundStarting() {
+        playerManager.setSpectatorsGameMode()
         playerManager.setPlayersNotFlying()
         playerManager.clearCheese()
         playerManager.teleportAllPlayers()

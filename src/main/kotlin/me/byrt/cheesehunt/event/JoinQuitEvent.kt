@@ -20,12 +20,12 @@ class JoinQuitEvent : Listener {
         e.joinMessage(Component.text("${e.player.name} joined the game.").color(NamedTextColor.GRAY))
         if(Main.getGame()?.getGameState() == GameState.IDLE) {
             e.player.teleport(Location(e.player.world, 0.5, -52.0 ,0.5, 0.0f, 0.0f))
+            e.player.inventory.clear()
         }
     }
     @EventHandler
     private fun onPlayerQuit(e : PlayerQuitEvent) {
-        Main.getGame()?.getTeamManager()?.getPlayerTeam(e.player.uniqueId)?.let {
-            Main.getGame()?.getTeamManager()?.removeFromTeam(e.player.uniqueId, it)}
+        Main.getGame()?.getTeamManager()?.getPlayerTeam(e.player.uniqueId)?.let { Main.getGame()?.getTeamManager()?.removeFromTeam(e.player.uniqueId, it)}
         e.quitMessage(Component.text("${e.player.name} left the game.").color(NamedTextColor.GRAY))
     }
 }

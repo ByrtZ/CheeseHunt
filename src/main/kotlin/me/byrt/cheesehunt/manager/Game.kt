@@ -27,12 +27,20 @@ class Game(private var plugin : Main) {
                 gameCountdownTask.setTimeLeft(20)
                 if(roundState == RoundState.ROUND_ONE) {
                     gameCountdownTask.runTaskTimer(plugin, 0, 20)
+                    //TODO: GAME TUTORIAL
                 }
                 roundStarting()
             }
             GameState.IN_GAME -> {
                 setTimerState(TimerState.ACTIVE)
-                gameCountdownTask.setTimeLeft(60)
+                when(roundState) {
+                    RoundState.ROUND_ONE -> {
+                        gameCountdownTask.setTimeLeft(120)
+                    }
+                    RoundState.ROUND_TWO -> {
+                        gameCountdownTask.setTimeLeft(180)
+                    }
+                }
                 startRound()
             }
             GameState.ROUND_END -> {

@@ -74,7 +74,9 @@ class BlockBreakDropEvent : Listener {
                 player.sendMessage(Component.text("Red team have finished collecting all their cheese!"))
                 if(Main.getGame()?.getTeamManager()?.getPlayerTeam(player.uniqueId) == Team.RED) {
                     player.playSound(player.location, "bigscoreacquired", 1f, 1f)
-                    player.sendMessage(Component.text("Your team won the game!").color(NamedTextColor.GREEN))
+                    if(Main.getGame()?.getCheeseManager()?.hasBlueFinishedCollecting() != true) {
+                        player.sendMessage(Component.text("Your team won the game!").color(NamedTextColor.GREEN))
+                    }
                 }
                 if(Main.getGame()?.getTeamManager()?.getPlayerTeam(player.uniqueId) == Team.BLUE && Main.getGame()?.getCheeseManager()?.hasBlueFinishedCollecting() == false) {
                     player.playSound(player.location, "teameliminated", 1f, 1f)
@@ -96,7 +98,9 @@ class BlockBreakDropEvent : Listener {
                 }
                 if(Main.getGame()?.getTeamManager()?.getPlayerTeam(player.uniqueId) == Team.BLUE) {
                     player.playSound(player.location, "bigscoreacquired", 1f, 1f)
-                    player.sendMessage(Component.text("Your team won the game!").color(NamedTextColor.GREEN))
+                    if(Main.getGame()?.getCheeseManager()?.hasRedFinishedCollecting() != true) {
+                        player.sendMessage(Component.text("Your team won the game!").color(NamedTextColor.GREEN))
+                    }
                 }
             }
             if(Main.getGame()?.getCheeseManager()?.hasRedFinishedCollecting() == true && Main.getGame()?.getCheeseManager()?.hasBlueFinishedCollecting() == true) {

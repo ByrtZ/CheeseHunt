@@ -6,6 +6,7 @@ import me.byrt.cheesehunt.manager.Team
 import cloud.commandframework.annotations.Argument
 import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
+import cloud.commandframework.annotations.CommandPermission
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -16,7 +17,8 @@ import org.bukkit.entity.Player
 @Suppress("unused")
 class TeamList : BaseCommand {
     @CommandMethod("teamlist <team>")
-    @CommandDescription("[TEMPORARY] Allows the executing player to see the array of the specified team")
+    @CommandDescription("Allows the executing player to see the array of the specified team.")
+    @CommandPermission("cheesehunt.teamlist")
     fun teamList(sender : Player, @Argument("team") team : Team) {
         when(team) {
             Team.RED -> {

@@ -6,6 +6,7 @@ import me.byrt.cheesehunt.manager.Team
 import cloud.commandframework.annotations.Argument
 import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
+import cloud.commandframework.annotations.CommandPermission
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -16,6 +17,7 @@ import org.bukkit.entity.Player
 class JoinTeam : BaseCommand {
     @CommandMethod("jointeam <team> <player>")
     @CommandDescription("Puts the specified player on the specified team.")
+    @CommandPermission("cheesehunt.jointeam")
     fun joinTeam(sender : Player, @Argument("team") team : Team, @Argument("player") player : Player) {
         if(team == Team.SPECTATOR) {
             sender.sendMessage(Component.text("This team is temporarily disabled.").color(NamedTextColor.RED))

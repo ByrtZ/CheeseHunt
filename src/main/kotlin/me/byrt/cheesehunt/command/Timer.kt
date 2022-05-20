@@ -5,7 +5,9 @@ import me.byrt.cheesehunt.manager.GameState
 import me.byrt.cheesehunt.manager.TimerState
 
 import cloud.commandframework.annotations.Argument
+import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
+import cloud.commandframework.annotations.CommandPermission
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -15,6 +17,8 @@ import org.bukkit.entity.Player
 @Suppress("unused")
 class Timer : BaseCommand {
     @CommandMethod("timer <setting> [seconds]")
+    @CommandDescription("Allows timer modification.")
+    @CommandPermission("cheesehunt.timer")
     fun timer(sender : Player, @Argument("setting") option : TimerOptions, @Argument("seconds") time : Int?) {
         when(option) {
             TimerOptions.SET -> {

@@ -5,6 +5,7 @@ import me.byrt.cheesehunt.manager.GameState
 
 import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
+import cloud.commandframework.annotations.CommandPermission
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -15,6 +16,7 @@ import org.bukkit.entity.Player
 class StartGame : BaseCommand {
     @CommandMethod("startgame")
     @CommandDescription("Starts a game of Cheese Hunt.")
+    @CommandPermission("cheesehunt.startgame")
     fun start(sender : Player) {
         if(Main.getGame()?.getGameState() == GameState.IDLE) {
             if(Main.getGame()?.getTeamManager()?.getRedTeam()?.size!! >= 1 && Main.getGame()?.getTeamManager()?.getBlueTeam()?.size!! >= 1) {

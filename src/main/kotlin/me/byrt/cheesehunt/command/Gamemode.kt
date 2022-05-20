@@ -1,17 +1,21 @@
 package me.byrt.cheesehunt.command
 
 import cloud.commandframework.annotations.Argument
+import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
+import cloud.commandframework.annotations.CommandPermission
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
-import org.bukkit.GameMode
 
+import org.bukkit.GameMode
 import org.bukkit.entity.Player
 
 @Suppress("unused")
 class Gamemode : BaseCommand {
     @CommandMethod("gm <mode>")
+    @CommandDescription("Puts the executing player into the specified gamemode.")
+    @CommandPermission("cheesehunt.gm")
     fun gm(sender : Player, @Argument("mode") mode : Int?) {
         if(mode == 0) {
             sender.gameMode = GameMode.SURVIVAL

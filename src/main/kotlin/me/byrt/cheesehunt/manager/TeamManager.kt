@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 
 import org.bukkit.Bukkit
+import org.bukkit.scoreboard.Team
 
 import java.util.*
 
@@ -12,70 +13,100 @@ class TeamManager(private val game : Game) {
     private var redTeam = ArrayList<UUID>()
     private var blueTeam = ArrayList<UUID>()
     private var spectators = ArrayList<UUID>()
+    private var redDisplayTeam: Team = Bukkit.getScoreboardManager().mainScoreboard.registerNewTeam("redDisplay")
+    private var blueDisplayTeam: Team = Bukkit.getScoreboardManager().mainScoreboard.registerNewTeam("blueDisplay")
+    private var uncollectedCheeseDisplayTeam: Team = Bukkit.getScoreboardManager().mainScoreboard.registerNewTeam("uncollectedCheeseDisplay")
 
-    fun addToTeam(uuid : UUID, team : Team) {
+    fun addToTeam(uuid : UUID, team : Teams) {
         when(team) {
-            Team.RED -> {
-                if(blueTeam.contains(uuid)) { removeFromTeam(uuid, Team.BLUE) }
-                if(spectators.contains(uuid)) { removeFromTeam(uuid, Team.SPECTATOR) }
+            Teams.RED -> {
+                if(blueTeam.contains(uuid)) { removeFromTeam(uuid, Teams.BLUE) }
+                if(spectators.contains(uuid)) { removeFromTeam(uuid, Teams.SPECTATOR) }
                 redTeam.add(uuid)
+                redDisplayTeam.addPlayer(Bukkit.getOfflinePlayer(uuid))
                 Bukkit.getServer().getPlayer(uuid)?.sendMessage(Component.text("You are now on the ")
                     .color(NamedTextColor.WHITE)
                     .append(Component.text("Red Team")
                         .color(NamedTextColor.RED))
                         .append(Component.text(".")))
             }
-            Team.BLUE -> {
-                if(redTeam.contains(uuid)) { removeFromTeam(uuid, Team.RED) }
-                if(spectators.contains(uuid)) { removeFromTeam(uuid, Team.SPECTATOR) }
+            Teams.BLUE -> {
+                if(redTeam.contains(uuid)) { removeFromTeam(uuid, Teams.RED) }
+                if(spectators.contains(uuid)) { removeFromTeam(uuid, Teams.SPECTATOR) }
                 blueTeam.add(uuid)
+                blueDisplayTeam.addPlayer(Bukkit.getOfflinePlayer(uuid))
                 Bukkit.getServer().getPlayer(uuid)?.sendMessage(Component.text("You are now on the ")
                     .color(NamedTextColor.WHITE)
                     .append(Component.text("Blue Team")
                         .color(NamedTextColor.BLUE))
                     .append(Component.text(".")))
             }
-            Team.SPECTATOR -> {
-                if(redTeam.contains(uuid)) { removeFromTeam(uuid, Team.RED) }
-                if(blueTeam.contains(uuid)) { removeFromTeam(uuid, Team.BLUE) }
+            Teams.SPECTATOR -> {
+                if(redTeam.contains(uuid)) { removeFromTeam(uuid, Teams.RED) }
+                if(blueTeam.contains(uuid)) { removeFromTeam(uuid, Teams.BLUE) }
                 spectators.add(uuid)
                 Bukkit.getServer().getPlayer(uuid)?.sendMessage(Component.text("You are now a Spectator."))
             }
         }
     }
 
-    fun removeFromTeam(uuid : UUID, team : Team) {
+    fun removeFromTeam(uuid : UUID, team : Teams) {
         when(team) {
-            Team.RED -> {
+            Teams.RED -> {
                 redTeam.remove(uuid)
+                redDisplayTeam.removePlayer(Bukkit.getOfflinePlayer(uuid))
                 Bukkit.getServer().getPlayer(uuid)?.sendMessage(Component.text("You are no longer on ")
                     .color(NamedTextColor.WHITE)
                     .append(Component.text("Red Team")
                         .color(NamedTextColor.RED))
                     .append(Component.text(".")))
             }
-            Team.BLUE -> {
+            Teams.BLUE -> {
                 blueTeam.remove(uuid)
+                blueDisplayTeam.removePlayer(Bukkit.getOfflinePlayer(uuid))
                 Bukkit.getServer().getPlayer(uuid)?.sendMessage(Component.text("You are no longer on ")
                     .color(NamedTextColor.WHITE)
                     .append(Component.text("Blue Team")
                         .color(NamedTextColor.BLUE))
                     .append(Component.text(".")))
             }
-            Team.SPECTATOR -> {
+            Teams.SPECTATOR -> {
                 spectators.remove(uuid)
                 Bukkit.getServer().getPlayer(uuid)?.sendMessage(Component.text("You are no longer a Spectator."))
             }
         }
     }
 
-    fun getPlayerTeam(uuid : UUID): Team {
+    fun constructScoreboardTeams() {
+        redDisplayTeam.color(NamedTextColor.RED)
+        redDisplayTeam.prefix(Component.text("").color(NamedTextColor.RED))
+        redDisplayTeam.suffix(Component.text("").color(NamedTextColor.WHITE))
+        redDisplayTeam.displayName(Component.text("Red").color(NamedTextColor.RED))
+
+        blueDisplayTeam.color(NamedTextColor.BLUE)
+        blueDisplayTeam.prefix(Component.text("").color(NamedTextColor.BLUE))
+        blueDisplayTeam.suffix(Component.text("").color(NamedTextColor.WHITE))
+        blueDisplayTeam.displayName(Component.text("Blue").color(NamedTextColor.BLUE))
+
+        uncollectedCheeseDisplayTeam.color(NamedTextColor.GOLD)
+        uncollectedCheeseDisplayTeam.prefix(Component.text("").color(NamedTextColor.GOLD))
+        uncollectedCheeseDisplayTeam.suffix(Component.text("").color(NamedTextColor.WHITE))
+        uncollectedCheeseDisplayTeam.displayName(Component.text("Cheese").color(NamedTextColor.GOLD))
+    }
+
+    fun destroyDisplayTeams() {
+        redDisplayTeam.unregister()
+        blueDisplayTeam.unregister()
+        uncollectedCheeseDisplayTeam.unregister()
+    }
+
+    fun getPlayerTeam(uuid : UUID): Teams {
         return if(redTeam.contains(uuid)) {
-            Team.RED
+            Teams.RED
         } else if(blueTeam.contains(uuid)) {
-            Team.BLUE
+            Teams.BLUE
         } else {
-            Team.SPECTATOR
+            Teams.SPECTATOR
         }
     }
 
@@ -101,5 +132,17 @@ class TeamManager(private val game : Game) {
 
     fun getSpectators(): ArrayList<UUID> {
         return this.spectators
+    }
+
+    fun getRedDisplayTeam(): Team {
+        return this.redDisplayTeam
+    }
+
+    fun getBlueDisplayTeam(): Team {
+        return this.blueDisplayTeam
+    }
+
+    fun getUncollectedCheeseDisplayTeam(): Team {
+        return this.uncollectedCheeseDisplayTeam
     }
 }

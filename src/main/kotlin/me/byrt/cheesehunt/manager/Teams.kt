@@ -1,6 +1,6 @@
 package me.byrt.cheesehunt.manager
 
-enum class Team {
+enum class Teams {
     RED,
     BLUE,
     SPECTATOR

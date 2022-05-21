@@ -2,7 +2,7 @@ package me.byrt.cheesehunt.event
 
 import me.byrt.cheesehunt.Main
 import me.byrt.cheesehunt.manager.RoundState
-import me.byrt.cheesehunt.manager.Team
+import me.byrt.cheesehunt.manager.Teams
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -37,9 +37,9 @@ class BlockPlaceEvent : Listener {
             placer.playSound(placer.location, "objectivecomplete", 1f, 1f)
         } else {
             player.sendMessage(Component.text("${placer.name} placed a piece of cheese!").color(NamedTextColor.YELLOW))
-            if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Team.RED && Main.getGame().getTeamManager().getPlayerTeam(placer.uniqueId) == Team.RED || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Team.BLUE && Main.getGame().getTeamManager().getPlayerTeam(placer.uniqueId) == Team.BLUE) {
+            if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED && Main.getGame().getTeamManager().getPlayerTeam(placer.uniqueId) == Teams.RED || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE && Main.getGame().getTeamManager().getPlayerTeam(placer.uniqueId) == Teams.BLUE) {
                 player.playSound(placer.location, "objectivecomplete", 1f, 1f)
-            } else if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Team.RED && Main.getGame().getTeamManager().getPlayerTeam(placer.uniqueId) == Team.BLUE || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Team.BLUE && Main.getGame().getTeamManager().getPlayerTeam(placer.uniqueId) == Team.RED) {
+            } else if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED && Main.getGame().getTeamManager().getPlayerTeam(placer.uniqueId) == Teams.BLUE || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE && Main.getGame().getTeamManager().getPlayerTeam(placer.uniqueId) == Teams.RED) {
                 player.playSound(placer.location, "enemy_complete", 1f, 1f)
             }
         }
@@ -47,14 +47,14 @@ class BlockPlaceEvent : Listener {
 
     private fun incrementPlayerPlacedCheese(player : Player) {
         when(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId)) {
-            Team.RED -> {
-                Main.getGame().getCheeseManager().incrementCheesePlaced(Team.RED)
+            Teams.RED -> {
+                Main.getGame().getCheeseManager().incrementCheesePlaced(Teams.RED)
             }
-            Team.BLUE -> {
-                Main.getGame().getCheeseManager().incrementCheesePlaced(Team.BLUE)
+            Teams.BLUE -> {
+                Main.getGame().getCheeseManager().incrementCheesePlaced(Teams.BLUE)
             }
-            Team.SPECTATOR -> {
-                Main.getPlugin().logger.info("[INCREMENTING ERROR] ${player.name} was not on team ${Team.SPECTATOR} when they placed cheese.")
+            Teams.SPECTATOR -> {
+                Main.getPlugin().logger.info("[INCREMENTING ERROR] ${player.name} was not on team ${Teams.SPECTATOR} when they placed cheese.")
             }
         }
     }

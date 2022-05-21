@@ -273,8 +273,8 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
                     for(player in Bukkit.getOnlinePlayers()) {
                         player.sendMessage(Component.text("The game ended with uncollected cheese...").color(NamedTextColor.GOLD))
                         player.sendMessage(Component.text("Now showing all uncollected cheese.").color(NamedTextColor.GOLD))
-                        game.getCheeseManager().markUncollectedCheese()
                     }
+                    game.getCheeseManager().markUncollectedCheese()
                 }
             }
             if(timeLeft == 70) {

@@ -2,7 +2,7 @@ package me.byrt.cheesehunt.event
 
 import me.byrt.cheesehunt.Main
 import me.byrt.cheesehunt.manager.GameState
-import me.byrt.cheesehunt.manager.Team
+import me.byrt.cheesehunt.manager.Teams
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
@@ -25,8 +25,8 @@ class JoinQuitEvent : Listener {
             e.player.gameMode = GameMode.ADVENTURE
             e.player.inventory.clear()
         }
-        Main.getGame().getTeamManager().addToTeam(e.player.uniqueId, Team.SPECTATOR)
-        Main.getGame().getItemManager().playerJoinTeamEquip(e.player, Team.SPECTATOR)
+        Main.getGame().getTeamManager().addToTeam(e.player.uniqueId, Teams.SPECTATOR)
+        Main.getGame().getItemManager().playerJoinTeamEquip(e.player, Teams.SPECTATOR)
     }
     @EventHandler
     private fun onPlayerQuit(e : PlayerQuitEvent) {

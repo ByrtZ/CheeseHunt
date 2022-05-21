@@ -1,7 +1,7 @@
 package me.byrt.cheesehunt.command
 
 import me.byrt.cheesehunt.Main
-import me.byrt.cheesehunt.manager.Team
+import me.byrt.cheesehunt.manager.Teams
 
 import cloud.commandframework.annotations.Argument
 import cloud.commandframework.annotations.CommandDescription
@@ -18,8 +18,8 @@ class JoinTeam : BaseCommand {
     @CommandMethod("jointeam <team> <player>")
     @CommandDescription("Puts the specified player on the specified team.")
     @CommandPermission("cheesehunt.jointeam")
-    fun joinTeam(sender : Player, @Argument("team") team : Team, @Argument("player") player : Player) {
-        if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Team.RED && team == Team.RED || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Team.BLUE && team == Team.BLUE || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Team.SPECTATOR && team == Team.SPECTATOR) {
+    fun joinTeam(sender : Player, @Argument("team") team : Teams, @Argument("player") player : Player) {
+        if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED && team == Teams.RED || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE && team == Teams.BLUE || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.SPECTATOR && team == Teams.SPECTATOR) {
             sender.sendMessage(Component.text("This player is already on team $team.").color(NamedTextColor.RED))
         } else {
             sender.sendMessage(Component.text("Attempting to add ${player.name} to $team...").color(NamedTextColor.GRAY))

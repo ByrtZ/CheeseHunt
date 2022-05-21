@@ -37,12 +37,12 @@ class PlayerManager(private var game : Game) {
     private fun giveItems(player: Player) {
         when(game.getRoundState()) {
             RoundState.ROUND_ONE -> {
-                if(game.getTeamManager().getPlayerTeam(player.uniqueId) != Team.SPECTATOR) {
+                if(game.getTeamManager().getPlayerTeam(player.uniqueId) != Teams.SPECTATOR) {
                     player.inventory.addItem(ItemStack(Material.SPONGE, 4))
                 }
             }
             RoundState.ROUND_TWO -> {
-                if(game.getTeamManager().getPlayerTeam(player.uniqueId) != Team.SPECTATOR) {
+                if(game.getTeamManager().getPlayerTeam(player.uniqueId) != Teams.SPECTATOR) {
                     player.inventory.addItem(ItemStack(Material.STONE_HOE, 1))
                 }
             }
@@ -66,7 +66,7 @@ class PlayerManager(private var game : Game) {
 
     fun teleportPlayersToGame() {
         Bukkit.getOnlinePlayers().stream().filter { player: Player? -> player?.let {
-            Main.getGame().getTeamManager().getPlayerTeam(it.uniqueId) } != Team.SPECTATOR}
+            Main.getGame().getTeamManager().getPlayerTeam(it.uniqueId) } != Teams.SPECTATOR}
                 .forEach{ player: Player -> teleportPlayers(player) }
     }
 
@@ -100,7 +100,7 @@ class PlayerManager(private var game : Game) {
 
     fun setSpectatorsGameMode() {
         Bukkit.getOnlinePlayers().stream().filter { player: Player? -> player?.let {
-            Main.getGame().getTeamManager().getPlayerTeam(it.uniqueId) } == Team.SPECTATOR}
+            Main.getGame().getTeamManager().getPlayerTeam(it.uniqueId) } == Teams.SPECTATOR}
             .forEach{ player: Player -> player.gameMode = GameMode.SPECTATOR }
     }
 }

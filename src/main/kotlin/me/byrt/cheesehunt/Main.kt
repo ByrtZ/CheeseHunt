@@ -30,11 +30,12 @@ class Main : JavaPlugin() {
         setupCommands()
         setupEventListeners()
         game.getInfoBoardManager().buildScoreboard()
+        game.getTeamManager().constructScoreboardTeams()
     }
 
     override fun onDisable() {
-        logger.info("Cleaning up...")
         game.cleanUp()
+        logger.info("Cleaning up...")
     }
 
     private fun setupCommands() {

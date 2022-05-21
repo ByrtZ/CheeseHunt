@@ -14,9 +14,9 @@ import org.bukkit.inventory.meta.LeatherArmorMeta
 
 @Suppress("unused")
 class ItemManager(private val game : Game) {
-    fun playerJoinTeamEquip(player : Player, team : Team) {
+    fun playerJoinTeamEquip(player : Player, team : Teams) {
         when(team) {
-            Team.RED -> {
+            Teams.RED -> {
                 val teamABoots = ItemStack(Material.LEATHER_BOOTS)
                 val teamABootsMeta: ItemMeta = teamABoots.itemMeta
                 teamABootsMeta.displayName(Component.text("Red Team Boots").color(NamedTextColor.RED).decoration(TextDecoration.ITALIC, false))
@@ -28,7 +28,7 @@ class ItemManager(private val game : Game) {
                 teamABoots.itemMeta = lm
                 player.inventory.boots = teamABoots
             }
-            Team.BLUE -> {
+            Teams.BLUE -> {
                 val teamBBoots = ItemStack(Material.LEATHER_BOOTS)
                 val teamBBootsMeta: ItemMeta = teamBBoots.itemMeta
                 teamBBootsMeta.displayName(Component.text("Blue Team Boots").color(NamedTextColor.BLUE).decoration(TextDecoration.ITALIC, false))
@@ -40,7 +40,7 @@ class ItemManager(private val game : Game) {
                 teamBBoots.itemMeta = lm
                 player.inventory.boots = teamBBoots
             }
-            Team.SPECTATOR -> {
+            Teams.SPECTATOR -> {
                 val spectatorBoots = ItemStack(Material.LEATHER_BOOTS)
                 val spectatorBootsMeta: ItemMeta = spectatorBoots.itemMeta
                 spectatorBootsMeta.displayName(Component.text("Spectator Boots").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false))

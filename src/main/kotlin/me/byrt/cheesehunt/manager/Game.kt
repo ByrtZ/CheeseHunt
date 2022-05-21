@@ -116,8 +116,7 @@ class Game(private val plugin : Main) {
     }
 
     fun cleanUp() {
-        playerManager.clearAllItems()
-        blockManager.resetBarriers()
+        teamManager.destroyDisplayTeams()
         infoBoardManager.destroyScoreboard()
     }
 }

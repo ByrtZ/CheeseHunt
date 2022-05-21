@@ -8,7 +8,6 @@ import org.bukkit.Material
 import org.bukkit.entity.ArmorStand
 import org.bukkit.inventory.ItemStack
 
-
 @Suppress("unused")
 class CheeseManager(private val game : Game) {
     private var redTotalCheesePlaced = 0
@@ -21,29 +20,29 @@ class CheeseManager(private val game : Game) {
     private var blueFinishedCollecting = false
     private var uncollectedCheese = ArrayList<Location>()
 
-    fun incrementCheesePlaced(team : Team) {
+    fun incrementCheesePlaced(team : Teams) {
         when(team) {
-            Team.RED -> {
+            Teams.RED -> {
                 redTotalCheesePlaced += 1
             }
-            Team.BLUE -> {
+            Teams.BLUE -> {
                 blueTotalCheesePlaced += 1
             }
-            Team.SPECTATOR -> {
+            Teams.SPECTATOR -> {
                 Main.getPlugin().logger.info("[INCREMENTING ERROR] Game attempted to increment cheese placed for spectators.")
             }
         }
     }
 
-    fun incrementCheeseCollected(team : Team) {
+    fun incrementCheeseCollected(team : Teams) {
         when(team) {
-            Team.RED -> {
+            Teams.RED -> {
                 redTotalCheeseCollected += 1
             }
-            Team.BLUE -> {
+            Teams.BLUE -> {
                 blueTotalCheeseCollected += 1
             }
-            Team.SPECTATOR -> {
+            Teams.SPECTATOR -> {
                 Main.getPlugin().logger.info("[INCREMENTING ERROR] Game attempted to increment cheese collected for specators.")
             }
         }
@@ -66,6 +65,9 @@ class CheeseManager(private val game : Game) {
                         cheeseMarker?.isMarker = true
                         cheeseMarker?.equipment?.helmet = ItemStack(Material.SPONGE)
                         cheeseMarker?.scoreboardTags?.add("uncollectedCheese")
+                        if (cheeseMarker != null) {
+                            game.getTeamManager().getUncollectedCheeseDisplayTeam().addEntity(cheeseMarker)
+                        }
                     }
                 }
             }
@@ -87,6 +89,9 @@ class CheeseManager(private val game : Game) {
                         cheeseMarker?.isMarker = true
                         cheeseMarker?.equipment?.helmet = ItemStack(Material.SPONGE)
                         cheeseMarker?.scoreboardTags?.add("uncollectedCheese")
+                        if (cheeseMarker != null) {
+                            game.getTeamManager().getUncollectedCheeseDisplayTeam().addEntity(cheeseMarker)
+                        }
                     }
                 }
             }
@@ -94,13 +99,13 @@ class CheeseManager(private val game : Game) {
     }
 
     fun clearUnmarkedCheeseMarkers() {
-        Main.getPlugin().logger.info("Removing all marked cheese markers and uncollected cheese blocks.")
+        Main.getPlugin().logger.info("[INFO] Removing all marked cheese markers and uncollected cheese blocks.")
         for(marker in Bukkit.getWorld("Cheese")?.getEntitiesByClass(ArmorStand::class.java)!!) {
-            Main.getPlugin().logger.info("Marker removed.")
+            Main.getPlugin().logger.info("[INFO] Marker removed.")
             marker.remove()
         }
         for(cheese in uncollectedCheese) {
-            Main.getPlugin().logger.info("Cheese block removed.")
+            Main.getPlugin().logger.info("[INFO] Cheese block removed.")
             cheese.block.type = Material.AIR
         }
     }

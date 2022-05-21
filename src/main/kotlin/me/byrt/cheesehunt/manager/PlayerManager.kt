@@ -14,6 +14,7 @@ class PlayerManager(private var game : Game) {
     private val blueRoundOneSpawn = Location(Main.getPlugin().server.getWorld("Cheese"), -63.0, -43.0, 38.5, 0.0f, 0.0f)
     private val redRoundTwoSpawn = Location(Main.getPlugin().server.getWorld("Cheese"), -63.0, -52.0, 77.5, 180.0f, 0.0f)
     private val blueRoundTwoSpawn = Location(Main.getPlugin().server.getWorld("Cheese"), 17.0, -52.0, 77.5, 180.0f, 0.0f)
+    private val spawn = Location(Main.getPlugin().server.getWorld("Cheese"), 0.5, -52.0 ,0.5, 0.0f, 0.0f)
 
     fun setPlayersNotFlying() {
         Bukkit.getOnlinePlayers().stream().filter { player: Player -> player.allowFlight }.forEach {
@@ -63,7 +64,7 @@ class PlayerManager(private var game : Game) {
         }
     }
 
-    fun teleportAllPlayers() {
+    fun teleportPlayersToGame() {
         Bukkit.getOnlinePlayers().stream().filter { player: Player? -> player?.let {
             Main.getGame().getTeamManager().getPlayerTeam(it.uniqueId) } != Team.SPECTATOR}
                 .forEach{ player: Player -> teleportPlayers(player) }
@@ -88,6 +89,12 @@ class PlayerManager(private var game : Game) {
             }
         } else {
             Main.getPlugin().logger.info("[TELEPORTING ERROR] Something weird happened when trying to teleport players")
+        }
+    }
+
+    fun teleportPlayersToSpawn() {
+        for(player in Bukkit.getOnlinePlayers()) {
+            player.teleport(spawn)
         }
     }
 

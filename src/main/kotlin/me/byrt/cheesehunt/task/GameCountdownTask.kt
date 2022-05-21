@@ -268,17 +268,13 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
 
         // Game end cycle
         if (game.getGameState() == GameState.GAME_END && game.getTimerState() == TimerState.ACTIVE) {
-            if(timeLeft == 80 || timeLeft == 78) {
-                if(timeLeft == 80 && !game.getCheeseManager().hasRedFinishedCollecting() || !game.getCheeseManager().hasBlueFinishedCollecting()) {
+            if(timeLeft == 80) {
+                if(!game.getCheeseManager().hasRedFinishedCollecting() || !game.getCheeseManager().hasBlueFinishedCollecting()) {
                     for(player in Bukkit.getOnlinePlayers()) {
                         player.sendMessage(Component.text("The game ended with uncollected cheese...").color(NamedTextColor.GOLD))
-                    }
-                }
-                if(timeLeft == 78 && !game.getCheeseManager().hasRedFinishedCollecting() || !game.getCheeseManager().hasBlueFinishedCollecting()) {
-                    for(player in Bukkit.getOnlinePlayers()) {
                         player.sendMessage(Component.text("Now showing all uncollected cheese.").color(NamedTextColor.GOLD))
+                        game.getCheeseManager().markUncollectedCheese()
                     }
-                    game.getCheeseManager().markUncollectedCheese()
                 }
             }
             if(timeLeft == 70) {
@@ -302,6 +298,7 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
                 }
                 game.getBlockManager().resetBarriers()
                 game.getPlayerManager().clearAllItems()
+                game.getPlayerManager().teleportPlayersToSpawn()
                 if(!game.getCheeseManager().hasRedFinishedCollecting() || !game.getCheeseManager().hasBlueFinishedCollecting()) {
                     game.getCheeseManager().clearUnmarkedCheeseMarkers()
                 }

@@ -107,7 +107,7 @@ class Game(private val plugin : Main) {
         playerManager.setSpectatorsGameMode()
         playerManager.setPlayersNotFlying()
         playerManager.clearCheese()
-        playerManager.teleportAllPlayers()
+        playerManager.teleportPlayersToGame()
     }
 
     private fun startRound() {

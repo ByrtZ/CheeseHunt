@@ -34,8 +34,8 @@ class Main : JavaPlugin() {
     }
 
     override fun onDisable() {
-        game.cleanUp()
         logger.info("Cleaning up...")
+        game.cleanUp()
     }
 
     private fun setupCommands() {

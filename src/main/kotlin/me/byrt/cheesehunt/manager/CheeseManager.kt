@@ -2,6 +2,13 @@ package me.byrt.cheesehunt.manager
 
 import me.byrt.cheesehunt.Main
 
+import org.bukkit.Bukkit
+import org.bukkit.Location
+import org.bukkit.Material
+import org.bukkit.entity.ArmorStand
+import org.bukkit.inventory.ItemStack
+
+
 @Suppress("unused")
 class CheeseManager(private val game : Game) {
     private var redTotalCheesePlaced = 0
@@ -12,6 +19,7 @@ class CheeseManager(private val game : Game) {
     private var blueFinishedPlacing = false
     private var redFinishedCollecting = false
     private var blueFinishedCollecting = false
+    private var uncollectedCheese = ArrayList<Location>()
 
     fun incrementCheesePlaced(team : Team) {
         when(team) {
@@ -38,6 +46,62 @@ class CheeseManager(private val game : Game) {
             Team.SPECTATOR -> {
                 Main.getPlugin().logger.info("[INCREMENTING ERROR] Game attempted to increment cheese collected for specators.")
             }
+        }
+    }
+
+    fun markUncollectedCheese() {
+        for (x in 0..32) { // Scan Red arena for uncollected cheese and mark them
+            for (y in -53..-39) {
+                for(z in 36..73) {
+                    if(Bukkit.getWorld("Cheese")?.getBlockAt(x, y, z)?.type == Material.SPONGE) {
+                        Main.getPlugin().logger.info("[RED ARENA: UNCOLLECTED CHEESE] Found at $x, $y, $z")
+                        uncollectedCheese.add(Location(Bukkit.getWorld("Cheese"), x.toDouble(), y.toDouble(), z.toDouble()))
+                        val cheeseMarker : ArmorStand? = Bukkit.getWorld("Cheese")?.spawn(
+                            Location(Bukkit.getWorld("Cheese"), x.toDouble() + 0.5, y.toDouble() - 1.2, z.toDouble() + 0.5),
+                            ArmorStand::class.java
+                        )
+                        cheeseMarker?.setGravity(false)
+                        cheeseMarker?.isInvisible = true
+                        cheeseMarker?.isGlowing = true
+                        cheeseMarker?.isMarker = true
+                        cheeseMarker?.equipment?.helmet = ItemStack(Material.SPONGE)
+                        cheeseMarker?.scoreboardTags?.add("uncollectedCheese")
+                    }
+                }
+            }
+        }
+
+        for (x in -79..-48) { // Scan Blue arena for uncollected cheese and mark them
+            for (y in -53..-39) {
+                for(z in 36..73) {
+                    if(Bukkit.getWorld("Cheese")?.getBlockAt(x, y, z)?.type == Material.SPONGE) {
+                        Main.getPlugin().logger.info("[BLUE ARENA: UNCOLLECTED CHEESE] Found at $x, $y, $z")
+                        uncollectedCheese.add(Location(Bukkit.getWorld("Cheese"), x.toDouble(), y.toDouble(), z.toDouble()))
+                        val cheeseMarker : ArmorStand? = Bukkit.getWorld("Cheese")?.spawn(
+                            Location(Bukkit.getWorld("Cheese"), x.toDouble() + 0.5, y.toDouble() - 1.2, z.toDouble() + 0.5),
+                            ArmorStand::class.java
+                        )
+                        cheeseMarker?.setGravity(false)
+                        cheeseMarker?.isInvisible = true
+                        cheeseMarker?.isGlowing = true
+                        cheeseMarker?.isMarker = true
+                        cheeseMarker?.equipment?.helmet = ItemStack(Material.SPONGE)
+                        cheeseMarker?.scoreboardTags?.add("uncollectedCheese")
+                    }
+                }
+            }
+        }
+    }
+
+    fun clearUnmarkedCheeseMarkers() {
+        Main.getPlugin().logger.info("Removing all marked cheese markers and uncollected cheese blocks.")
+        for(marker in Bukkit.getWorld("Cheese")?.getEntitiesByClass(ArmorStand::class.java)!!) {
+            Main.getPlugin().logger.info("Marker removed.")
+            marker.remove()
+        }
+        for(cheese in uncollectedCheese) {
+            Main.getPlugin().logger.info("Cheese block removed.")
+            cheese.block.type = Material.AIR
         }
     }
 

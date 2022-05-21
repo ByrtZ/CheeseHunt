@@ -50,7 +50,7 @@ class Game(private val plugin : Main) {
             }
             GameState.GAME_END -> {
                 setTimerState(TimerState.ACTIVE)
-                gameCountdownTask.setTimeLeft(35)
+                gameCountdownTask.setTimeLeft(90)
             }
         }
     }

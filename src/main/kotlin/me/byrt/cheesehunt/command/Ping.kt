@@ -14,7 +14,6 @@ import org.bukkit.entity.Player
 @Suppress("unused")
 class Ping : BaseCommand {
     private val pingSound: Sound = Sound.sound(Key.key("entity.experience_orb.pickup"), Sound.Source.MASTER, 1f, 1f)
-
     @CommandMethod("ping")
     @CommandDescription("Returns the executing player's ping")
     fun start(sender : Player) {

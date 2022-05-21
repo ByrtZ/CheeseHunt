@@ -266,14 +266,45 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
             }
         }
 
-        // Game end reaching zero
+        // Game end cycle
         if (game.getGameState() == GameState.GAME_END && game.getTimerState() == TimerState.ACTIVE) {
+            if(timeLeft == 80 || timeLeft == 78) {
+                if(timeLeft == 80 && !game.getCheeseManager().hasRedFinishedCollecting() || !game.getCheeseManager().hasBlueFinishedCollecting()) {
+                    for(player in Bukkit.getOnlinePlayers()) {
+                        player.sendMessage(Component.text("The game ended with uncollected cheese...").color(NamedTextColor.GOLD))
+                    }
+                }
+                if(timeLeft == 78 && !game.getCheeseManager().hasRedFinishedCollecting() || !game.getCheeseManager().hasBlueFinishedCollecting()) {
+                    for(player in Bukkit.getOnlinePlayers()) {
+                        player.sendMessage(Component.text("Now showing all uncollected cheese.").color(NamedTextColor.GOLD))
+                    }
+                    game.getCheeseManager().markUncollectedCheese()
+                }
+            }
+            if(timeLeft == 70) {
+                for(player in Bukkit.getOnlinePlayers()) {
+                    player.sendMessage(Component.text("Team Cheese Collections:").decoration(TextDecoration.BOLD, true))
+                }
+            }
+            if(timeLeft == 68) {
+                for(player in Bukkit.getOnlinePlayers()) {
+                    player.sendMessage(Component.text("Red Team ").color(NamedTextColor.RED)
+                        .append(Component.text("collected ${game.getCheeseManager().getRedCheeseCollected()}/${game.getCheeseManager().getBlueCheesePlaced()} cheese.").color(NamedTextColor.WHITE))
+                    )
+                    player.sendMessage(Component.text("Blue Team ").color(NamedTextColor.BLUE)
+                        .append(Component.text("collected ${game.getCheeseManager().getBlueCheeseCollected()}/${game.getCheeseManager().getRedCheesePlaced()} cheese.").color(NamedTextColor.WHITE))
+                    )
+                }
+            }
             if (timeLeft <= 0) {
                 for (player in Bukkit.getOnlinePlayers()) {
-                    player.sendMessage(Component.text("Thank you for playing! The server will be restarting shortly").color(NamedTextColor.YELLOW))
+                    player.sendMessage(Component.text("Thank you for playing! The server will be restarting shortly.").color(NamedTextColor.YELLOW))
                 }
                 game.getBlockManager().resetBarriers()
                 game.getPlayerManager().clearAllItems()
+                if(!game.getCheeseManager().hasRedFinishedCollecting() || !game.getCheeseManager().hasBlueFinishedCollecting()) {
+                    game.getCheeseManager().clearUnmarkedCheeseMarkers()
+                }
                 cancel()
             }
         }

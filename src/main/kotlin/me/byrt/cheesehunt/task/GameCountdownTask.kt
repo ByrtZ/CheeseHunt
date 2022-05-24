@@ -268,7 +268,7 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
             }
             if(timeLeft == 70) {
                 for(player in Bukkit.getOnlinePlayers()) {
-                    player.sendMessage(Component.text("Team Cheese Collections:").decoration(TextDecoration.BOLD, true))
+                    player.sendMessage(Component.text("\nTeam Cheese Collections:").decoration(TextDecoration.BOLD, true))
                 }
             }
             if(timeLeft == 68) {
@@ -283,7 +283,7 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
             }
             if(timeLeft == 62) {
                 for(player in Bukkit.getOnlinePlayers()) {
-                    player.sendMessage(Component.text("Individual Cheese Collections:").decoration(TextDecoration.BOLD, true))
+                    player.sendMessage(Component.text("\nIndividual Cheese Collections:").decoration(TextDecoration.BOLD, true))
                 }
             }
             if(timeLeft == 60) {

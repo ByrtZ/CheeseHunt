@@ -16,6 +16,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockDropItemEvent
 import org.bukkit.inventory.ItemStack
+
 import java.time.Duration
 
 @Suppress("unused")
@@ -54,12 +55,14 @@ class BlockBreakDropEvent : Listener {
         when(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId)) {
             Teams.RED -> {
                 Main.getGame().getCheeseManager().incrementCheeseCollected(Teams.RED)
+                Main.getGame().getCheeseManager().updateCollectedCheese(player.uniqueId)
             }
             Teams.BLUE -> {
                 Main.getGame().getCheeseManager().incrementCheeseCollected(Teams.BLUE)
+                Main.getGame().getCheeseManager().updateCollectedCheese(player.uniqueId)
             }
             Teams.SPECTATOR -> {
-                Main.getPlugin().logger.info("[INCREMENTING ERROR] ${player.name} was not on team ${Teams.SPECTATOR} when they collected cheese.")
+                Main.getPlugin().logger.info("[INCREMENTING ERROR] ${player.name} was on team ${Teams.SPECTATOR} when they collected cheese.")
             }
         }
     }

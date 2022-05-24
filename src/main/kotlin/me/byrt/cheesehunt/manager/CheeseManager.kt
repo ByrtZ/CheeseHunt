@@ -8,6 +8,10 @@ import org.bukkit.Material
 import org.bukkit.entity.ArmorStand
 import org.bukkit.inventory.ItemStack
 
+import java.util.*
+
+import kotlin.collections.ArrayList
+
 @Suppress("unused")
 class CheeseManager(private val game : Game) {
     private var redTotalCheesePlaced = 0
@@ -19,6 +23,7 @@ class CheeseManager(private val game : Game) {
     private var redFinishedCollecting = false
     private var blueFinishedCollecting = false
     private var uncollectedCheese = ArrayList<Location>()
+    private var playerCollectedCheese = mutableMapOf<UUID, Int>()
 
     fun incrementCheesePlaced(team : Teams) {
         when(team) {
@@ -108,6 +113,19 @@ class CheeseManager(private val game : Game) {
             Main.getPlugin().logger.info("[INFO] Cheese block removed.")
             cheese.block.type = Material.AIR
         }
+    }
+
+    fun updateCollectedCheese(uuid : UUID) {
+        playerCollectedCheese.putIfAbsent(uuid, 0)
+        playerCollectedCheese[uuid] = (playerCollectedCheese[uuid]?.plus(1)) as Int
+    }
+
+    fun getUnsortedCheeseCollectedMap() : MutableMap<UUID, Int> {
+        return playerCollectedCheese
+    }
+
+    fun getSortedCollectedCheeseMap(): Map<UUID, Int> {
+        return playerCollectedCheese.toList().sortedBy { (_, int) -> int }.reversed().toMap()
     }
 
     fun getRedCheesePlaced() : Int {

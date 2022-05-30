@@ -7,7 +7,7 @@ import org.bukkit.event.entity.EntityDamageEvent
 @Suppress("unused")
 class DamageEvent : Listener {
     @EventHandler
-    private fun onMagmaDamage(e : EntityDamageEvent) {
+    private fun onDamage(e : EntityDamageEvent) {
         if(e.cause == EntityDamageEvent.DamageCause.HOT_FLOOR
             || e.cause == EntityDamageEvent.DamageCause.SUFFOCATION
             || e.cause == EntityDamageEvent.DamageCause.CRAMMING

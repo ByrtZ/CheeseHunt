@@ -18,7 +18,6 @@ import org.reflections.Reflections
 
 import java.util.*
 import java.util.function.Consumer
-import java.util.function.Function
 
 private lateinit var game : Game
 
@@ -40,11 +39,9 @@ class Main : JavaPlugin() {
 
     private fun setupCommands() {
         val commandManager: PaperCommandManager<CommandSender> = try {
-            PaperCommandManager(
+            PaperCommandManager.createNative(
                 this,
-                CommandExecutionCoordinator.simpleCoordinator(),
-                Function.identity(),
-                Function.identity()
+                CommandExecutionCoordinator.simpleCoordinator()
             )
         } catch (e: Exception) {
             logger.severe("Failed to initialize the command manager")
@@ -54,8 +51,9 @@ class Main : JavaPlugin() {
 
         commandManager.registerAsynchronousCompletions()
         commandManager.registerBrigadier()
+
         // Thanks broccolai <3 https://github.com/broccolai/tickets/commit/e8c227abc298d1a34094708a24601d006ec25937
-        commandManager.setCommandSuggestionProcessor { context, strings ->
+        commandManager.commandSuggestionProcessor { context, strings ->
             var input: String = if (context.inputQueue.isEmpty()) {
                 ""
             } else {
@@ -71,7 +69,6 @@ class Main : JavaPlugin() {
             }
             suggestions
         }
-
 
         val reflections = Reflections("me.byrt.cheesehunt.command")
         val commands = reflections.getSubTypesOf(BaseCommand::class.java)
@@ -98,9 +95,10 @@ class Main : JavaPlugin() {
                 val instance = listener.getConstructor().newInstance()
                 server.pluginManager.registerEvents(instance, this)
             } catch (e: java.lang.Exception) {
-                e.printStackTrace()
+                    e.printStackTrace()
+                }
             }
-        })
+        )
     }
 
     companion object {

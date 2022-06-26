@@ -17,7 +17,6 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockDropItemEvent
-import org.bukkit.inventory.ItemStack
 
 import java.time.Duration
 
@@ -40,7 +39,7 @@ class BlockBreakDropEvent : Listener {
 
     private fun announcePlayerCollectedCheese(player : Player, collector : Player, blockLoc : Location) {
         if(player == collector) {
-            collector.inventory.addItem(ItemStack(Material.SPONGE, 1))
+            Main.getGame().getItemManager().givePlayerCheese(collector)
             collector.world.spawnParticle(Particle.VILLAGER_HAPPY, blockLoc.x + 0.5, blockLoc.y + 1, blockLoc.z + 0.5, 20, 1.0, 1.0, 1.0, 0.15)
             collector.sendMessage(Component.text("[")
                 .append(Component.text("▶").color(NamedTextColor.YELLOW))

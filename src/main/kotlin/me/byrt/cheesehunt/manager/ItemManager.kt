@@ -56,11 +56,20 @@ class ItemManager(private val game : Game) {
     }
 
     fun givePlayerCheese(player : Player) {
-        val cheese = ItemStack(Material.SPONGE, 4)
-        val cheeseMeta: ItemMeta = cheese.itemMeta
-        cheeseMeta.displayName(Component.text("Cheese").color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false))
-        cheese.itemMeta = cheeseMeta
-        player.inventory.addItem(cheese)
+        if(game.getRoundState() == RoundState.ROUND_ONE) {
+            val cheese = ItemStack(Material.SPONGE, 4)
+            val cheeseMeta: ItemMeta = cheese.itemMeta
+            cheeseMeta.displayName(Component.text("Cheese").color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false))
+            cheese.itemMeta = cheeseMeta
+            player.inventory.addItem(cheese)
+        }
+        if(game.getRoundState() == RoundState.ROUND_TWO) {
+            val cheese = ItemStack(Material.SPONGE, 1)
+            val cheeseMeta: ItemMeta = cheese.itemMeta
+            cheeseMeta.displayName(Component.text("Cheese").color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false))
+            cheese.itemMeta = cheeseMeta
+            player.inventory.addItem(cheese)
+        }
     }
 
     fun givePlayerHoe(player : Player) {

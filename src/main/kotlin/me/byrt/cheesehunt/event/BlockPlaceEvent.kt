@@ -33,10 +33,18 @@ class BlockPlaceEvent : Listener {
 
     private fun announcePlayerPlacedCheese(player : Player, placer : Player) {
         if(player == placer) {
-            placer.sendMessage(Component.text("You placed a piece of cheese!").color(NamedTextColor.YELLOW))
+            placer.sendMessage(Component.text("[")
+                .append(Component.text("►").color(NamedTextColor.YELLOW))
+                .append(Component.text("] "))
+                .append(Component.text("You placed a piece of cheese!").color(NamedTextColor.GREEN))
+            )
             placer.playSound(placer.location, "entity.wandering_trader.yes", 1f, 1f)
         } else {
-            player.sendMessage(Component.text("${placer.name} placed a piece of cheese!").color(NamedTextColor.YELLOW))
+            player.sendMessage(Component.text("[")
+                .append(Component.text("►").color(NamedTextColor.YELLOW))
+                .append(Component.text("] "))
+                .append(Component.text("${placer.name} placed a piece of cheese!").color(NamedTextColor.YELLOW))
+            )
             if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED && Main.getGame().getTeamManager().getPlayerTeam(placer.uniqueId) == Teams.RED || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE && Main.getGame().getTeamManager().getPlayerTeam(placer.uniqueId) == Teams.BLUE) {
                 player.playSound(player.location, "entity.wandering_trader.yes", 1f, 1f)
             } else if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED && Main.getGame().getTeamManager().getPlayerTeam(placer.uniqueId) == Teams.BLUE || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE && Main.getGame().getTeamManager().getPlayerTeam(placer.uniqueId) == Teams.RED) {
@@ -62,17 +70,41 @@ class BlockPlaceEvent : Listener {
     private fun checkCheesePlaced() {
         if(!Main.getGame().getCheeseManager().hasRedFinishedPlacing() && Main.getGame().getTeamManager().getRedTeam().size.times(4) == Main.getGame().getCheeseManager().getRedCheesePlaced()) {
             Main.getGame().getCheeseManager().setRedFinishedPlacing(true)
-            for(player in Bukkit.getOnlinePlayers()) { player.sendMessage(Component.text("Red team have placed all their cheese!").color(NamedTextColor.GREEN)) }
+            for(player in Bukkit.getOnlinePlayers()) {
+                player.sendMessage(Component.text("[")
+                .append(Component.text("►").color(NamedTextColor.YELLOW))
+                .append(Component.text("] "))
+                .append(Component.text("Red team placed all their cheese!").color(NamedTextColor.AQUA))
+                )
+            }
             if(Main.getGame().getCheeseManager().hasRedFinishedPlacing() && Main.getGame().getCheeseManager().hasBlueFinishedPlacing()) {
-                for(player in Bukkit.getOnlinePlayers()) { player.sendMessage(Component.text("All teams have placed their cheese!").color(NamedTextColor.GREEN)) }
+                for(player in Bukkit.getOnlinePlayers()) {
+                    player.sendMessage(Component.text("[")
+                    .append(Component.text("►").color(NamedTextColor.YELLOW))
+                    .append(Component.text("] "))
+                    .append(Component.text("All teams placed their cheese!").color(NamedTextColor.AQUA))
+                    )
+                }
                 Main.getGame().getGameCountdownTask().setTimeLeft(0)
             }
         }
         if(!Main.getGame().getCheeseManager().hasBlueFinishedPlacing() && Main.getGame().getTeamManager().getBlueTeam().size.times(4) == Main.getGame().getCheeseManager().getBlueCheesePlaced()) {
             Main.getGame().getCheeseManager().setBlueFinishedPlacing(true)
-            for(player in Bukkit.getOnlinePlayers()) { player.sendMessage(Component.text("Blue team have placed all their cheese!").color(NamedTextColor.GREEN)) }
+            for(player in Bukkit.getOnlinePlayers()) {
+                player.sendMessage(Component.text("[")
+                    .append(Component.text("►").color(NamedTextColor.YELLOW))
+                    .append(Component.text("] "))
+                    .append(Component.text("Blue team placed all their cheese!").color(NamedTextColor.AQUA))
+                )
+            }
             if(Main.getGame().getCheeseManager().hasRedFinishedPlacing() && Main.getGame().getCheeseManager().hasBlueFinishedPlacing()) {
-                for(player in Bukkit.getOnlinePlayers()) { player.sendMessage(Component.text("All teams have placed their cheese!").color(NamedTextColor.GREEN)) }
+                for(player in Bukkit.getOnlinePlayers()) {
+                    player.sendMessage(Component.text("[")
+                        .append(Component.text("►").color(NamedTextColor.YELLOW))
+                        .append(Component.text("] "))
+                        .append(Component.text("All the cheese has been placed, get ready to hunt!").color(NamedTextColor.AQUA))
+                    )
+                }
                 Main.getGame().getGameCountdownTask().setTimeLeft(0)
             }
         }

@@ -260,7 +260,7 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
             if(timeLeft == 80) {
                 if(!game.getCheeseManager().hasRedFinishedCollecting() || !game.getCheeseManager().hasBlueFinishedCollecting()) {
                     for(player in Bukkit.getOnlinePlayers()) {
-                        player.sendMessage(Component.text("The game ended with uncollected cheese...").color(NamedTextColor.GOLD))
+                        player.sendMessage(Component.text("The game ended with lost cheese...").color(NamedTextColor.GOLD))
                         player.sendMessage(Component.text("Now showing all uncollected cheese.").color(NamedTextColor.GOLD))
                     }
                     game.getCheeseManager().markUncollectedCheese()
@@ -309,7 +309,7 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
             }
             if (timeLeft <= 0) {
                 for (player in Bukkit.getOnlinePlayers()) {
-                    player.sendMessage(Component.text("\nThank you for playing! The server will be restarting shortly\n").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true))
+                    player.sendMessage(Component.text("\nThank you for playing!\nThe server will be restarting shortly.\n").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true))
                 }
                 game.getBlockManager().resetBarriers()
                 game.getPlayerManager().clearAllItems()

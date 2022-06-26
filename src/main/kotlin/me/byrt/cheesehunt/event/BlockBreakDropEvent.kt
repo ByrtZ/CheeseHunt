@@ -213,7 +213,8 @@ class BlockBreakDropEvent : Listener {
     private fun teamWinFireworks(player : Player, teams : Teams) {
         when(teams) {
             Teams.RED -> {
-                val f: Firework = player.world.spawn(player.location, Firework::class.java)
+                val playerLoc = Location(player.world, player.location.x, player.location.y + 1, player.location.z)
+                val f: Firework = player.world.spawn(playerLoc, Firework::class.java)
                 val fm = f.fireworkMeta
                 fm.addEffect(
                     FireworkEffect.builder()
@@ -228,7 +229,8 @@ class BlockBreakDropEvent : Listener {
                 f.detonate()
             }
             Teams.BLUE -> {
-                val f: Firework = player.world.spawn(player.location, Firework::class.java)
+                val playerLoc = Location(player.world, player.location.x, player.location.y + 1, player.location.z)
+                val f: Firework = player.world.spawn(playerLoc, Firework::class.java)
                 val fm = f.fireworkMeta
                 fm.addEffect(
                     FireworkEffect.builder()

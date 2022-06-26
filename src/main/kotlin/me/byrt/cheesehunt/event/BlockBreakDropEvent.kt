@@ -41,7 +41,7 @@ class BlockBreakDropEvent : Listener {
     private fun announcePlayerCollectedCheese(player : Player, collector : Player, blockLoc : Location) {
         if(player == collector) {
             collector.inventory.addItem(ItemStack(Material.SPONGE, 1))
-            collector.world.spawnParticle(Particle.VILLAGER_HAPPY, blockLoc.x + 0.5, blockLoc.y + 1, blockLoc.z + 0.5, 40, 1.0, 1.0, 1.0, 0.15)
+            collector.world.spawnParticle(Particle.VILLAGER_HAPPY, blockLoc.x + 0.5, blockLoc.y + 1, blockLoc.z + 0.5, 20, 1.0, 1.0, 1.0, 0.15)
             collector.sendMessage(Component.text("[")
                 .append(Component.text("▶").color(NamedTextColor.YELLOW))
                 .append(Component.text("] "))
@@ -113,6 +113,7 @@ class BlockBreakDropEvent : Listener {
                 if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED) {
                     player.playSound(player.location, "ui.toast.challenge_complete", 1f, 1f)
                     if(!Main.getGame().getCheeseManager().hasBlueFinishedCollecting()) {
+                        teamWinFireworks(player, Teams.RED)
                         player.sendMessage(Component.text("\nYour team won the game!\n").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true))
                         player.showTitle(
                             Title.title(
@@ -180,6 +181,7 @@ class BlockBreakDropEvent : Listener {
                 if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE) {
                     player.playSound(player.location, "ui.toast.challenge_complete", 1f, 1f)
                     if(!Main.getGame().getCheeseManager().hasRedFinishedCollecting()) {
+                        teamWinFireworks(player, Teams.BLUE)
                         player.sendMessage(Component.text("\nYour team won the game!\n").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true))
                         player.showTitle(
                             Title.title(
@@ -204,6 +206,44 @@ class BlockBreakDropEvent : Listener {
                     )
                 }
                 Main.getGame().getGameCountdownTask().setTimeLeft(0)
+            }
+        }
+    }
+
+    private fun teamWinFireworks(player : Player, teams : Teams) {
+        when(teams) {
+            Teams.RED -> {
+                val f: Firework = player.world.spawn(player.location, Firework::class.java)
+                val fm = f.fireworkMeta
+                fm.addEffect(
+                    FireworkEffect.builder()
+                        .flicker(false)
+                        .trail(false)
+                        .with(FireworkEffect.Type.BALL)
+                        .withColor(Color.RED)
+                        .build()
+                    )
+                fm.power = 0
+                f.fireworkMeta = fm
+                f.detonate()
+            }
+            Teams.BLUE -> {
+                val f: Firework = player.world.spawn(player.location, Firework::class.java)
+                val fm = f.fireworkMeta
+                fm.addEffect(
+                    FireworkEffect.builder()
+                        .flicker(false)
+                        .trail(false)
+                        .with(FireworkEffect.Type.BALL)
+                        .withColor(Color.RED)
+                        .build()
+                )
+                fm.power = 0
+                f.fireworkMeta = fm
+                f.detonate()
+            }
+            else -> {
+                // This is literally impossible to reach :)
             }
         }
     }

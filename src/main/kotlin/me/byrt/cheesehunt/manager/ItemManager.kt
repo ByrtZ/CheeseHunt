@@ -54,4 +54,22 @@ class ItemManager(private val game : Game) {
             }
         }
     }
+
+    fun givePlayerCheese(player : Player) {
+        val cheese = ItemStack(Material.SPONGE, 4)
+        val cheeseMeta: ItemMeta = cheese.itemMeta
+        cheeseMeta.displayName(Component.text("Cheese").color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false))
+        cheese.itemMeta = cheeseMeta
+        player.inventory.addItem(cheese)
+    }
+
+    fun givePlayerHoe(player : Player) {
+        val cheeseHarvester = ItemStack(Material.STONE_HOE)
+        val cheeseHarvesterMeta: ItemMeta = cheeseHarvester.itemMeta
+        cheeseHarvesterMeta.displayName(Component.text("Cheese Harvester 1000").color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
+        cheeseHarvesterMeta.isUnbreakable = true
+        cheeseHarvesterMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES)
+        cheeseHarvester.itemMeta = cheeseHarvesterMeta
+        player.inventory.addItem(cheeseHarvester)
+    }
 }

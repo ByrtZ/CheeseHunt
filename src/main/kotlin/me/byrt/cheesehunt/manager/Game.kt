@@ -34,14 +34,7 @@ class Game(private val plugin : Main) {
             }
             GameState.IN_GAME -> {
                 setTimerState(TimerState.ACTIVE)
-                when(roundState) {
-                    RoundState.ROUND_ONE -> {
-                        gameCountdownTask.setTimeLeft(120)
-                    }
-                    RoundState.ROUND_TWO -> {
-                        gameCountdownTask.setTimeLeft(180)
-                    }
-                }
+                gameCountdownTask.setTimeLeft(120)
                 startRound()
             }
             GameState.ROUND_END -> {

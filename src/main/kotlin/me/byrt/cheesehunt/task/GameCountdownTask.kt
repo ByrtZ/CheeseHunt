@@ -308,12 +308,11 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
                 }
             }
             if (timeLeft <= 0) {
-                for (player in Bukkit.getOnlinePlayers()) {
-                    player.sendMessage(Component.text("\nThank you for playing!\nThe server will be restarting shortly.\n").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true))
-                }
+                for (player in Bukkit.getOnlinePlayers()) { player.sendMessage(Component.text("\nThank you for playing!\nThe server will be restarting shortly.\n").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true)) }
                 game.getBlockManager().resetBarriers()
                 game.getPlayerManager().clearAllItems()
                 game.getPlayerManager().teleportPlayersToSpawn()
+                game.setTimerState(TimerState.INACTIVE)
                 if(!game.getCheeseManager().hasRedFinishedCollecting() || !game.getCheeseManager().hasBlueFinishedCollecting()) {
                     game.getCheeseManager().clearUnmarkedCheeseMarkers()
                 }

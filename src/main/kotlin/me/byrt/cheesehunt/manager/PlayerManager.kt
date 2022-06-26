@@ -7,7 +7,6 @@ import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.Player
-import org.bukkit.inventory.ItemStack
 
 class PlayerManager(private var game : Game) {
     private val redRoundOneSpawn = Location(Main.getPlugin().server.getWorld("Cheese"), 17.0, -43.0, 38.5, 0.0f, 0.0f)
@@ -38,12 +37,12 @@ class PlayerManager(private var game : Game) {
         when(game.getRoundState()) {
             RoundState.ROUND_ONE -> {
                 if(game.getTeamManager().getPlayerTeam(player.uniqueId) != Teams.SPECTATOR) {
-                    player.inventory.addItem(ItemStack(Material.SPONGE, 4))
+                    game.getItemManager().givePlayerCheese(player)
                 }
             }
             RoundState.ROUND_TWO -> {
                 if(game.getTeamManager().getPlayerTeam(player.uniqueId) != Teams.SPECTATOR) {
-                    player.inventory.addItem(ItemStack(Material.STONE_HOE, 1))
+                    game.getItemManager().givePlayerHoe(player)
                 }
             }
         }

@@ -17,23 +17,25 @@ class Gamemode : BaseCommand {
     @CommandDescription("Puts the executing player into the specified gamemode.")
     @CommandPermission("cheesehunt.gm")
     fun gm(sender : Player, @Argument("mode") mode : Int?) {
-        if(mode == 0) {
-            sender.gameMode = GameMode.SURVIVAL
-            sender.sendMessage(Component.text("You are now in Survival mode.").color(NamedTextColor.YELLOW))
-        }
-        else if(mode == 1) {
-            sender.gameMode = GameMode.CREATIVE
-            sender.sendMessage(Component.text("You are now in Creative mode.").color(NamedTextColor.YELLOW))
-        }
-        else if(mode == 2) {
-            sender.gameMode = GameMode.ADVENTURE
-            sender.sendMessage(Component.text("You are now in Adventure mode.").color(NamedTextColor.YELLOW))
-        }
-        else if(mode == 3) {
-            sender.gameMode = GameMode.SPECTATOR
-            sender.sendMessage(Component.text("You are now in Spectator mode.").color(NamedTextColor.YELLOW))
-        } else {
+        when(mode) {
+            0 -> {
+                sender.gameMode = GameMode.SURVIVAL
+                sender.sendMessage(Component.text("You are now in Survival mode.").color(NamedTextColor.YELLOW))
+            }
+            1 -> {
+                sender.gameMode = GameMode.CREATIVE
+                sender.sendMessage(Component.text("You are now in Creative mode.").color(NamedTextColor.YELLOW))
+            }
+            2 -> {
+                sender.gameMode = GameMode.ADVENTURE
+                sender.sendMessage(Component.text("You are now in Adventure mode.").color(NamedTextColor.YELLOW))
+            }
+            3 -> {
+                sender.gameMode = GameMode.SPECTATOR
+                sender.sendMessage(Component.text("You are now in Spectator mode.").color(NamedTextColor.YELLOW))
+            } else -> {
             sender.sendMessage(Component.text("This gamemode does not exist!").color(NamedTextColor.RED))
+            }
         }
     }
 }

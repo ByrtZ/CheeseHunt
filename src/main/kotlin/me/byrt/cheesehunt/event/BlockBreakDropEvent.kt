@@ -41,7 +41,7 @@ class BlockBreakDropEvent : Listener {
     private fun announcePlayerCollectedCheese(player : Player, collector : Player, blockLoc : Location) {
         if(player == collector) {
             collector.inventory.addItem(ItemStack(Material.SPONGE, 1))
-            collector.world.spawnParticle(Particle.VILLAGER_HAPPY, blockLoc.x + 0.5, blockLoc.y + 1, blockLoc.z + 0.5, 150, 1.0, 1.0, 1.0, 0.15)
+            collector.world.spawnParticle(Particle.VILLAGER_HAPPY, blockLoc.x + 0.5, blockLoc.y + 1, blockLoc.z + 0.5, 40, 1.0, 1.0, 1.0, 0.15)
             collector.sendMessage(Component.text("[")
                 .append(Component.text("▶").color(NamedTextColor.YELLOW))
                 .append(Component.text("] "))

@@ -17,19 +17,13 @@ class AutoTeam : BaseCommand {
     fun autoTeam(sender : Player) {
         var i = 0
         Main.getPlugin().server.onlinePlayers.shuffled().forEach {
-            if (Main.getGame().getTeamManager().isSpectator(it.uniqueId)) {
-                sender.sendMessage(Component.text("Skipped adding ${it.name} as they are spectating.").color(NamedTextColor.GREEN))
-                return
-            }
-
             if (i % 2 == 0) {
                 Main.getGame().getTeamManager().addToTeam(it.uniqueId, Teams.BLUE)
             } else {
                 Main.getGame().getTeamManager().addToTeam(it.uniqueId, Teams.RED)
             }
-
-            sender.sendMessage(Component.text("Automatically put ${it.name} on a team.").color(NamedTextColor.GREEN))
             i++
         }
+        sender.sendMessage(Component.text("Automatically put everyone on a team.").color(NamedTextColor.GREEN))
     }
 }

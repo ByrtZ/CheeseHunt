@@ -48,22 +48,26 @@ class BlockBreakDropEvent : Listener {
             )
             collector.playSound(collector.location, "entity.player.levelup", 1f, 1.5f)
         } else {
+            if(Main.getGame().getTeamManager().getPlayerTeam(collector.uniqueId) == Teams.RED) {
+                player.sendMessage(Component.text("[")
+                    .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                    .append(Component.text("] "))
+                    .append(Component.text(collector.name).color(NamedTextColor.RED))
+                    .append(Component.text(" collected a piece of cheese.")).color(NamedTextColor.WHITE)
+                )
+            } else if(Main.getGame().getTeamManager().getPlayerTeam(collector.uniqueId) == Teams.BLUE) {
+                player.sendMessage(Component.text("[")
+                    .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                    .append(Component.text("] "))
+                    .append(Component.text(collector.name).color(NamedTextColor.BLUE))
+                    .append(Component.text(" collected a piece of cheese.")).color(NamedTextColor.WHITE)
+                )
+            }
+
             if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED && Main.getGame().getTeamManager().getPlayerTeam(collector.uniqueId) == Teams.RED || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE && Main.getGame().getTeamManager().getPlayerTeam(collector.uniqueId) == Teams.BLUE) {
                 player.playSound(player.location, "entity.player.levelup", 1f, 1.5f)
-                player.sendMessage(Component.text("[")
-                    .append(Component.text("▶").color(NamedTextColor.YELLOW))
-                    .append(Component.text("] "))
-                    .append(Component.text(collector.name).color(NamedTextColor.RED)
-                    .append(Component.text(" collected a piece of cheese.")))
-                )
             } else if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED && Main.getGame().getTeamManager().getPlayerTeam(collector.uniqueId) == Teams.BLUE || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE && Main.getGame().getTeamManager().getPlayerTeam(collector.uniqueId) == Teams.RED) {
                 player.playSound(player.location, "entity.wandering_trader.no", 1f, 1f)
-                player.sendMessage(Component.text("[")
-                    .append(Component.text("▶").color(NamedTextColor.YELLOW))
-                    .append(Component.text("] "))
-                    .append(Component.text(collector.name).color(NamedTextColor.BLUE)
-                    .append(Component.text(" collected a piece of cheese.")))
-                )
             }
         }
     }
@@ -109,7 +113,7 @@ class BlockBreakDropEvent : Listener {
                 player.sendMessage(Component.text("[")
                     .append(Component.text("▶").color(NamedTextColor.YELLOW))
                     .append(Component.text("] "))
-                    .append(Component.text("Red team finished collecting their cheese.").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
+                    .append(Component.text("Red team finished collecting their cheese!").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
                 )
                 if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED) {
                     player.playSound(player.location, "ui.toast.challenge_complete", 1f, 1f)
@@ -238,7 +242,7 @@ class BlockBreakDropEvent : Listener {
                         .flicker(false)
                         .trail(false)
                         .with(FireworkEffect.Type.BALL)
-                        .withColor(Color.RED)
+                        .withColor(Color.BLUE)
                         .build()
                 )
                 fm.power = 0

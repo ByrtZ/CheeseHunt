@@ -41,22 +41,26 @@ class BlockPlaceEvent : Listener {
             )
             placer.playSound(placer.location, "entity.wandering_trader.yes", 1f, 1f)
         } else {
+            if(Main.getGame().getTeamManager().getPlayerTeam(placer.uniqueId) == Teams.RED) {
+                player.sendMessage(Component.text("[")
+                    .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                    .append(Component.text("] "))
+                    .append(Component.text(placer.name).color(NamedTextColor.RED))
+                    .append(Component.text(" placed a piece of cheese.")).color(NamedTextColor.WHITE)
+                )
+            } else if(Main.getGame().getTeamManager().getPlayerTeam(placer.uniqueId) == Teams.BLUE) {
+                player.sendMessage(Component.text("[")
+                    .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                    .append(Component.text("] "))
+                    .append(Component.text(placer.name).color(NamedTextColor.BLUE))
+                    .append(Component.text(" placed a piece of cheese.")).color(NamedTextColor.WHITE)
+                )
+            }
+
             if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED && Main.getGame().getTeamManager().getPlayerTeam(placer.uniqueId) == Teams.RED || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE && Main.getGame().getTeamManager().getPlayerTeam(placer.uniqueId) == Teams.BLUE) {
                 player.playSound(player.location, "entity.wandering_trader.yes", 1f, 1f)
-                player.sendMessage(Component.text("[")
-                    .append(Component.text("▶").color(NamedTextColor.YELLOW))
-                    .append(Component.text("] "))
-                    .append(Component.text(placer.name).color(NamedTextColor.RED)
-                    .append(Component.text(" placed a piece of cheese.")))
-                )
             } else if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED && Main.getGame().getTeamManager().getPlayerTeam(placer.uniqueId) == Teams.BLUE || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE && Main.getGame().getTeamManager().getPlayerTeam(placer.uniqueId) == Teams.RED) {
                 player.playSound(player.location, "entity.wandering_trader.no", 1f, 1f)
-                player.sendMessage(Component.text("[")
-                    .append(Component.text("▶").color(NamedTextColor.YELLOW))
-                    .append(Component.text("] "))
-                    .append(Component.text(placer.name).color(NamedTextColor.BLUE)
-                    .append(Component.text(" placed a piece of cheese.")))
-                )
             }
         }
     }

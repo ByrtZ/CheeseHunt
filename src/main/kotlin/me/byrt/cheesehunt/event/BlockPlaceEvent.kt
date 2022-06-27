@@ -6,6 +6,7 @@ import me.byrt.cheesehunt.manager.Teams
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextDecoration
 
 import org.bukkit.*
 import org.bukkit.entity.Firework
@@ -45,14 +46,16 @@ class BlockPlaceEvent : Listener {
                 player.sendMessage(Component.text("[")
                     .append(Component.text("▶").color(NamedTextColor.YELLOW))
                     .append(Component.text("] "))
-                    .append(Component.text("${placer.name} placed a piece of cheese.").color(NamedTextColor.GREEN))
+                    .append(Component.text(placer.name).color(NamedTextColor.RED)
+                    .append(Component.text(" placed a piece of cheese.")))
                 )
             } else if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED && Main.getGame().getTeamManager().getPlayerTeam(placer.uniqueId) == Teams.BLUE || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE && Main.getGame().getTeamManager().getPlayerTeam(placer.uniqueId) == Teams.RED) {
                 player.playSound(player.location, "entity.wandering_trader.no", 1f, 1f)
                 player.sendMessage(Component.text("[")
                     .append(Component.text("▶").color(NamedTextColor.YELLOW))
                     .append(Component.text("] "))
-                    .append(Component.text("${placer.name} placed a piece of cheese.").color(NamedTextColor.RED))
+                    .append(Component.text(placer.name).color(NamedTextColor.BLUE)
+                    .append(Component.text(" placed a piece of cheese.")))
                 )
             }
         }
@@ -79,7 +82,7 @@ class BlockPlaceEvent : Listener {
                 player.sendMessage(Component.text("[")
                 .append(Component.text("▶").color(NamedTextColor.YELLOW))
                 .append(Component.text("] "))
-                .append(Component.text("Red team placed all their cheese!").color(NamedTextColor.AQUA))
+                .append(Component.text("Red team placed all their cheese!").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
                 )
             }
             if(Main.getGame().getCheeseManager().hasRedFinishedPlacing() && Main.getGame().getCheeseManager().hasBlueFinishedPlacing()) {
@@ -87,7 +90,7 @@ class BlockPlaceEvent : Listener {
                     player.sendMessage(Component.text("[")
                     .append(Component.text("▶").color(NamedTextColor.YELLOW))
                     .append(Component.text("] "))
-                    .append(Component.text("All teams placed their cheese!").color(NamedTextColor.AQUA))
+                    .append(Component.text("All cheese has been placed, get ready to cheese hunt!").color(NamedTextColor.AQUA).decoration(TextDecoration.BOLD, true))
                     )
                 }
                 Main.getGame().getGameCountdownTask().setTimeLeft(0)
@@ -99,7 +102,7 @@ class BlockPlaceEvent : Listener {
                 player.sendMessage(Component.text("[")
                     .append(Component.text("▶").color(NamedTextColor.YELLOW))
                     .append(Component.text("] "))
-                    .append(Component.text("Blue team placed all their cheese!").color(NamedTextColor.AQUA))
+                    .append(Component.text("Blue team placed all their cheese!").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
                 )
             }
             if(Main.getGame().getCheeseManager().hasRedFinishedPlacing() && Main.getGame().getCheeseManager().hasBlueFinishedPlacing()) {
@@ -107,7 +110,7 @@ class BlockPlaceEvent : Listener {
                     player.sendMessage(Component.text("[")
                         .append(Component.text("▶").color(NamedTextColor.YELLOW))
                         .append(Component.text("] "))
-                        .append(Component.text("All cheese has been placed, get ready to cheese hunt!").color(NamedTextColor.AQUA))
+                        .append(Component.text("All cheese has been placed, get ready to cheese hunt!").color(NamedTextColor.AQUA).decoration(TextDecoration.BOLD, true))
                     )
                 }
                 Main.getGame().getGameCountdownTask().setTimeLeft(0)

@@ -40,7 +40,7 @@ class BlockBreakDropEvent : Listener {
     private fun announcePlayerCollectedCheese(player : Player, collector : Player, blockLoc : Location) {
         if(player == collector) {
             Main.getGame().getItemManager().givePlayerCheese(collector)
-            collector.world.spawnParticle(Particle.VILLAGER_HAPPY, blockLoc.x + 0.5, blockLoc.y + 1, blockLoc.z + 0.5, 20, 1.0, 1.0, 1.0, 0.15)
+            collector.world.spawnParticle(Particle.VILLAGER_HAPPY, blockLoc.x + 0.5, blockLoc.y + 1, blockLoc.z + 0.5, 10, 1.0, 1.0, 1.0, 0.15)
             collector.sendMessage(Component.text("[")
                 .append(Component.text("▶").color(NamedTextColor.YELLOW))
                 .append(Component.text("] "))
@@ -53,14 +53,16 @@ class BlockBreakDropEvent : Listener {
                 player.sendMessage(Component.text("[")
                     .append(Component.text("▶").color(NamedTextColor.YELLOW))
                     .append(Component.text("] "))
-                    .append(Component.text("${collector.name} collected a piece of cheese.").color(NamedTextColor.GREEN))
+                    .append(Component.text(collector.name).color(NamedTextColor.RED)
+                    .append(Component.text(" collected a piece of cheese.")))
                 )
             } else if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED && Main.getGame().getTeamManager().getPlayerTeam(collector.uniqueId) == Teams.BLUE || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE && Main.getGame().getTeamManager().getPlayerTeam(collector.uniqueId) == Teams.RED) {
                 player.playSound(player.location, "entity.wandering_trader.no", 1f, 1f)
                 player.sendMessage(Component.text("[")
                     .append(Component.text("▶").color(NamedTextColor.YELLOW))
                     .append(Component.text("] "))
-                    .append(Component.text("${collector.name} collected a piece of cheese.").color(NamedTextColor.RED))
+                    .append(Component.text(collector.name).color(NamedTextColor.BLUE)
+                    .append(Component.text(" collected a piece of cheese.")))
                 )
             }
         }
@@ -107,7 +109,7 @@ class BlockBreakDropEvent : Listener {
                 player.sendMessage(Component.text("[")
                     .append(Component.text("▶").color(NamedTextColor.YELLOW))
                     .append(Component.text("] "))
-                    .append(Component.text("Red team finished collecting their cheese.").color(NamedTextColor.GOLD))
+                    .append(Component.text("Red team finished collecting their cheese.").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
                 )
                 if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED) {
                     player.playSound(player.location, "ui.toast.challenge_complete", 1f, 1f)
@@ -145,10 +147,10 @@ class BlockBreakDropEvent : Listener {
             }
             if(Main.getGame().getCheeseManager().hasRedFinishedCollecting() && Main.getGame().getCheeseManager().hasBlueFinishedCollecting()) {
                 for(player in Bukkit.getOnlinePlayers()) {
-                    player.sendMessage(Component.text("[")
+                    player.sendMessage(Component.text("\n[")
                         .append(Component.text("▶").color(NamedTextColor.YELLOW))
                         .append(Component.text("] "))
-                        .append(Component.text("All cheese has been collected!").color(NamedTextColor.AQUA))
+                        .append(Component.text("All cheese has been collected!\n").color(NamedTextColor.AQUA).decoration(TextDecoration.BOLD, true))
                     )
                 }
                 Main.getGame().getGameCountdownTask().setTimeLeft(0)
@@ -160,7 +162,7 @@ class BlockBreakDropEvent : Listener {
                 player.sendMessage(Component.text("[")
                     .append(Component.text("▶").color(NamedTextColor.YELLOW))
                     .append(Component.text("] "))
-                    .append(Component.text("Blue team finished collecting their cheese!").color(NamedTextColor.GOLD))
+                    .append(Component.text("Blue team finished collecting their cheese!").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
                 )
                 if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED && !Main.getGame().getCheeseManager().hasRedFinishedCollecting()) {
                     player.playSound(player.location, "entity.ender_dragon.growl", 1f, 1f)
@@ -201,7 +203,7 @@ class BlockBreakDropEvent : Listener {
                     player.sendMessage(Component.text("\n[")
                         .append(Component.text("▶").color(NamedTextColor.YELLOW))
                         .append(Component.text("] "))
-                        .append(Component.text("All cheese has been collected!\n").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
+                        .append(Component.text("All cheese has been collected!\n").color(NamedTextColor.AQUA).decoration(TextDecoration.BOLD, true))
                     )
                 }
                 Main.getGame().getGameCountdownTask().setTimeLeft(0)

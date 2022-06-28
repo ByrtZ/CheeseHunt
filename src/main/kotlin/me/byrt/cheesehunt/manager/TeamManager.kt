@@ -77,7 +77,7 @@ class TeamManager(private val game : Game) {
         }
     }
 
-    fun constructScoreboardTeams() {
+    fun buildDisplayTeams() {
         redDisplayTeam.color(NamedTextColor.RED)
         redDisplayTeam.prefix(Component.text("").color(NamedTextColor.RED))
         redDisplayTeam.suffix(Component.text("").color(NamedTextColor.WHITE))

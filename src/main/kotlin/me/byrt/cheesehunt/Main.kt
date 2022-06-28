@@ -29,7 +29,7 @@ class Main : JavaPlugin() {
         setupCommands()
         setupEventListeners()
         game.getInfoBoardManager().buildScoreboard()
-        game.getTeamManager().constructScoreboardTeams()
+        game.getTeamManager().buildDisplayTeams()
     }
 
     override fun onDisable() {

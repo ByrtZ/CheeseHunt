@@ -23,8 +23,10 @@ class AutoTeam : BaseCommand {
             Main.getGame().getTeamManager().removeFromTeam(it.uniqueId, Main.getGame().getTeamManager().getPlayerTeam(it.uniqueId))
             if (i % 2 == 0) {
                 Main.getGame().getTeamManager().addToTeam(it.uniqueId, Teams.RED)
+                Main.getGame().getItemManager().playerJoinTeamEquip(it, Teams.RED)
             } else {
                 Main.getGame().getTeamManager().addToTeam(it.uniqueId, Teams.BLUE)
+                Main.getGame().getItemManager().playerJoinTeamEquip(it, Teams.BLUE)
             }
             i++
         }

@@ -88,7 +88,7 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
                         player.sendMessage(Component.text("-----------------------------------------------------").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
                             .append(Component.text(" Items:\n").color(NamedTextColor.WHITE).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.STRIKETHROUGH, false)
                             .append(Component.text(" • You will be given 4 pieces of Cheese to hide in your team's map during Round 1.\n").color(NamedTextColor.WHITE).decoration(TextDecoration.BOLD, false)
-                            .append(Component.text(" • You will be given a Cheese Harvester 1000 to hunt cheese in the enemy's map during Round 2.\n").color(NamedTextColor.WHITE)
+                            .append(Component.text(" • You will be given a Cheese Harvester 1000 to hunt Cheese in the enemy's map during Round 2.\n").color(NamedTextColor.WHITE)
                             .append(Component.text("\n\n\n")
                             .append(Component.text("-----------------------------------------------------").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
                                             )

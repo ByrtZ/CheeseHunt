@@ -41,7 +41,7 @@ class Timer : BaseCommand {
                         sender.sendMessage(Component.text("You cannot pause the timer when the timer is not active!").color(NamedTextColor.RED))
                     } else {
                         Main.getGame().getGameCountdownTask().pauseCountdownTask()
-                        sender.sendMessage(Component.text("You updated the timer state to ${Main.getGame().getTimerState()}").color(NamedTextColor.GRAY))
+                        sender.sendMessage(Component.text("You updated the timer state to ${Main.getGame().getTimerState()}.").color(NamedTextColor.GRAY))
                     }
                 }
                 TimerOptions.RESUME -> {
@@ -49,7 +49,7 @@ class Timer : BaseCommand {
                         sender.sendMessage(Component.text("You cannot resume the timer when it is already active!").color(NamedTextColor.RED))
                     } else {
                         Main.getGame().getGameCountdownTask().resumeCountdownTask()
-                        sender.sendMessage(Component.text("You updated the timer state to ${Main.getGame().getTimerState()}").color(NamedTextColor.GRAY))
+                        sender.sendMessage(Component.text("You updated the timer state to ${Main.getGame().getTimerState()}.").color(NamedTextColor.GRAY))
                     }
                 }
                 TimerOptions.SKIP -> {

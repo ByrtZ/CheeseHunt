@@ -1,11 +1,11 @@
 package me.byrt.cheesehunt.manager
 
 import me.byrt.cheesehunt.Main
+import org.bukkit.*
 
-import org.bukkit.Bukkit
-import org.bukkit.Location
-import org.bukkit.Material
 import org.bukkit.entity.ArmorStand
+import org.bukkit.entity.Firework
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
 import java.util.*
@@ -126,6 +126,46 @@ class CheeseManager(private val game : Game) {
 
     fun getSortedCollectedCheeseMap(): Map<UUID, Int> {
         return playerCollectedCheese.toList().sortedBy { (_, int) -> int }.reversed().toMap()
+    }
+
+    fun teamWinFireworks(player : Player, teams : Teams) {
+        when(teams) {
+            Teams.RED -> {
+                val playerLoc = Location(player.world, player.location.x, player.location.y + 1, player.location.z)
+                val f: Firework = player.world.spawn(playerLoc, Firework::class.java)
+                val fm = f.fireworkMeta
+                fm.addEffect(
+                    FireworkEffect.builder()
+                        .flicker(false)
+                        .trail(false)
+                        .with(FireworkEffect.Type.BALL)
+                        .withColor(Color.RED)
+                        .build()
+                )
+                fm.power = 0
+                f.fireworkMeta = fm
+                f.detonate()
+            }
+            Teams.BLUE -> {
+                val playerLoc = Location(player.world, player.location.x, player.location.y + 1, player.location.z)
+                val f: Firework = player.world.spawn(playerLoc, Firework::class.java)
+                val fm = f.fireworkMeta
+                fm.addEffect(
+                    FireworkEffect.builder()
+                        .flicker(false)
+                        .trail(false)
+                        .with(FireworkEffect.Type.BALL)
+                        .withColor(Color.BLUE)
+                        .build()
+                )
+                fm.power = 0
+                f.fireworkMeta = fm
+                f.detonate()
+            }
+            else -> {
+                // This is literally impossible to reach :)
+            }
+        }
     }
 
     fun getRedCheesePlaced() : Int {

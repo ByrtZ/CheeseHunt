@@ -380,6 +380,92 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
                     )
                 }
             }
+            if(timeLeft == 67) {
+                for(player in Bukkit.getOnlinePlayers()) {
+                    if(game.getCheeseManager().getRedCheeseCollected() > game.getCheeseManager().getBlueCheeseCollected() && !game.getCheeseManager().hasRedFinishedCollecting() && !game.getCheeseManager().hasBlueFinishedCollecting()) {
+                        if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED) {
+                            player.playSound(player.location, "ui.toast.challenge_complete", 1f, 1f)
+                            game.getCheeseManager().teamWinFireworks(player, Teams.RED)
+                            player.sendMessage(Component.text("\nYour team won the game!\n").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true))
+                            player.showTitle(
+                                Title.title(
+                                    Component.text("Your team won the game!").color(NamedTextColor.GREEN),
+                                    Component.text("Well done!").color(NamedTextColor.GREEN),
+                                    Title.Times.times(
+                                        Duration.ofSeconds(1),
+                                        Duration.ofSeconds(5),
+                                        Duration.ofSeconds(1)
+                                    )
+                                )
+                            )
+                        }
+                        if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE) {
+                            player.playSound(player.location, "entity.ender_dragon.growl", 1f, 1f)
+                            player.sendMessage(Component.text("\nYour team lost the game!\n").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true))
+                            player.showTitle(
+                                Title.title(
+                                    Component.text("Your team lost the game!").color(NamedTextColor.RED),
+                                    Component.text("Git gud!").color(NamedTextColor.RED),
+                                    Title.Times.times(
+                                        Duration.ofSeconds(1),
+                                        Duration.ofSeconds(5),
+                                        Duration.ofSeconds(1)
+                                    )
+                                )
+                            )
+                        }
+                    } else if(game.getCheeseManager().getRedCheeseCollected() < game.getCheeseManager().getBlueCheeseCollected() && !game.getCheeseManager().hasRedFinishedCollecting() && !game.getCheeseManager().hasBlueFinishedCollecting()) {
+                        if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE) {
+                            player.playSound(player.location, "ui.toast.challenge_complete", 1f, 1f)
+                            game.getCheeseManager().teamWinFireworks(player, Teams.BLUE)
+                            player.sendMessage(Component.text("\nYour team won the game!\n").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true))
+                            player.showTitle(
+                                Title.title(
+                                    Component.text("Your team won the game!").color(NamedTextColor.GREEN),
+                                    Component.text("Well done!").color(NamedTextColor.GREEN),
+                                    Title.Times.times(
+                                        Duration.ofSeconds(1),
+                                        Duration.ofSeconds(5),
+                                        Duration.ofSeconds(1)
+                                    )
+                                )
+                            )
+                        }
+                        if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED) {
+                            player.playSound(player.location, "entity.ender_dragon.growl", 1f, 1f)
+                            player.sendMessage(Component.text("\nYour team lost the game!\n").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true))
+                            player.showTitle(
+                                Title.title(
+                                    Component.text("Your team lost the game!").color(NamedTextColor.RED),
+                                    Component.text("Git gud!").color(NamedTextColor.RED),
+                                    Title.Times.times(
+                                        Duration.ofSeconds(1),
+                                        Duration.ofSeconds(5),
+                                        Duration.ofSeconds(1)
+                                    )
+                                )
+                            )
+                        }
+                    } else if(game.getCheeseManager().getRedCheeseCollected() == game.getCheeseManager().getBlueCheeseCollected() && !game.getCheeseManager().hasRedFinishedCollecting() && !game.getCheeseManager().hasBlueFinishedCollecting()) {
+                        if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE) {
+                            player.playSound(player.location, "entity.wither.spawn", 1f, 2f)
+                            game.getCheeseManager().teamWinFireworks(player, Teams.BLUE)
+                            player.sendMessage(Component.text("\nNo team won!\n").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, true))
+                            player.showTitle(
+                                Title.title(
+                                    Component.text("No team won the game!").color(NamedTextColor.YELLOW),
+                                    Component.text("It was a draw.").color(NamedTextColor.YELLOW),
+                                    Title.Times.times(
+                                        Duration.ofSeconds(1),
+                                        Duration.ofSeconds(5),
+                                        Duration.ofSeconds(1)
+                                    )
+                                )
+                            )
+                        }
+                    }
+                }
+            }
             if(timeLeft == 62) {
                 for(player in Bukkit.getOnlinePlayers()) {
                     player.sendMessage(Component.text("\nIndividual Cheese Collections:").decoration(TextDecoration.BOLD, true))
@@ -415,7 +501,7 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
                 if(!game.getCheeseManager().hasRedFinishedCollecting() || !game.getCheeseManager().hasBlueFinishedCollecting()) {
                     game.getCheeseManager().clearUnmarkedCheeseMarkers()
                 }
-                cancel()
+                this.cancel()
             }
         }
 

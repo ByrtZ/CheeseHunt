@@ -118,7 +118,7 @@ class BlockBreakDropEvent : Listener {
                 if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED) {
                     player.playSound(player.location, "ui.toast.challenge_complete", 1f, 1f)
                     if(!Main.getGame().getCheeseManager().hasBlueFinishedCollecting()) {
-                        teamWinFireworks(player, Teams.RED)
+                        Main.getGame().getCheeseManager().teamWinFireworks(player, Teams.RED)
                         player.sendMessage(Component.text("\nYour team won the game!\n").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true))
                         player.showTitle(
                             Title.title(
@@ -186,7 +186,7 @@ class BlockBreakDropEvent : Listener {
                 if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE) {
                     player.playSound(player.location, "ui.toast.challenge_complete", 1f, 1f)
                     if(!Main.getGame().getCheeseManager().hasRedFinishedCollecting()) {
-                        teamWinFireworks(player, Teams.BLUE)
+                        Main.getGame().getCheeseManager().teamWinFireworks(player, Teams.BLUE)
                         player.sendMessage(Component.text("\nYour team won the game!\n").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true))
                         player.showTitle(
                             Title.title(
@@ -211,46 +211,6 @@ class BlockBreakDropEvent : Listener {
                     )
                 }
                 Main.getGame().getGameCountdownTask().setTimeLeft(0)
-            }
-        }
-    }
-
-    private fun teamWinFireworks(player : Player, teams : Teams) {
-        when(teams) {
-            Teams.RED -> {
-                val playerLoc = Location(player.world, player.location.x, player.location.y + 1, player.location.z)
-                val f: Firework = player.world.spawn(playerLoc, Firework::class.java)
-                val fm = f.fireworkMeta
-                fm.addEffect(
-                    FireworkEffect.builder()
-                        .flicker(false)
-                        .trail(false)
-                        .with(FireworkEffect.Type.BALL)
-                        .withColor(Color.RED)
-                        .build()
-                    )
-                fm.power = 0
-                f.fireworkMeta = fm
-                f.detonate()
-            }
-            Teams.BLUE -> {
-                val playerLoc = Location(player.world, player.location.x, player.location.y + 1, player.location.z)
-                val f: Firework = player.world.spawn(playerLoc, Firework::class.java)
-                val fm = f.fireworkMeta
-                fm.addEffect(
-                    FireworkEffect.builder()
-                        .flicker(false)
-                        .trail(false)
-                        .with(FireworkEffect.Type.BALL)
-                        .withColor(Color.BLUE)
-                        .build()
-                )
-                fm.power = 0
-                f.fireworkMeta = fm
-                f.detonate()
-            }
-            else -> {
-                // This is literally impossible to reach :)
             }
         }
     }

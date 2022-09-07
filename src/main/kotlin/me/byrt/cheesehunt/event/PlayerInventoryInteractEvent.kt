@@ -10,7 +10,7 @@ import org.bukkit.event.inventory.*
 class PlayerInventoryInteractEvent : Listener {
     @EventHandler
     private fun onInventoryClick(e : InventoryClickEvent) {
-        e.isCancelled = !Main.getGame().getBuildMode() && e.whoClicked.isOp
+        e.isCancelled = !Main.getGame().getBuildMode() && !e.whoClicked.isOp
     }
 
     @EventHandler
@@ -20,7 +20,7 @@ class PlayerInventoryInteractEvent : Listener {
 
     @EventHandler
     private fun onInventoryDrag(e : InventoryDragEvent) {
-        e.isCancelled = !Main.getGame().getBuildMode() && e.whoClicked.isOp
+        e.isCancelled = !Main.getGame().getBuildMode() && !e.whoClicked.isOp
     }
 
     @EventHandler

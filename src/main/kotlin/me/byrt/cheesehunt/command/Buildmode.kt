@@ -2,6 +2,7 @@ package me.byrt.cheesehunt.command
 
 import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
+import cloud.commandframework.annotations.CommandPermission
 
 import me.byrt.cheesehunt.Main
 import me.byrt.cheesehunt.manager.GameState
@@ -20,6 +21,7 @@ class Buildmode : BaseCommand {
     private val buildToggleFailSound: Sound = Sound.sound(Key.key("entity.enderman.teleport"), Sound.Source.MASTER, 1f, 0f)
     @CommandMethod("buildmode")
     @CommandDescription("Toggles the ability to build for operators while not in game")
+    @CommandPermission("cheesehunt.buildmode")
     fun start(sender : Player) {
         if(Main.getGame().getGameState() == GameState.IDLE) {
             if(Main.getGame().getBuildMode()) {

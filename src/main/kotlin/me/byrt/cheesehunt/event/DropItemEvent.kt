@@ -10,6 +10,6 @@ import org.bukkit.event.player.PlayerDropItemEvent
 class DropItemEvent : Listener {
     @EventHandler
     private fun dropItem(e : PlayerDropItemEvent) {
-        e.isCancelled = !Main.getGame().getBuildMode() && !e.player.isOp
+        e.isCancelled = !(Main.getGame().getBuildMode() && e.player.isOp)
     }
 }

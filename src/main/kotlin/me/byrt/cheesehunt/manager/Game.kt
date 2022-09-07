@@ -8,6 +8,7 @@ class Game(private val plugin : Main) {
     private var gameState : GameState = GameState.IDLE
     private var roundState : RoundState = RoundState.ROUND_ONE
     private var timerState : TimerState = TimerState.INACTIVE
+    private var buildMode = false
     private val playerManager = PlayerManager(this)
     private val teamManager = TeamManager(this)
     private val itemManager = ItemManager(this)
@@ -27,6 +28,7 @@ class Game(private val plugin : Main) {
                 setTimerState(TimerState.ACTIVE)
                 when(this.roundState) {
                     RoundState.ROUND_ONE -> {
+                        buildMode = false
                         gameCountdownTask.setTimeLeft(80)
                         gameCountdownTask.runTaskTimer(plugin, 0, 20)
                     }
@@ -111,6 +113,14 @@ class Game(private val plugin : Main) {
     private fun startRound() {
         playerManager.giveItemsToPlayers()
         blockManager.removeBarriers()
+    }
+
+    fun setBuildMode(mode : Boolean) {
+        this.buildMode = mode
+    }
+
+    fun getBuildMode() : Boolean {
+        return this.buildMode
     }
 
     fun cleanUp() {

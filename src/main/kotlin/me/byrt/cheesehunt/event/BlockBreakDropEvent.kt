@@ -24,16 +24,20 @@ import java.time.Duration
 class BlockBreakDropEvent : Listener {
     @EventHandler
     private fun onBlockBreak(e : BlockBreakEvent) {
-        if(e.block.type == Material.SPONGE && Main.getGame().getRoundState() == RoundState.ROUND_TWO && Main.getGame().getGameState() == GameState.IN_GAME) {
-            cheeseCollectedFirework(e.block.location, e.player)
-            Bukkit.getOnlinePlayers().stream().forEach {
-                    player: Player -> announcePlayerCollectedCheese(player, e.player, e.block.location)
-            }
-            incrementPlayerCollectedCheese(e.player)
-            checkCheeseCollected()
+        if(Main.getGame().getBuildMode() && e.player.isOp) {
             e.isCancelled = false
         } else {
-            e.isCancelled = true
+            if(e.block.type == Material.SPONGE && Main.getGame().getRoundState() == RoundState.ROUND_TWO && Main.getGame().getGameState() == GameState.IN_GAME) {
+                cheeseCollectedFirework(e.block.location, e.player)
+                Bukkit.getOnlinePlayers().stream().forEach {
+                        player: Player -> announcePlayerCollectedCheese(player, e.player, e.block.location)
+                }
+                incrementPlayerCollectedCheese(e.player)
+                checkCheeseCollected()
+                e.isCancelled = false
+            } else {
+                e.isCancelled = true
+            }
         }
     }
 

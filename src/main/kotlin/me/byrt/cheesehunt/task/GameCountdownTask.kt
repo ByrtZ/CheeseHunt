@@ -449,7 +449,6 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
                     } else if(game.getCheeseManager().getRedCheeseCollected() == game.getCheeseManager().getBlueCheeseCollected() && !game.getCheeseManager().hasRedFinishedCollecting() && !game.getCheeseManager().hasBlueFinishedCollecting()) {
                         if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE) {
                             player.playSound(player.location, "entity.wither.spawn", 1f, 2f)
-                            game.getCheeseManager().teamWinFireworks(player, Teams.BLUE)
                             player.sendMessage(Component.text("\nNo team won!\n").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, true))
                             player.showTitle(
                                 Title.title(

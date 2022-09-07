@@ -14,7 +14,7 @@ class InfoBoardManager(private val game : Game) {
     private var scoreboard: Scoreboard = scoreboardManager.mainScoreboard
     private var cheeseHuntBoard: Objective = scoreboard.registerNewObjective(
         "cheese_hunt_board",
-        "dummy",
+        Criteria.DUMMY,
         Component.text("Cheese Hunt").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, true)
     )
 

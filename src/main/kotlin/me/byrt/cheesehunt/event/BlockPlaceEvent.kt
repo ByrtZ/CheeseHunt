@@ -19,16 +19,20 @@ import org.bukkit.event.block.BlockPlaceEvent
 class BlockPlaceEvent : Listener {
     @EventHandler
     private fun onBlockPlace(e : BlockPlaceEvent) {
-        if(e.block.type == Material.SPONGE && Main.getGame().getRoundState() == RoundState.ROUND_ONE && e.blockAgainst.type != Material.BARRIER) {
-            cheesePlacedFirework(e.block.location, e.player)
-            Bukkit.getOnlinePlayers().stream().forEach {
-                    player: Player -> announcePlayerPlacedCheese(player, e.player)
-            }
-            incrementPlayerPlacedCheese(e.player)
-            checkCheesePlaced()
+        if(Main.getGame().getBuildMode() && e.player.isOp) {
             e.isCancelled = false
         } else {
-            e.isCancelled = true
+            if(e.block.type == Material.SPONGE && Main.getGame().getRoundState() == RoundState.ROUND_ONE && e.blockAgainst.type != Material.BARRIER) {
+                cheesePlacedFirework(e.block.location, e.player)
+                Bukkit.getOnlinePlayers().stream().forEach {
+                        player: Player -> announcePlayerPlacedCheese(player, e.player)
+                }
+                incrementPlayerPlacedCheese(e.player)
+                checkCheesePlaced()
+                e.isCancelled = false
+            } else {
+                e.isCancelled = true
+            }
         }
     }
 

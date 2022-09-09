@@ -1,12 +1,15 @@
-//TODO: Not working at all, temporary command for now. Only usable by Byrt.
 package me.byrt.cheesehunt.command
-
-import me.byrt.cheesehunt.Main
 
 import cloud.commandframework.annotations.Argument
 import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
+
+import com.destroystokyo.paper.profile.PlayerProfile
+import com.destroystokyo.paper.profile.ProfileProperty
+
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -17,50 +20,40 @@ import org.bukkit.entity.Player
 import java.io.InputStreamReader
 import java.net.URL
 
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
-
 @Suppress("unused")
 class SetSkin : BaseCommand {
     @CommandMethod("setskin <player> <skin>")
     @CommandDescription("Allows skin modification.")
     @CommandPermission("cheesehunt.setskin")
     fun skin(sender : Player, @Argument("player") player : Player, @Argument("skin") skin : String) {
-        if(sender.name == "Byrt"){
-            try {
-                sender.sendMessage(Component.text("You changed ${player.name}'s skin to ${skin}'s skin!").color(NamedTextColor.GREEN))
-                val newPlayerProfile = player.playerProfile
-                val newTextureProperty = getTextureProperty(skin)
-
-                sender.sendMessage(Component.text("$skin's UUID is ${Bukkit.getPlayerUniqueId(skin)}").color(NamedTextColor.RED))
-                sender.sendMessage(Component.text("Base64 value for $skin's skin: $newTextureProperty").color(NamedTextColor.GOLD))
-
-                newPlayerProfile.textures.skin = URL("http://textures.minecraft.net/texture/${newTextureProperty}")
-                player.playerProfile = newPlayerProfile
-                reloadPlayer(player)
-            } catch(e : Exception) {
-                sender.sendMessage(Component.text("An error occurred when attempting to change a player's skin.").color(NamedTextColor.RED))
-                e.printStackTrace()
-            }
-        } else {
-            sender.sendMessage(Component.text("You do not have permission to execute this command.").color(NamedTextColor.RED))
+        try {
+            sender.sendMessage(Component.text("Attempting to change ${player.name}'s skin to ${skin}'s skin...").color(NamedTextColor.GRAY))
+            setPlayerSkin(player, skin)
+            sender.sendMessage(Component.text("Changed ${player.name}'s skin to ${skin}'s skin.").color(NamedTextColor.GREEN))
+        } catch(e : Exception) {
+            sender.sendMessage(Component.text("An error occurred when attempting to change a player's skin.").color(NamedTextColor.RED))
+            e.printStackTrace()
         }
     }
 
-    private fun getTextureProperty(skinName: String): String {
-        val url = URL("https://api.mojang.com/users/profiles/minecraft/$skinName")
-        val reader = InputStreamReader(url.openStream())
-        val skinUUID = JsonParser.parseReader(reader).asJsonObject["id"].asString
-        val url2 = URL("https://sessionserver.mojang.com/session/minecraft/profile/${skinUUID}?unsigned=false")
-        val read = InputStreamReader(url2.openStream())
-        val textureProperty: JsonObject = JsonParser.parseReader(read).asJsonObject["properties"].asJsonArray[0].asJsonObject
-        return textureProperty.get("value").asString
-    }
-
-    private fun reloadPlayer(playerToReload : Player) {
-        for (p in Bukkit.getOnlinePlayers()) {
-            Bukkit.getScheduler().runTaskLater(Main.getPlugin(), Runnable { Bukkit.getOnlinePlayers().forEach { _ -> p.hidePlayer(Main.getPlugin(), playerToReload) } }, 0L)
-            Bukkit.getScheduler().runTaskLater(Main.getPlugin(), Runnable { Bukkit.getOnlinePlayers().forEach { _ -> p.showPlayer(Main.getPlugin(), playerToReload) } }, 5L)
+    private fun setPlayerSkin(playerToChange : Player, playerSkinToGrabName : String) {
+        try {
+            val uuid = URL("https://api.mojang.com/users/profiles/minecraft/${playerSkinToGrabName}")
+            val userReader = InputStreamReader(uuid.openStream())
+            val id = JsonParser.parseReader(userReader).asJsonObject.get("id").asString
+            val profile: PlayerProfile = Bukkit.createProfile(playerToChange.uniqueId, id)
+            val mojang = URL("https://sessionserver.mojang.com/session/minecraft/profile/$id?unsigned=false")
+            val reader = InputStreamReader(mojang.openStream())
+            val textureProperty : JsonObject = JsonParser.parseReader(reader).asJsonObject.get("properties").asJsonArray.get(0).asJsonObject
+            if (textureProperty.get("value").asString != null && textureProperty.get("signature").asString != null) {
+                val texture = textureProperty.get("value").asString
+                val signature = textureProperty.get("signature").asString
+                profile.clearProperties()
+                profile.setProperty(ProfileProperty("textures", texture, signature))
+                playerToChange.playerProfile = profile
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 }

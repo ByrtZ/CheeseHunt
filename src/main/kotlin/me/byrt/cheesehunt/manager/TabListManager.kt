@@ -17,8 +17,8 @@ class TabListManager(private var game : Game) {
         val randomIndex = Random.nextInt(cheesePuns.size)
         val randomPun = cheesePuns[randomIndex]
         header = Component.text("Cheese Hunt").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, true)
-            .append(Component.text("\nAn MCC Tester classic meme, brought to you by ").color(NamedTextColor.WHITE).decoration(TextDecoration.BOLD, false).append(Component.text("Byrt").color(NamedTextColor.RED))
-            .append(Component.text(".").color(NamedTextColor.GRAY).decoration(TextDecoration.BOLD, false)))
+            .append(Component.text("\n               An MCC Tester classic meme, brought to you by ").color(NamedTextColor.WHITE).decoration(TextDecoration.BOLD, false).append(Component.text("Byrt").color(NamedTextColor.RED))
+            .append(Component.text(".               ").color(NamedTextColor.GRAY).decoration(TextDecoration.BOLD, false)))
         footer = Component.text(randomPun).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, true)
     }
 

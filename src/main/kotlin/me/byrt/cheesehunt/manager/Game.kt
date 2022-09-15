@@ -15,6 +15,7 @@ class Game(private val plugin : Main) {
     private val blockManager = BlockManager(this)
     private val cheeseManager = CheeseManager(this)
     private val infoBoardManager = InfoBoardManager(this)
+    private val tabListManager = TabListManager(this)
     private val gameCountdownTask = GameCountdownTask(this)
 
     fun setGameState(newState : GameState) {
@@ -107,6 +108,10 @@ class Game(private val plugin : Main) {
 
     fun getInfoBoardManager(): InfoBoardManager {
         return this.infoBoardManager
+    }
+
+    fun getTabListManager(): TabListManager {
+        return this.tabListManager
     }
 
     fun getGameCountdownTask(): GameCountdownTask {

@@ -30,6 +30,7 @@ class Main : JavaPlugin() {
         setupEventListeners()
         game.getInfoBoardManager().buildScoreboard()
         game.getTeamManager().buildDisplayTeams()
+        game.getTabListManager().populateCheesePuns()
     }
 
     override fun onDisable() {

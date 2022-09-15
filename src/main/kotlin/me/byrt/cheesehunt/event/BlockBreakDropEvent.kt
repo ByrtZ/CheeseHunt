@@ -33,6 +33,7 @@ class BlockBreakDropEvent : Listener {
                         player: Player -> announcePlayerCollectedCheese(player, e.player, e.block.location)
                 }
                 incrementPlayerCollectedCheese(e.player)
+                Main.getGame().getInfoBoardManager().updateCollectedStats()
                 checkCheeseCollected()
                 e.isCancelled = false
             } else {

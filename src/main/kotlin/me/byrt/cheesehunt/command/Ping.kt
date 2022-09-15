@@ -21,7 +21,7 @@ class Ping : BaseCommand {
         sender.sendMessage(Component.text("Ping: ")
             .color(NamedTextColor.AQUA)
             .decoration(TextDecoration.BOLD, true)
-            .append(Component.text("${sender.player?.ping}ms")
+            .append(Component.text("${sender.ping}ms")
                 .color(NamedTextColor.WHITE)
                 .decoration(TextDecoration.BOLD, false)))
     }

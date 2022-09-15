@@ -16,6 +16,7 @@ class TeamManager(private val game : Game) {
     private var redDisplayTeam: Team = Bukkit.getScoreboardManager().mainScoreboard.registerNewTeam("redDisplay")
     private var blueDisplayTeam: Team = Bukkit.getScoreboardManager().mainScoreboard.registerNewTeam("blueDisplay")
     private var uncollectedCheeseDisplayTeam: Team = Bukkit.getScoreboardManager().mainScoreboard.registerNewTeam("uncollectedCheeseDisplay")
+    private var adminDisplayTeam: Team = Bukkit.getScoreboardManager().mainScoreboard.registerNewTeam("admin")
 
     fun addToTeam(uuid : UUID, team : Teams) {
         when(team) {
@@ -77,6 +78,10 @@ class TeamManager(private val game : Game) {
         }
     }
 
+    fun addToAdminDisplay(uuid : UUID) {
+        adminDisplayTeam.addPlayer(Bukkit.getOfflinePlayer(uuid))
+    }
+
     fun buildDisplayTeams() {
         redDisplayTeam.color(NamedTextColor.RED)
         redDisplayTeam.prefix(Component.text("").color(NamedTextColor.RED))
@@ -92,6 +97,14 @@ class TeamManager(private val game : Game) {
         uncollectedCheeseDisplayTeam.prefix(Component.text("").color(NamedTextColor.GOLD))
         uncollectedCheeseDisplayTeam.suffix(Component.text("").color(NamedTextColor.WHITE))
         uncollectedCheeseDisplayTeam.displayName(Component.text("Cheese").color(NamedTextColor.GOLD))
+
+        adminDisplayTeam.color(NamedTextColor.WHITE)
+        adminDisplayTeam.prefix(Component.text("⛏ ").color(NamedTextColor.RED)
+            .append(Component.text("[").color(NamedTextColor.WHITE))
+            .append(Component.text("Admin").color(NamedTextColor.RED))
+            .append(Component.text("] ").color(NamedTextColor.WHITE)))
+        adminDisplayTeam.suffix(Component.text("").color(NamedTextColor.WHITE))
+        adminDisplayTeam.displayName(Component.text("Admin").color(NamedTextColor.RED))
     }
 
     fun destroyDisplayTeams() {

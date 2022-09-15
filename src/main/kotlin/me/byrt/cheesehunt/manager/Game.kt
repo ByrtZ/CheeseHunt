@@ -42,6 +42,16 @@ class Game(private val plugin : Main) {
             GameState.IN_GAME -> {
                 setTimerState(TimerState.ACTIVE)
                 gameCountdownTask.setTimeLeft(120)
+                when(this.roundState) {
+                    RoundState.ROUND_ONE -> {
+                        infoBoardManager.addPlacedStatsToScoreboard()
+                        infoBoardManager.updatePlacedStats()
+                    }
+                    RoundState.ROUND_TWO -> {
+                        infoBoardManager.addCollectedStatsToScoreboard()
+                        infoBoardManager.updateCollectedStats()
+                    }
+                }
                 startRound()
             }
             GameState.ROUND_END -> {

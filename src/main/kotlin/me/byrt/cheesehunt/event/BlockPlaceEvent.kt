@@ -28,6 +28,7 @@ class BlockPlaceEvent : Listener {
                         player: Player -> announcePlayerPlacedCheese(player, e.player)
                 }
                 incrementPlayerPlacedCheese(e.player)
+                Main.getGame().getInfoBoardManager().updatePlacedStats()
                 checkCheesePlaced()
                 e.isCancelled = false
             } else {

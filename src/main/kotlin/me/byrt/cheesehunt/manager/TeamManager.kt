@@ -111,6 +111,7 @@ class TeamManager(private val game : Game) {
         redDisplayTeam.unregister()
         blueDisplayTeam.unregister()
         uncollectedCheeseDisplayTeam.unregister()
+        adminDisplayTeam.unregister()
     }
 
     fun getPlayerTeam(uuid : UUID): Teams {

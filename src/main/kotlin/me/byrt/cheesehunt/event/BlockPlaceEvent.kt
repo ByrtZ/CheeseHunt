@@ -1,6 +1,7 @@
 package me.byrt.cheesehunt.event
 
 import me.byrt.cheesehunt.Main
+import me.byrt.cheesehunt.command.ModifierOptions
 import me.byrt.cheesehunt.manager.RoundState
 import me.byrt.cheesehunt.manager.Teams
 
@@ -85,44 +86,46 @@ class BlockPlaceEvent : Listener {
     }
 
     private fun checkCheesePlaced() {
-        if(!Main.getGame().getCheeseManager().hasRedFinishedPlacing() && Main.getGame().getTeamManager().getRedTeam().size.times(4) == Main.getGame().getCheeseManager().getRedCheesePlaced()) {
-            Main.getGame().getCheeseManager().setRedFinishedPlacing(true)
-            for(player in Bukkit.getOnlinePlayers()) {
-                player.sendMessage(Component.text("[")
-                .append(Component.text("▶").color(NamedTextColor.YELLOW))
-                .append(Component.text("] "))
-                .append(Component.text("Red team placed all their cheese!").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
-                )
-            }
-            if(Main.getGame().getCheeseManager().hasRedFinishedPlacing() && Main.getGame().getCheeseManager().hasBlueFinishedPlacing()) {
-                for(player in Bukkit.getOnlinePlayers()) {
-                    player.sendMessage(Component.text("[")
-                    .append(Component.text("▶").color(NamedTextColor.YELLOW))
-                    .append(Component.text("] "))
-                    .append(Component.text("All cheese has been placed, get ready to cheese hunt!").color(NamedTextColor.AQUA).decoration(TextDecoration.BOLD, true))
-                    )
-                }
-                Main.getGame().getGameCountdownTask().setTimeLeft(0)
-            }
-        }
-        if(!Main.getGame().getCheeseManager().hasBlueFinishedPlacing() && Main.getGame().getTeamManager().getBlueTeam().size.times(4) == Main.getGame().getCheeseManager().getBlueCheesePlaced()) {
-            Main.getGame().getCheeseManager().setBlueFinishedPlacing(true)
-            for(player in Bukkit.getOnlinePlayers()) {
-                player.sendMessage(Component.text("[")
-                    .append(Component.text("▶").color(NamedTextColor.YELLOW))
-                    .append(Component.text("] "))
-                    .append(Component.text("Blue team placed all their cheese!").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
-                )
-            }
-            if(Main.getGame().getCheeseManager().hasRedFinishedPlacing() && Main.getGame().getCheeseManager().hasBlueFinishedPlacing()) {
+        if(Main.getGame().getModifier() != ModifierOptions.BOTTOMLESS_CHEESE) {
+            if(!Main.getGame().getCheeseManager().hasRedFinishedPlacing() && Main.getGame().getTeamManager().getRedTeam().size.times(4) == Main.getGame().getCheeseManager().getRedCheesePlaced()) {
+                Main.getGame().getCheeseManager().setRedFinishedPlacing(true)
                 for(player in Bukkit.getOnlinePlayers()) {
                     player.sendMessage(Component.text("[")
                         .append(Component.text("▶").color(NamedTextColor.YELLOW))
                         .append(Component.text("] "))
-                        .append(Component.text("All cheese has been placed, get ready to cheese hunt!").color(NamedTextColor.AQUA).decoration(TextDecoration.BOLD, true))
+                        .append(Component.text("Red team placed all their cheese!").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
                     )
                 }
-                Main.getGame().getGameCountdownTask().setTimeLeft(0)
+                if(Main.getGame().getCheeseManager().hasRedFinishedPlacing() && Main.getGame().getCheeseManager().hasBlueFinishedPlacing()) {
+                    for(player in Bukkit.getOnlinePlayers()) {
+                        player.sendMessage(Component.text("[")
+                            .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                            .append(Component.text("] "))
+                            .append(Component.text("All cheese has been placed, get ready to cheese hunt!").color(NamedTextColor.AQUA).decoration(TextDecoration.BOLD, true))
+                        )
+                    }
+                    Main.getGame().getGameCountdownTask().setTimeLeft(0)
+                }
+            }
+            if(!Main.getGame().getCheeseManager().hasBlueFinishedPlacing() && Main.getGame().getTeamManager().getBlueTeam().size.times(4) == Main.getGame().getCheeseManager().getBlueCheesePlaced()) {
+                Main.getGame().getCheeseManager().setBlueFinishedPlacing(true)
+                for(player in Bukkit.getOnlinePlayers()) {
+                    player.sendMessage(Component.text("[")
+                        .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                        .append(Component.text("] "))
+                        .append(Component.text("Blue team placed all their cheese!").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
+                    )
+                }
+                if(Main.getGame().getCheeseManager().hasRedFinishedPlacing() && Main.getGame().getCheeseManager().hasBlueFinishedPlacing()) {
+                    for(player in Bukkit.getOnlinePlayers()) {
+                        player.sendMessage(Component.text("[")
+                            .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                            .append(Component.text("] "))
+                            .append(Component.text("All cheese has been placed, get ready to cheese hunt!").color(NamedTextColor.AQUA).decoration(TextDecoration.BOLD, true))
+                        )
+                    }
+                    Main.getGame().getGameCountdownTask().setTimeLeft(0)
+                }
             }
         }
     }

@@ -120,10 +120,10 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
                     for(player in Bukkit.getOnlinePlayers()) {
                         player.playSound(player.location, "entity.item.pickup", 1f, 1f)
                         player.sendMessage(Component.text("-----------------------------------------------------").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
-                        .append(Component.text(" Starting soon:\n").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.STRIKETHROUGH, false)
+                        .append(Component.text(" Starting soon:\n\n").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.STRIKETHROUGH, false)
                         .append(Component.text(" • Standby for the game to begin...\n\n").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, false)
                         .append(Component.text(" • May the best Cheese hiders and Cheese hunters win.").color(NamedTextColor.GOLD)
-                        .append(Component.text("\n\n\n\n\n")
+                        .append(Component.text("\n\n\n\n")
                         .append(Component.text("-----------------------------------------------------").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
                                             )
                                         )
@@ -359,8 +359,8 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
             if(timeLeft == 80) {
                 if(!game.getCheeseManager().hasRedFinishedCollecting() || !game.getCheeseManager().hasBlueFinishedCollecting()) {
                     for(player in Bukkit.getOnlinePlayers()) {
-                        player.sendMessage(Component.text("The game ended with lost cheese...").color(NamedTextColor.GOLD))
-                        player.sendMessage(Component.text("Now showing all uncollected cheese.").color(NamedTextColor.GOLD))
+                        player.sendMessage(Component.text("The game ended with lost cheese...").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
+                        player.sendMessage(Component.text("Now showing all uncollected cheese.").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
                     }
                     game.getCheeseManager().markUncollectedCheese()
                 }
@@ -389,7 +389,7 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
                             player.sendMessage(Component.text("\nYour team won the game!\n").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true))
                             player.showTitle(
                                 Title.title(
-                                    Component.text("Your team won the game!").color(NamedTextColor.GREEN),
+                                    Component.text("Your team won!").color(NamedTextColor.GREEN),
                                     Component.text("Well done!").color(NamedTextColor.GREEN),
                                     Title.Times.times(
                                         Duration.ofSeconds(1),
@@ -404,7 +404,7 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
                             player.sendMessage(Component.text("\nYour team lost the game!\n").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true))
                             player.showTitle(
                                 Title.title(
-                                    Component.text("Your team lost the game!").color(NamedTextColor.RED),
+                                    Component.text("Your team lost!").color(NamedTextColor.RED),
                                     Component.text("Git gud!").color(NamedTextColor.RED),
                                     Title.Times.times(
                                         Duration.ofSeconds(1),
@@ -421,7 +421,7 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
                             player.sendMessage(Component.text("\nYour team won the game!\n").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true))
                             player.showTitle(
                                 Title.title(
-                                    Component.text("Your team won the game!").color(NamedTextColor.GREEN),
+                                    Component.text("Your team won!").color(NamedTextColor.GREEN),
                                     Component.text("Well done!").color(NamedTextColor.GREEN),
                                     Title.Times.times(
                                         Duration.ofSeconds(1),
@@ -436,7 +436,7 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
                             player.sendMessage(Component.text("\nYour team lost the game!\n").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true))
                             player.showTitle(
                                 Title.title(
-                                    Component.text("Your team lost the game!").color(NamedTextColor.RED),
+                                    Component.text("Your team lost!").color(NamedTextColor.RED),
                                     Component.text("Git gud!").color(NamedTextColor.RED),
                                     Title.Times.times(
                                         Duration.ofSeconds(1),

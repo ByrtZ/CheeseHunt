@@ -30,7 +30,7 @@ class BlockBreakDropEvent : Listener {
             if(e.block.type == Material.SPONGE && Main.getGame().getRoundState() == RoundState.ROUND_TWO && Main.getGame().getGameState() == GameState.IN_GAME) {
                 cheeseCollectedFirework(e.block.location, e.player)
                 Bukkit.getOnlinePlayers().stream().forEach {
-                        player: Player -> announcePlayerCollectedCheese(player, e.player, e.block.location)
+                        player: Player -> announcePlayerCollectedCheese(player, e.player)
                 }
                 incrementPlayerCollectedCheese(e.player)
                 Main.getGame().getInfoBoardManager().updateCollectedStats()
@@ -42,10 +42,9 @@ class BlockBreakDropEvent : Listener {
         }
     }
 
-    private fun announcePlayerCollectedCheese(player : Player, collector : Player, blockLoc : Location) {
+    private fun announcePlayerCollectedCheese(player : Player, collector : Player) {
         if(player == collector) {
             Main.getGame().getItemManager().givePlayerCheese(collector)
-            collector.world.spawnParticle(Particle.VILLAGER_HAPPY, blockLoc.x + 0.5, blockLoc.y + 1, blockLoc.z + 0.5, 10, 1.0, 1.0, 1.0, 0.15)
             collector.sendMessage(Component.text("[")
                 .append(Component.text("▶").color(NamedTextColor.YELLOW))
                 .append(Component.text("] "))
@@ -127,7 +126,7 @@ class BlockBreakDropEvent : Listener {
                         player.sendMessage(Component.text("\nYour team won the game!\n").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true))
                         player.showTitle(
                             Title.title(
-                            Component.text("Your team won the game!").color(NamedTextColor.GREEN),
+                            Component.text("Your team won!").color(NamedTextColor.GREEN),
                             Component.text("Well done!").color(NamedTextColor.GREEN),
                             Title.Times.times(
                                 Duration.ofSeconds(1),
@@ -143,7 +142,7 @@ class BlockBreakDropEvent : Listener {
                     player.sendMessage(Component.text("\nYour team lost the game!\n").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true))
                     player.showTitle(
                         Title.title(
-                            Component.text("Your team lost the game!").color(NamedTextColor.RED),
+                            Component.text("Your team lost!").color(NamedTextColor.RED),
                             Component.text("Git gud!").color(NamedTextColor.RED),
                             Title.Times.times(
                                 Duration.ofSeconds(1),
@@ -178,7 +177,7 @@ class BlockBreakDropEvent : Listener {
                     player.sendMessage(Component.text("\nYour team lost the game!\n").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true))
                     player.showTitle(
                         Title.title(
-                            Component.text("Your team lost the game!").color(NamedTextColor.RED),
+                            Component.text("Your team lost!").color(NamedTextColor.RED),
                             Component.text("Git gud!").color(NamedTextColor.RED),
                             Title.Times.times(
                                 Duration.ofSeconds(1),
@@ -195,7 +194,7 @@ class BlockBreakDropEvent : Listener {
                         player.sendMessage(Component.text("\nYour team won the game!\n").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true))
                         player.showTitle(
                             Title.title(
-                                Component.text("Your team won the game!").color(NamedTextColor.GREEN),
+                                Component.text("Your team won!").color(NamedTextColor.GREEN),
                                 Component.text("Well done!").color(NamedTextColor.GREEN),
                                 Title.Times.times(
                                     Duration.ofSeconds(1),

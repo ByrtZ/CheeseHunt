@@ -2,22 +2,22 @@ package me.byrt.cheesehunt.command
 
 import me.byrt.cheesehunt.Main
 import me.byrt.cheesehunt.manager.GameState
-import me.byrt.cheesehunt.manager.TimerState
+import me.byrt.cheesehunt.manager.RoundState
 
 import cloud.commandframework.annotations.Argument
 import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
-import me.byrt.cheesehunt.manager.RoundState
+
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
-
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.title.Title
-import org.bukkit.Bukkit
 
+import org.bukkit.Bukkit
 import org.bukkit.entity.Player
+
 import java.time.Duration
 
 @Suppress("unused")
@@ -28,8 +28,8 @@ class Modifier : BaseCommand {
     @CommandDescription("Allows the enabling and disabling of modifiers.")
     @CommandPermission("cheesehunt.modifier")
     fun timer(sender : Player, @Argument("modifier") option : ModifierOptions) {
-        if(Main.getGame().getTimerState() == TimerState.INACTIVE) {
-            sender.sendMessage(Component.text("You cannot manipulate the timer when it is inactive.").color(NamedTextColor.RED))
+        if(Main.getGame().getGameState() != GameState.STARTING) {
+            sender.sendMessage(Component.text("You can't change the modifier right now'.").color(NamedTextColor.RED))
         } else {
             when(option) {
                 ModifierOptions.NONE -> {
@@ -57,7 +57,7 @@ class Modifier : BaseCommand {
                             sender.sendMessage(Component.text("You cannot set the current modifier to none, as there is no modifier active.").color(NamedTextColor.RED))
                         }
                     } else {
-                        sender.sendMessage(Component.text("You can only change modifiers when a game is about to begin!").color(NamedTextColor.RED))
+                        sender.sendMessage(Component.text("You can only change modifiers when a game is about to begin.").color(NamedTextColor.RED))
                     }
                 }
                 ModifierOptions.BOTTOMLESS_CHEESE -> {
@@ -85,18 +85,39 @@ class Modifier : BaseCommand {
                             sender.sendMessage(Component.text("This modifier is already active!").color(NamedTextColor.RED))
                         }
                     } else {
-                        sender.sendMessage(Component.text("You can only change modifiers when a game is about to begin!").color(NamedTextColor.RED))
+                        sender.sendMessage(Component.text("You can only change this modifier before the game begins.").color(NamedTextColor.RED))
                     }
                 }
                 ModifierOptions.IMPOSTOR -> {
-                    if(Main.getGame().getGameState() != GameState.STARTING) {
-                        sender.sendMessage(Component.text("You can only change modifiers when a game is about to begin!").color(NamedTextColor.RED))
-                    } else {
+                    if(Main.getGame().getGameState() == GameState.STARTING && Main.getGame().getRoundState() == RoundState.ROUND_TWO) {
                         if(Main.getGame().getModifier() != ModifierOptions.IMPOSTOR) {
-                            sender.sendMessage(Component.text("The Impostor modifier is currently disabled.").color(NamedTextColor.RED))
+                            if(Main.getGame().getTeamManager().getRedTeam().size >=2 && Main.getGame().getTeamManager().getBlueTeam().size >= 2) {
+                                sender.sendMessage(Component.text("Active modifier changed to $option!").color(NamedTextColor.GREEN))
+                                Main.getGame().setModifier(ModifierOptions.IMPOSTOR)
+                                Main.getGame().getInfoBoardManager().updateModifier()
+                                for(player in Bukkit.getOnlinePlayers()) {
+                                    player.playSound(modifierEnabledSound)
+                                    player.sendMessage(Component.text("\n⚠ Imposter modifier enabled ⚠\n").color(NamedTextColor.GOLD))
+                                    player.showTitle(
+                                        Title.title(
+                                            Component.text(""),
+                                            Component.text("⚠ Impostor modifier enabled ⚠").color(NamedTextColor.GOLD),
+                                            Title.Times.times(
+                                                Duration.ofSeconds(1),
+                                                Duration.ofSeconds(2),
+                                                Duration.ofSeconds(1)
+                                            )
+                                        )
+                                    )
+                                }
+                            } else {
+                                sender.sendMessage(Component.text("There aren't enough players to enable this modifier.").color(NamedTextColor.RED))
+                            }
                         } else {
                             sender.sendMessage(Component.text("This modifier is already active!").color(NamedTextColor.RED))
                         }
+                    } else {
+                        sender.sendMessage(Component.text("You can only enable this modifier before round two begins.").color(NamedTextColor.RED))
                     }
                 }
             }

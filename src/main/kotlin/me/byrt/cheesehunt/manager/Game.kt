@@ -39,7 +39,6 @@ class Game(private val plugin : Main) {
                         gameCountdownTask.setTimeLeft(15)
                     }
                 }
-
                 roundStarting()
             }
             GameState.IN_GAME -> {
@@ -53,6 +52,9 @@ class Game(private val plugin : Main) {
                     RoundState.ROUND_TWO -> {
                         infoBoardManager.addCollectedStatsToScoreboard()
                         infoBoardManager.updateCollectedStats()
+                        if(modifier == ModifierOptions.IMPOSTOR) {
+                            playerManager.assignRandomImpostors()
+                        }
                     }
                 }
                 startRound()

@@ -34,14 +34,14 @@ class StartGame : BaseCommand {
                 }
             } else {
                 sender.sendMessage(Component.text("There are not enough players on teams to start a Cheese Hunt game.").color(NamedTextColor.RED))
-                sender.playSound(startGameSuccessSound)
+                sender.playSound(startGameFailSound)
             }
         } else if(Main.getGame().getGameState() == GameState.GAME_END) {
             sender.sendMessage(Component.text("A restart is required for a new Cheese Hunt game.").color(NamedTextColor.RED))
-            sender.playSound(startGameSuccessSound)
+            sender.playSound(startGameFailSound)
         } else {
             sender.sendMessage(Component.text("There is already a Cheese Hunt game running, you numpty!").color(NamedTextColor.RED))
-            sender.playSound(startGameSuccessSound)
+            sender.playSound(startGameFailSound)
         }
     }
 }

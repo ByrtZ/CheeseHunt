@@ -113,16 +113,21 @@ class InfoBoardManager(private val game : Game) {
         when(Main.getGame().getModifier()) {
             ModifierOptions.NONE -> {
                 cheeseHuntBoard.scoreboard!!.resetScores(ChatColor.GOLD.toString() + "" + ChatColor.BOLD + "Modifier: " + ChatColor.WHITE + "Bottomless Cheese")
+                cheeseHuntBoard.scoreboard!!.resetScores(ChatColor.GOLD.toString() + "" + ChatColor.BOLD + "Modifier: " + ChatColor.WHITE + "Impostor")
                 currentModifierText = cheeseHuntBoard.getScore(ChatColor.GOLD.toString() + "" + ChatColor.BOLD + "Modifier: " + ChatColor.DARK_GRAY + "Inactive")
                 currentModifierText.score = 5
             }
             ModifierOptions.BOTTOMLESS_CHEESE -> {
                 cheeseHuntBoard.scoreboard!!.resetScores(ChatColor.GOLD.toString() + "" + ChatColor.BOLD + "Modifier: " + ChatColor.DARK_GRAY + "Inactive")
+                cheeseHuntBoard.scoreboard!!.resetScores(ChatColor.GOLD.toString() + "" + ChatColor.BOLD + "Modifier: " + ChatColor.WHITE + "Impostor")
                 currentModifierText = cheeseHuntBoard.getScore(ChatColor.GOLD.toString() + "" + ChatColor.BOLD + "Modifier: " + ChatColor.WHITE + "Bottomless Cheese")
                 currentModifierText.score = 5
             }
             ModifierOptions.IMPOSTOR -> {
-                //TODO
+                cheeseHuntBoard.scoreboard!!.resetScores(ChatColor.GOLD.toString() + "" + ChatColor.BOLD + "Modifier: " + ChatColor.DARK_GRAY + "Inactive")
+                cheeseHuntBoard.scoreboard!!.resetScores(ChatColor.GOLD.toString() + "" + ChatColor.BOLD + "Modifier: " + ChatColor.WHITE + "Bottomless Cheese")
+                currentModifierText = cheeseHuntBoard.getScore(ChatColor.GOLD.toString() + "" + ChatColor.BOLD + "Modifier: " + ChatColor.WHITE + "Impostor")
+                currentModifierText.score = 5
             }
         }
     }

@@ -1,6 +1,7 @@
 package me.byrt.cheesehunt.event
 
 import me.byrt.cheesehunt.Main
+import me.byrt.cheesehunt.command.ModifierOptions
 import me.byrt.cheesehunt.manager.GameState
 import me.byrt.cheesehunt.manager.RoundState
 import me.byrt.cheesehunt.manager.Teams
@@ -27,19 +28,39 @@ class BlockBreakDropEvent : Listener {
         if(Main.getGame().getBuildMode() && e.player.isOp) {
             e.isCancelled = false
         } else {
-            if(e.block.type == Material.SPONGE && Main.getGame().getRoundState() == RoundState.ROUND_TWO && Main.getGame().getGameState() == GameState.IN_GAME) {
-                cheeseCollectedFirework(e.block.location, e.player)
-                Bukkit.getOnlinePlayers().stream().forEach {
-                        player: Player -> announcePlayerCollectedCheese(player, e.player)
+            if(Main.getGame().getModifier() == ModifierOptions.IMPOSTOR) {
+                if(Main.getGame().getPlayerManager().getRedImpostor() == e.player.uniqueId || Main.getGame().getPlayerManager().getBlueImpostor() == e.player.uniqueId) {
+                    if(e.block.type == Material.SPONGE) {
+                        e.player.sendMessage(Component.text("⚠ You can't break any blocks as you are an Impostor.").color(NamedTextColor.RED))
+                        e.player.playSound(e.player.location, "entity.enderman.teleport", SoundCategory.HOSTILE, 1f, 0f)
+                    }
+                    e.isCancelled = true
+                } else if(Main.getGame().getPlayerManager().getRedImpostor() != e.player.uniqueId || Main.getGame().getPlayerManager().getBlueImpostor() != e.player.uniqueId) {
+                    if(e.block.type == Material.SPONGE) {
+                        playerCollectCheese(e.block.location, e.player)
+                        e.isCancelled = false
+                    } else {
+                        e.isCancelled = true
+                    }
                 }
-                incrementPlayerCollectedCheese(e.player)
-                Main.getGame().getInfoBoardManager().updateCollectedStats()
-                checkCheeseCollected()
+            }
+            else if(e.block.type == Material.SPONGE && Main.getGame().getRoundState() == RoundState.ROUND_TWO && Main.getGame().getGameState() == GameState.IN_GAME && Main.getGame().getModifier() != ModifierOptions.IMPOSTOR) {
+                playerCollectCheese(e.block.location, e.player)
                 e.isCancelled = false
             } else {
                 e.isCancelled = true
             }
         }
+    }
+
+    private fun playerCollectCheese(eventLocation : Location, eventPlayer : Player) {
+        cheeseCollectedFirework(eventLocation, eventPlayer)
+        Bukkit.getOnlinePlayers().stream().forEach {
+                player: Player -> announcePlayerCollectedCheese(player, eventPlayer)
+        }
+        incrementPlayerCollectedCheese(eventPlayer)
+        Main.getGame().getInfoBoardManager().updateCollectedStats()
+        checkCheeseCollected()
     }
 
     private fun announcePlayerCollectedCheese(player : Player, collector : Player) {

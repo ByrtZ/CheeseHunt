@@ -22,8 +22,7 @@ class DamageEvent : Listener {
             || e.cause == EntityDamageEvent.DamageCause.DRAGON_BREATH
             || e.cause == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION
             || e.cause == EntityDamageEvent.DamageCause.PROJECTILE
-            || e.cause == EntityDamageEvent.DamageCause.POISON
-            || e.cause == EntityDamageEvent.DamageCause.CUSTOM) {
+            || e.cause == EntityDamageEvent.DamageCause.POISON) {
             e.isCancelled = true
         }
     }

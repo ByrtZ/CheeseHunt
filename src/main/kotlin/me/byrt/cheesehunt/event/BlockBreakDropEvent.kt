@@ -64,35 +64,37 @@ class BlockBreakDropEvent : Listener {
     }
 
     private fun announcePlayerCollectedCheese(player : Player, collector : Player) {
-        if(player == collector) {
-            Main.getGame().getItemManager().givePlayerCheese(collector)
-            collector.sendMessage(Component.text("[")
-                .append(Component.text("▶").color(NamedTextColor.YELLOW))
-                .append(Component.text("] "))
-                .append(Component.text("You collected a piece of cheese!").color(NamedTextColor.GREEN))
-            )
-            collector.playSound(collector.location, "entity.player.levelup", 1f, 1.5f)
-        } else {
-            if(Main.getGame().getTeamManager().getPlayerTeam(collector.uniqueId) == Teams.RED) {
-                player.sendMessage(Component.text("[")
+        if(Main.getGame().getModifier() != ModifierOptions.BOTTOMLESS_CHEESE) {
+            if(player == collector) {
+                Main.getGame().getItemManager().givePlayerCheese(collector)
+                collector.sendMessage(Component.text("[")
                     .append(Component.text("▶").color(NamedTextColor.YELLOW))
                     .append(Component.text("] "))
-                    .append(Component.text(collector.name).color(NamedTextColor.RED))
-                    .append(Component.text(" collected a piece of cheese.")).color(NamedTextColor.WHITE)
+                    .append(Component.text("You collected a piece of cheese!").color(NamedTextColor.GREEN))
                 )
-            } else if(Main.getGame().getTeamManager().getPlayerTeam(collector.uniqueId) == Teams.BLUE) {
-                player.sendMessage(Component.text("[")
-                    .append(Component.text("▶").color(NamedTextColor.YELLOW))
-                    .append(Component.text("] "))
-                    .append(Component.text(collector.name).color(NamedTextColor.BLUE))
-                    .append(Component.text(" collected a piece of cheese.")).color(NamedTextColor.WHITE)
-                )
-            }
+                collector.playSound(collector.location, "entity.player.levelup", 1f, 1.5f)
+            } else {
+                if(Main.getGame().getTeamManager().getPlayerTeam(collector.uniqueId) == Teams.RED) {
+                    player.sendMessage(Component.text("[")
+                        .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                        .append(Component.text("] "))
+                        .append(Component.text(collector.name).color(NamedTextColor.RED))
+                        .append(Component.text(" collected a piece of cheese.")).color(NamedTextColor.WHITE)
+                    )
+                } else if(Main.getGame().getTeamManager().getPlayerTeam(collector.uniqueId) == Teams.BLUE) {
+                    player.sendMessage(Component.text("[")
+                        .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                        .append(Component.text("] "))
+                        .append(Component.text(collector.name).color(NamedTextColor.BLUE))
+                        .append(Component.text(" collected a piece of cheese.")).color(NamedTextColor.WHITE)
+                    )
+                }
 
-            if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED && Main.getGame().getTeamManager().getPlayerTeam(collector.uniqueId) == Teams.RED || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE && Main.getGame().getTeamManager().getPlayerTeam(collector.uniqueId) == Teams.BLUE) {
-                player.playSound(player.location, "entity.player.levelup", 1f, 1.5f)
-            } else if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED && Main.getGame().getTeamManager().getPlayerTeam(collector.uniqueId) == Teams.BLUE || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE && Main.getGame().getTeamManager().getPlayerTeam(collector.uniqueId) == Teams.RED) {
-                player.playSound(player.location, "entity.wandering_trader.no", 1f, 1f)
+                if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED && Main.getGame().getTeamManager().getPlayerTeam(collector.uniqueId) == Teams.RED || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE && Main.getGame().getTeamManager().getPlayerTeam(collector.uniqueId) == Teams.BLUE) {
+                    player.playSound(player.location, "entity.player.levelup", 1f, 1.5f)
+                } else if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED && Main.getGame().getTeamManager().getPlayerTeam(collector.uniqueId) == Teams.BLUE || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE && Main.getGame().getTeamManager().getPlayerTeam(collector.uniqueId) == Teams.RED) {
+                    player.playSound(player.location, "entity.wandering_trader.no", 1f, 1f)
+                }
             }
         }
     }

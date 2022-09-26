@@ -24,13 +24,7 @@ class BlockPlaceEvent : Listener {
             e.isCancelled = false
         } else {
             if(e.block.type == Material.SPONGE && Main.getGame().getRoundState() == RoundState.ROUND_ONE && e.blockAgainst.type != Material.BARRIER) {
-                cheesePlacedFirework(e.block.location, e.player)
-                Bukkit.getOnlinePlayers().stream().forEach {
-                        player: Player -> announcePlayerPlacedCheese(player, e.player)
-                }
-                incrementPlayerPlacedCheese(e.player)
-                Main.getGame().getInfoBoardManager().updatePlacedStats()
-                checkCheesePlaced()
+                playerPlaceCheese(e.block.location, e.player)
                 e.isCancelled = false
             } else {
                 e.isCancelled = true
@@ -38,35 +32,47 @@ class BlockPlaceEvent : Listener {
         }
     }
 
-    private fun announcePlayerPlacedCheese(player : Player, placer : Player) {
-        if(player == placer) {
-            placer.sendMessage(Component.text("[")
-                .append(Component.text("▶").color(NamedTextColor.YELLOW))
-                .append(Component.text("] "))
-                .append(Component.text("You placed a piece of cheese!").color(NamedTextColor.GREEN))
-            )
-            placer.playSound(placer.location, "entity.wandering_trader.yes", 1f, 1f)
-        } else {
-            if(Main.getGame().getTeamManager().getPlayerTeam(placer.uniqueId) == Teams.RED) {
-                player.sendMessage(Component.text("[")
-                    .append(Component.text("▶").color(NamedTextColor.YELLOW))
-                    .append(Component.text("] "))
-                    .append(Component.text(placer.name).color(NamedTextColor.RED))
-                    .append(Component.text(" placed a piece of cheese.")).color(NamedTextColor.WHITE)
-                )
-            } else if(Main.getGame().getTeamManager().getPlayerTeam(placer.uniqueId) == Teams.BLUE) {
-                player.sendMessage(Component.text("[")
-                    .append(Component.text("▶").color(NamedTextColor.YELLOW))
-                    .append(Component.text("] "))
-                    .append(Component.text(placer.name).color(NamedTextColor.BLUE))
-                    .append(Component.text(" placed a piece of cheese.")).color(NamedTextColor.WHITE)
-                )
-            }
+    private fun playerPlaceCheese(eventLocation : Location, eventPlayer : Player) {
+        cheesePlacedFirework(eventLocation, eventPlayer)
+        Bukkit.getOnlinePlayers().stream().forEach {
+                player: Player -> announcePlayerPlacedCheese(player, eventPlayer)
+        }
+        incrementPlayerPlacedCheese(eventPlayer)
+        Main.getGame().getInfoBoardManager().updatePlacedStats()
+        checkCheesePlaced()
+    }
 
-            if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED && Main.getGame().getTeamManager().getPlayerTeam(placer.uniqueId) == Teams.RED || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE && Main.getGame().getTeamManager().getPlayerTeam(placer.uniqueId) == Teams.BLUE) {
-                player.playSound(player.location, "entity.wandering_trader.yes", 1f, 1f)
-            } else if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED && Main.getGame().getTeamManager().getPlayerTeam(placer.uniqueId) == Teams.BLUE || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE && Main.getGame().getTeamManager().getPlayerTeam(placer.uniqueId) == Teams.RED) {
-                player.playSound(player.location, "entity.wandering_trader.no", 1f, 1f)
+    private fun announcePlayerPlacedCheese(player : Player, placer : Player) {
+        if(Main.getGame().getModifier() != ModifierOptions.BOTTOMLESS_CHEESE) {
+            if(player == placer) {
+                placer.sendMessage(Component.text("[")
+                    .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                    .append(Component.text("] "))
+                    .append(Component.text("You placed a piece of cheese!").color(NamedTextColor.GREEN))
+                )
+                placer.playSound(placer.location, "entity.wandering_trader.yes", 1f, 1f)
+            } else {
+                if(Main.getGame().getTeamManager().getPlayerTeam(placer.uniqueId) == Teams.RED) {
+                    player.sendMessage(Component.text("[")
+                        .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                        .append(Component.text("] "))
+                        .append(Component.text(placer.name).color(NamedTextColor.RED))
+                        .append(Component.text(" placed a piece of cheese.")).color(NamedTextColor.WHITE)
+                    )
+                } else if(Main.getGame().getTeamManager().getPlayerTeam(placer.uniqueId) == Teams.BLUE) {
+                    player.sendMessage(Component.text("[")
+                        .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                        .append(Component.text("] "))
+                        .append(Component.text(placer.name).color(NamedTextColor.BLUE))
+                        .append(Component.text(" placed a piece of cheese.")).color(NamedTextColor.WHITE)
+                    )
+                }
+
+                if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED && Main.getGame().getTeamManager().getPlayerTeam(placer.uniqueId) == Teams.RED || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE && Main.getGame().getTeamManager().getPlayerTeam(placer.uniqueId) == Teams.BLUE) {
+                    player.playSound(player.location, "entity.wandering_trader.yes", 1f, 1f)
+                } else if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED && Main.getGame().getTeamManager().getPlayerTeam(placer.uniqueId) == Teams.BLUE || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE && Main.getGame().getTeamManager().getPlayerTeam(placer.uniqueId) == Teams.RED) {
+                    player.playSound(player.location, "entity.wandering_trader.no", 1f, 1f)
+                }
             }
         }
     }

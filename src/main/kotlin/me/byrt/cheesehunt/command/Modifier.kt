@@ -13,6 +13,7 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.title.Title
 
 import org.bukkit.Bukkit
@@ -68,11 +69,13 @@ class Modifier : BaseCommand {
                             Main.getGame().getInfoBoardManager().updateModifier()
                             for(player in Bukkit.getOnlinePlayers()) {
                                 player.playSound(modifierEnabledSound)
-                                player.sendMessage(Component.text("\n⚠ Bottomless Cheese modifier enabled ⚠\n").color(NamedTextColor.GOLD))
+                                player.sendMessage(Component.text("\n⚠ Modifier: ").color(NamedTextColor.GOLD)
+                                    .append(Component.text("Bottomless Cheese ↴").color(NamedTextColor.YELLOW)
+                                    .append(Component.text("\nRound 1: Your hotbar is filled with delicious cheese.\nRound 2: Your Cheese Collector has super speed.\n").color(TextColor.fromHexString("#F9F37F")))))
                                 player.showTitle(
                                     Title.title(
-                                        Component.text(""),
-                                        Component.text("⚠ Bottomless Cheese modifier enabled ⚠").color(NamedTextColor.GOLD),
+                                        Component.text("Modifier").color(NamedTextColor.GOLD),
+                                        Component.text("⚠ Bottomless Cheese ⚠").color(NamedTextColor.YELLOW),
                                         Title.Times.times(
                                             Duration.ofSeconds(1),
                                             Duration.ofSeconds(2),
@@ -97,11 +100,13 @@ class Modifier : BaseCommand {
                                 Main.getGame().getInfoBoardManager().updateModifier()
                                 for(player in Bukkit.getOnlinePlayers()) {
                                     player.playSound(modifierEnabledSound)
-                                    player.sendMessage(Component.text("\n⚠ Imposter modifier enabled ⚠\n").color(NamedTextColor.GOLD))
+                                    player.sendMessage(Component.text("\n⚠ Modifier: ").color(NamedTextColor.GOLD)
+                                        .append(Component.text("Impostor ↴").color(NamedTextColor.YELLOW)
+                                        .append(Component.text("\nRound 1: Nothing is different!\nRound 2: One player on your team is swapped to the enemy team's map where they can punch enemy players.\n").color(TextColor.fromHexString("#F9F37F")))))
                                     player.showTitle(
                                         Title.title(
-                                            Component.text(""),
-                                            Component.text("⚠ Impostor modifier enabled ⚠").color(NamedTextColor.GOLD),
+                                            Component.text("Modifier").color(NamedTextColor.GOLD),
+                                            Component.text("⚠ Impostor ⚠").color(NamedTextColor.YELLOW),
                                             Title.Times.times(
                                                 Duration.ofSeconds(1),
                                                 Duration.ofSeconds(2),

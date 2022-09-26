@@ -1,6 +1,7 @@
 package me.byrt.cheesehunt.task
 
 import me.byrt.cheesehunt.Main
+import me.byrt.cheesehunt.command.ModifierOptions
 import me.byrt.cheesehunt.manager.*
 
 import net.kyori.adventure.text.Component
@@ -285,6 +286,11 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
             }
         }
 
+        if(game.getGameState() == GameState.IN_GAME && game.getModifier() == ModifierOptions.IMPOSTOR) {
+            game.getPlayerManager().getRedImpostor()?.let { Bukkit.getPlayer(it)?.sendActionBar(Component.text("⚠ You are an Impostor ⚠").color(NamedTextColor.RED)) }
+            game.getPlayerManager().getBlueImpostor()?.let { Bukkit.getPlayer(it)?.sendActionBar(Component.text("⚠ You are an Impostor ⚠").color(NamedTextColor.RED)) }
+        }
+
         // Round ending front end
         if (timeLeft <= 0 && game.getGameState() == GameState.IN_GAME && game.getTimerState() == TimerState.ACTIVE) {
             if (game.getRoundState() == RoundState.ROUND_TWO) {
@@ -375,93 +381,37 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
                     player.sendMessage(Component.text("Red Team ").color(NamedTextColor.RED)
                         .append(Component.text("collected ${game.getCheeseManager().getRedCheeseCollected()}/${game.getCheeseManager().getBlueCheesePlaced()} cheese.").color(NamedTextColor.WHITE))
                     )
+                    if(game.getModifier() == ModifierOptions.BOTTOMLESS_CHEESE) {
+                        player.sendMessage(Component.text("Red Team ").color(NamedTextColor.RED)
+                            .append(Component.text("collected ${game.getCheeseManager().getRedCheeseCollectedPercentage()}% of cheese.\n").color(NamedTextColor.WHITE))
+                        )
+                    }
                     player.sendMessage(Component.text("Blue Team ").color(NamedTextColor.BLUE)
                         .append(Component.text("collected ${game.getCheeseManager().getBlueCheeseCollected()}/${game.getCheeseManager().getRedCheesePlaced()} cheese.").color(NamedTextColor.WHITE))
                     )
+                    if(game.getModifier() == ModifierOptions.BOTTOMLESS_CHEESE) {
+                        player.sendMessage(Component.text("Blue Team ").color(NamedTextColor.BLUE)
+                            .append(Component.text("collected ${game.getCheeseManager().getBlueCheeseCollectedPercentage()}% of cheese.").color(NamedTextColor.WHITE))
+                        )
+                    }
                 }
             }
             if(timeLeft == 67) {
-                for(player in Bukkit.getOnlinePlayers()) {
+                if(game.getModifier() == ModifierOptions.BOTTOMLESS_CHEESE) {
+                    if(game.getCheeseManager().getRedCheeseCollectedPercentage() > game.getCheeseManager().getBlueCheeseCollectedPercentage() && !game.getCheeseManager().hasRedFinishedCollecting() && !game.getCheeseManager().hasBlueFinishedCollecting()) {
+                        game.getTeamManager().redWinGame()
+                    } else if(game.getCheeseManager().getRedCheeseCollectedPercentage() < game.getCheeseManager().getBlueCheeseCollectedPercentage() && !game.getCheeseManager().hasRedFinishedCollecting() && !game.getCheeseManager().hasBlueFinishedCollecting()) {
+                        game.getTeamManager().blueWinGame()
+                    } else if(game.getCheeseManager().getRedCheeseCollectedPercentage() == game.getCheeseManager().getBlueCheeseCollectedPercentage() && !game.getCheeseManager().hasRedFinishedCollecting() && !game.getCheeseManager().hasBlueFinishedCollecting()) {
+                        game.getTeamManager().noWinGame()
+                    }
+                } else {
                     if(game.getCheeseManager().getRedCheeseCollected() > game.getCheeseManager().getBlueCheeseCollected() && !game.getCheeseManager().hasRedFinishedCollecting() && !game.getCheeseManager().hasBlueFinishedCollecting()) {
-                        if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED) {
-                            player.playSound(player.location, "ui.toast.challenge_complete", 1f, 1f)
-                            game.getCheeseManager().teamWinFireworks(player, Teams.RED)
-                            player.sendMessage(Component.text("\nYour team won the game!\n").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true))
-                            player.showTitle(
-                                Title.title(
-                                    Component.text("Your team won!").color(NamedTextColor.GREEN),
-                                    Component.text("Well done!").color(NamedTextColor.GREEN),
-                                    Title.Times.times(
-                                        Duration.ofSeconds(1),
-                                        Duration.ofSeconds(5),
-                                        Duration.ofSeconds(1)
-                                    )
-                                )
-                            )
-                        }
-                        if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE) {
-                            player.playSound(player.location, "entity.ender_dragon.growl", 1f, 1f)
-                            player.sendMessage(Component.text("\nYour team lost the game!\n").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true))
-                            player.showTitle(
-                                Title.title(
-                                    Component.text("Your team lost!").color(NamedTextColor.RED),
-                                    Component.text("Git gud!").color(NamedTextColor.RED),
-                                    Title.Times.times(
-                                        Duration.ofSeconds(1),
-                                        Duration.ofSeconds(5),
-                                        Duration.ofSeconds(1)
-                                    )
-                                )
-                            )
-                        }
+                        game.getTeamManager().redWinGame()
                     } else if(game.getCheeseManager().getRedCheeseCollected() < game.getCheeseManager().getBlueCheeseCollected() && !game.getCheeseManager().hasRedFinishedCollecting() && !game.getCheeseManager().hasBlueFinishedCollecting()) {
-                        if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE) {
-                            player.playSound(player.location, "ui.toast.challenge_complete", 1f, 1f)
-                            game.getCheeseManager().teamWinFireworks(player, Teams.BLUE)
-                            player.sendMessage(Component.text("\nYour team won the game!\n").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true))
-                            player.showTitle(
-                                Title.title(
-                                    Component.text("Your team won!").color(NamedTextColor.GREEN),
-                                    Component.text("Well done!").color(NamedTextColor.GREEN),
-                                    Title.Times.times(
-                                        Duration.ofSeconds(1),
-                                        Duration.ofSeconds(5),
-                                        Duration.ofSeconds(1)
-                                    )
-                                )
-                            )
-                        }
-                        if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED) {
-                            player.playSound(player.location, "entity.ender_dragon.growl", 1f, 1f)
-                            player.sendMessage(Component.text("\nYour team lost the game!\n").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true))
-                            player.showTitle(
-                                Title.title(
-                                    Component.text("Your team lost!").color(NamedTextColor.RED),
-                                    Component.text("Git gud!").color(NamedTextColor.RED),
-                                    Title.Times.times(
-                                        Duration.ofSeconds(1),
-                                        Duration.ofSeconds(5),
-                                        Duration.ofSeconds(1)
-                                    )
-                                )
-                            )
-                        }
+                        game.getTeamManager().blueWinGame()
                     } else if(game.getCheeseManager().getRedCheeseCollected() == game.getCheeseManager().getBlueCheeseCollected() && !game.getCheeseManager().hasRedFinishedCollecting() && !game.getCheeseManager().hasBlueFinishedCollecting()) {
-                        if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE) {
-                            player.playSound(player.location, "entity.wither.spawn", 1f, 2f)
-                            player.sendMessage(Component.text("\nNo team won!\n").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, true))
-                            player.showTitle(
-                                Title.title(
-                                    Component.text("No team won the game!").color(NamedTextColor.YELLOW),
-                                    Component.text("It was a draw.").color(NamedTextColor.YELLOW),
-                                    Title.Times.times(
-                                        Duration.ofSeconds(1),
-                                        Duration.ofSeconds(5),
-                                        Duration.ofSeconds(1)
-                                    )
-                                )
-                            )
-                        }
+                        game.getTeamManager().noWinGame()
                     }
                 }
             }
@@ -493,13 +443,13 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
             }
             if (timeLeft <= 0) {
                 for (player in Bukkit.getOnlinePlayers()) { player.sendMessage(Component.text("\nThank you for playing!\nThe server will be restarting shortly.\n").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true)) }
-                game.getBlockManager().resetBarriers()
                 game.getPlayerManager().clearAllItems()
                 game.getPlayerManager().teleportPlayersToSpawn()
                 game.setTimerState(TimerState.INACTIVE)
                 if(!game.getCheeseManager().hasRedFinishedCollecting() || !game.getCheeseManager().hasBlueFinishedCollecting()) {
                     game.getCheeseManager().clearUnmarkedCheeseMarkers()
                 }
+                game.getBlockManager().resetBarriers()
                 this.cancel()
             }
         }

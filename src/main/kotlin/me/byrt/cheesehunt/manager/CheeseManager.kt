@@ -1,12 +1,15 @@
 package me.byrt.cheesehunt.manager
 
 import me.byrt.cheesehunt.Main
-import org.bukkit.*
 
+import org.bukkit.*
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.Firework
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+
+import java.math.RoundingMode
+import java.text.DecimalFormat
 
 import java.util.*
 
@@ -166,6 +169,18 @@ class CheeseManager(private val game : Game) {
                 // This is literally impossible to reach :)
             }
         }
+    }
+
+    fun getRedCheeseCollectedPercentage(): Double {
+        val df = DecimalFormat("#.##")
+        df.roundingMode = RoundingMode.FLOOR
+        return df.format(game.getCheeseManager().getRedCheeseCollected().toDouble() / game.getCheeseManager().getBlueCheesePlaced().toDouble() * 100).toDouble()
+    }
+
+    fun getBlueCheeseCollectedPercentage(): Double {
+        val df = DecimalFormat("#.##")
+        df.roundingMode = RoundingMode.FLOOR
+        return df.format(game.getCheeseManager().getBlueCheeseCollected().toDouble() / game.getCheeseManager().getRedCheesePlaced().toDouble() * 100).toDouble()
     }
 
     fun getRedCheesePlaced() : Int {

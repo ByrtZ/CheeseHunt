@@ -14,11 +14,11 @@ import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.entity.Player
 
 @Suppress("unused")
-class JoinTeam : BaseCommand {
-    @CommandMethod("jointeam <team> <player>")
+class SetTeam : BaseCommand {
+    @CommandMethod("setteam <team> <player>")
     @CommandDescription("Puts the specified player on the specified team.")
     @CommandPermission("cheesehunt.jointeam")
-    fun joinTeam(sender : Player, @Argument("team") team : Teams, @Argument("player") player : Player) {
+    fun setTeam(sender : Player, @Argument("team") team : Teams, @Argument("player") player : Player) {
         if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED && team == Teams.RED || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE && team == Teams.BLUE || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.SPECTATOR && team == Teams.SPECTATOR) {
             sender.sendMessage(Component.text("This player is already on team $team.").color(NamedTextColor.RED))
         } else {

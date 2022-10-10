@@ -7,6 +7,7 @@ import me.byrt.cheesehunt.manager.Teams
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
 
+import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.event.EventHandler
@@ -20,7 +21,7 @@ class JoinQuitEvent : Listener {
     private fun onPlayerJoin(e : PlayerJoinEvent) {
         Main.getGame().getInfoBoardManager().showScoreboard(e.player)
         e.joinMessage(Component.text("${e.player.name} joined the game.").color(TextColor.fromHexString("#ffff00")))
-        e.player.teleport(Location(e.player.world, 0.5, -52.0 ,0.5, 0.0f, 0.0f))
+        e.player.teleport(Location(Bukkit.getWorld("Cheese"), 0.5, -52.0 ,0.5, 0.0f, 0.0f))
         e.player.inventory.clear()
         e.player.sendPlayerListHeaderAndFooter(Main.getGame().getTabListManager().getTabHeader(), Main.getGame().getTabListManager().getTabFooter())
 

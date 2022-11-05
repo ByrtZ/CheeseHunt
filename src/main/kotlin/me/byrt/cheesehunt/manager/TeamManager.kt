@@ -92,11 +92,13 @@ class TeamManager(private val game : Game) {
         redDisplayTeam.prefix(Component.text("").color(NamedTextColor.RED))
         redDisplayTeam.suffix(Component.text("").color(NamedTextColor.WHITE))
         redDisplayTeam.displayName(Component.text("Red").color(NamedTextColor.RED))
+        redDisplayTeam.setAllowFriendlyFire(false)
 
         blueDisplayTeam.color(NamedTextColor.BLUE)
         blueDisplayTeam.prefix(Component.text("").color(NamedTextColor.BLUE))
         blueDisplayTeam.suffix(Component.text("").color(NamedTextColor.WHITE))
         blueDisplayTeam.displayName(Component.text("Blue").color(NamedTextColor.BLUE))
+        blueDisplayTeam.setAllowFriendlyFire(false)
 
         uncollectedCheeseDisplayTeam.color(NamedTextColor.GOLD)
         uncollectedCheeseDisplayTeam.prefix(Component.text("").color(NamedTextColor.GOLD))
@@ -110,6 +112,7 @@ class TeamManager(private val game : Game) {
             .append(Component.text("] ").color(NamedTextColor.WHITE)))
         adminDisplayTeam.suffix(Component.text("").color(NamedTextColor.WHITE))
         adminDisplayTeam.displayName(Component.text("Admin").color(NamedTextColor.RED))
+        adminDisplayTeam.setAllowFriendlyFire(false)
     }
 
     fun destroyDisplayTeams() {

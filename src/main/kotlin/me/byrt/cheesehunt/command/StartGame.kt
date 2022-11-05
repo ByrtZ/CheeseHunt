@@ -6,14 +6,14 @@ import me.byrt.cheesehunt.manager.GameState
 import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
+
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
-
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
-import org.bukkit.Bukkit
 
+import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 
 @Suppress("unused")

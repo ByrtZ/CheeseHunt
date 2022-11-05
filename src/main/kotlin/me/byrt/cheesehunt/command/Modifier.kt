@@ -30,7 +30,7 @@ class Modifier : BaseCommand {
     @CommandPermission("cheesehunt.modifier")
     fun timer(sender : Player, @Argument("modifier") option : ModifierOptions) {
         if(Main.getGame().getGameState() != GameState.STARTING) {
-            sender.sendMessage(Component.text("You can't change the modifier right now'.").color(NamedTextColor.RED))
+            sender.sendMessage(Component.text("You can't change the modifier right now.").color(NamedTextColor.RED))
         } else {
             when(option) {
                 ModifierOptions.NONE -> {

@@ -37,6 +37,11 @@ class TabListManager(private var game : Game) {
         cheesePuns.add("'Damn! You're looking mozzar-hella good today!'")
         cheesePuns.add("'Hey, I camembert the last time we saw each other'")
         cheesePuns.add("'After the cheese factory exploded, all that was left was de-brie'")
+        cheesePuns.add("'Sweet dreams are made of cheese'")
+        cheesePuns.add("'I brought my Cheese rifle, it's time to go hunting'")
+        cheesePuns.add("'I swiss you the best!'")
+        cheesePuns.add("'Cheddar days are coming...'")
+        cheesePuns.add("'Sweet dreams are made of cheese,\nWho am I to disa-brie,\nI cheddar the world by the feta cheese,\nEverybody's looking for stilton.'")
         assignRandomPun()
     }
 

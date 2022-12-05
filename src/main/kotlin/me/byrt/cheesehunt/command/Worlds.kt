@@ -39,11 +39,11 @@ class Worlds : BaseCommand {
                             e.printStackTrace()
                         }
                     }
-                    WorldsList.BUILD -> {
+                    WorldsList.VALORANT -> {
                         try {
-                            if(!Bukkit.getWorlds().contains(Bukkit.getWorld("build"))) {
+                            if(!Bukkit.getWorlds().contains(Bukkit.getWorld("Valorant"))) {
                                 sender.sendMessage(Component.text("Attempting to open $world...").color(NamedTextColor.GRAY))
-                                Main.getPlugin().server.createWorld(WorldCreator.name("build"))
+                                Main.getPlugin().server.createWorld(WorldCreator.name("Valorant"))
                                 sender.sendMessage(Component.text("Successfully opened $world.").color(NamedTextColor.GREEN))
                             }
                         } catch(e : Exception) {
@@ -75,16 +75,16 @@ class Worlds : BaseCommand {
                             e.printStackTrace()
                         }
                     }
-                    WorldsList.BUILD -> {
+                    WorldsList.VALORANT -> {
                         try {
-                            if(Bukkit.getWorlds().contains(Bukkit.getWorld("build"))) {
+                            if(Bukkit.getWorlds().contains(Bukkit.getWorld("Valorant"))) {
                                 sender.sendMessage(Component.text("Attempting to close $world...").color(NamedTextColor.GRAY))
                                 for(player in Bukkit.getOnlinePlayers()) {
-                                    if(player.world == Bukkit.getWorld("build")) {
+                                    if(player.world == Bukkit.getWorld("Valorant")) {
                                         player.teleport(Location(Bukkit.getWorld("Cheese"), 0.5, -52.0 ,0.5, 0.0f, 0.0f))
                                     }
                                 }
-                                Main.getPlugin().server.unloadWorld("build", true)
+                                Main.getPlugin().server.unloadWorld("Valorant", true)
                                 sender.sendMessage(Component.text("Successfully closed $world.").color(NamedTextColor.GREEN))
                             }
                         } catch(e : Exception) {
@@ -111,10 +111,10 @@ class Worlds : BaseCommand {
                             e.printStackTrace()
                         }
                     }
-                    WorldsList.BUILD -> {
+                    WorldsList.VALORANT -> {
                         try {
                             sender.sendMessage(Component.text("Attempting to join ${world}...").color(NamedTextColor.GRAY))
-                            sender.player?.teleport(Location(Bukkit.getWorld("build"), 0.5, 64.0, 0.5, 0.0f, 0.0f))
+                            sender.player?.teleport(Location(Bukkit.getWorld("Valorant"), 0.5, 64.0, 0.5, 0.0f, 0.0f))
                             sender.sendMessage(Component.text("Successfully joined $world.").color(NamedTextColor.GREEN))
                         } catch(e : Exception) {
                             sender.sendMessage(Component.text("Unable to join $world.").color(NamedTextColor.RED))
@@ -137,5 +137,5 @@ enum class WorldOptions {
 enum class WorldsList {
     CHEESE,
     ORIGINAL,
-    BUILD
+    VALORANT
 }

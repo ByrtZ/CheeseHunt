@@ -51,6 +51,18 @@ class Worlds : BaseCommand {
                             e.printStackTrace()
                         }
                     }
+                    WorldsList.ELEOS -> {
+                        try {
+                            if(!Bukkit.getWorlds().contains(Bukkit.getWorld("eleos"))) {
+                                sender.sendMessage(Component.text("Attempting to open $world...").color(NamedTextColor.GRAY))
+                                Main.getPlugin().server.createWorld(WorldCreator.name("eleos"))
+                                sender.sendMessage(Component.text("Successfully opened $world.").color(NamedTextColor.GREEN))
+                            }
+                        } catch(e : Exception) {
+                            sender.sendMessage(Component.text("Unable to open $world.").color(NamedTextColor.RED))
+                            e.printStackTrace()
+                        }
+                    }
                 }
             }
             WorldOptions.CLOSE -> {
@@ -92,6 +104,23 @@ class Worlds : BaseCommand {
                             e.printStackTrace()
                         }
                     }
+                    WorldsList.ELEOS -> {
+                        try {
+                            if(Bukkit.getWorlds().contains(Bukkit.getWorld("eleos"))) {
+                                sender.sendMessage(Component.text("Attempting to close $world...").color(NamedTextColor.GRAY))
+                                for(player in Bukkit.getOnlinePlayers()) {
+                                    if(player.world == Bukkit.getWorld("eleos")) {
+                                        player.teleport(Location(Bukkit.getWorld("Cheese"), 0.5, -52.0 ,0.5, 0.0f, 0.0f))
+                                    }
+                                }
+                                Main.getPlugin().server.unloadWorld("eleos", true)
+                                sender.sendMessage(Component.text("Successfully closed $world.").color(NamedTextColor.GREEN))
+                            }
+                        } catch(e : Exception) {
+                            sender.sendMessage(Component.text("Unable to close $world.").color(NamedTextColor.RED))
+                            e.printStackTrace()
+                        }
+                    }
                 }
             }
             WorldOptions.JOIN -> {
@@ -121,8 +150,17 @@ class Worlds : BaseCommand {
                             e.printStackTrace()
                         }
                     }
+                    WorldsList.ELEOS -> {
+                        try {
+                            sender.sendMessage(Component.text("Attempting to join ${world}...").color(NamedTextColor.GRAY))
+                            sender.player?.teleport(Location(Bukkit.getWorld("eleos"), 0.5, 64.0, 0.5, 0.0f, 0.0f))
+                            sender.sendMessage(Component.text("Successfully joined $world.").color(NamedTextColor.GREEN))
+                        } catch(e : Exception) {
+                            sender.sendMessage(Component.text("Unable to join $world.").color(NamedTextColor.RED))
+                            e.printStackTrace()
+                        }
+                    }
                 }
-
             }
         }
     }
@@ -137,5 +175,6 @@ enum class WorldOptions {
 enum class WorldsList {
     CHEESE,
     ORIGINAL,
+    ELEOS,
     VALORANT
 }

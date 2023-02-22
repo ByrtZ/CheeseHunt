@@ -19,6 +19,8 @@ class Game(private val plugin : Main) {
     private val infoBoardManager = InfoBoardManager(this)
     private val tabListManager = TabListManager(this)
     private val gameCountdownTask = GameCountdownTask(this)
+    private val musicLoop = MusicLoop(this)
+    private var musicLooper = false
 
     fun setGameState(newState : GameState) {
         this.gameState = newState
@@ -148,6 +150,18 @@ class Game(private val plugin : Main) {
 
     fun getModifier() : ModifierOptions {
         return this.modifier
+    }
+
+    fun getMusicLoop(): MusicLoop {
+        return this.musicLoop
+    }
+
+    fun setMusicLooper(mode : Boolean) {
+        this.musicLooper = mode
+    }
+
+    fun getMusicLooper() : Boolean {
+        return this.musicLooper
     }
 
     fun cleanUp() {

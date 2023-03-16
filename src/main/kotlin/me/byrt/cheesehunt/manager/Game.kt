@@ -1,7 +1,6 @@
 package me.byrt.cheesehunt.manager
 
 import me.byrt.cheesehunt.Main
-import me.byrt.cheesehunt.command.ModifierOptions
 import me.byrt.cheesehunt.task.GameCountdownTask
 
 @Suppress("unused")
@@ -9,7 +8,6 @@ class Game(private val plugin : Main) {
     private var gameState : GameState = GameState.IDLE
     private var roundState : RoundState = RoundState.ROUND_ONE
     private var timerState : TimerState = TimerState.INACTIVE
-    private var modifier: ModifierOptions = ModifierOptions.NONE
     private var buildMode = false
     private val playerManager = PlayerManager(this)
     private val teamManager = TeamManager(this)
@@ -54,9 +52,6 @@ class Game(private val plugin : Main) {
                     RoundState.ROUND_TWO -> {
                         infoBoardManager.addCollectedStatsToScoreboard()
                         infoBoardManager.updateCollectedStats()
-                        if(modifier == ModifierOptions.IMPOSTOR) {
-                            playerManager.assignRandomImpostors()
-                        }
                     }
                 }
                 startRound()
@@ -142,14 +137,6 @@ class Game(private val plugin : Main) {
 
     fun getBuildMode() : Boolean {
         return this.buildMode
-    }
-
-    fun setModifier(modifier : ModifierOptions) {
-        this.modifier = modifier
-    }
-
-    fun getModifier() : ModifierOptions {
-        return this.modifier
     }
 
     fun getMusicLoop(): MusicLoop {

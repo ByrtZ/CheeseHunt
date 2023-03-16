@@ -1,7 +1,6 @@
 package me.byrt.cheesehunt.task
 
 import me.byrt.cheesehunt.Main
-import me.byrt.cheesehunt.command.ModifierOptions
 import me.byrt.cheesehunt.manager.*
 
 import net.kyori.adventure.text.Component
@@ -286,11 +285,6 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
             }
         }
 
-        if(game.getGameState() == GameState.IN_GAME && game.getModifier() == ModifierOptions.IMPOSTOR) {
-            game.getPlayerManager().getRedImpostor()?.let { Bukkit.getPlayer(it)?.sendActionBar(Component.text("⚠ You are an Impostor ⚠").color(NamedTextColor.RED)) }
-            game.getPlayerManager().getBlueImpostor()?.let { Bukkit.getPlayer(it)?.sendActionBar(Component.text("⚠ You are an Impostor ⚠").color(NamedTextColor.RED)) }
-        }
-
         // Round ending front end
         if (timeLeft <= 0 && game.getGameState() == GameState.IN_GAME && game.getTimerState() == TimerState.ACTIVE) {
             if (game.getRoundState() == RoundState.ROUND_TWO) {
@@ -381,38 +375,18 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
                     player.sendMessage(Component.text("Red Team ").color(NamedTextColor.RED)
                         .append(Component.text("collected ${game.getCheeseManager().getRedCheeseCollected()}/${game.getCheeseManager().getBlueCheesePlaced()} cheese.").color(NamedTextColor.WHITE))
                     )
-                    if(game.getModifier() == ModifierOptions.BOTTOMLESS_CHEESE) {
-                        player.sendMessage(Component.text("Red Team ").color(NamedTextColor.RED)
-                            .append(Component.text("collected ${game.getCheeseManager().getRedCheeseCollectedPercentage()}% of cheese.\n").color(NamedTextColor.WHITE))
-                        )
-                    }
                     player.sendMessage(Component.text("Blue Team ").color(NamedTextColor.BLUE)
                         .append(Component.text("collected ${game.getCheeseManager().getBlueCheeseCollected()}/${game.getCheeseManager().getRedCheesePlaced()} cheese.").color(NamedTextColor.WHITE))
                     )
-                    if(game.getModifier() == ModifierOptions.BOTTOMLESS_CHEESE) {
-                        player.sendMessage(Component.text("Blue Team ").color(NamedTextColor.BLUE)
-                            .append(Component.text("collected ${game.getCheeseManager().getBlueCheeseCollectedPercentage()}% of cheese.").color(NamedTextColor.WHITE))
-                        )
-                    }
                 }
             }
             if(timeLeft == 67) {
-                if(game.getModifier() == ModifierOptions.BOTTOMLESS_CHEESE) {
-                    if(game.getCheeseManager().getRedCheeseCollectedPercentage() > game.getCheeseManager().getBlueCheeseCollectedPercentage() && !game.getCheeseManager().hasRedFinishedCollecting() && !game.getCheeseManager().hasBlueFinishedCollecting()) {
-                        game.getTeamManager().redWinGame()
-                    } else if(game.getCheeseManager().getRedCheeseCollectedPercentage() < game.getCheeseManager().getBlueCheeseCollectedPercentage() && !game.getCheeseManager().hasRedFinishedCollecting() && !game.getCheeseManager().hasBlueFinishedCollecting()) {
-                        game.getTeamManager().blueWinGame()
-                    } else if(game.getCheeseManager().getRedCheeseCollectedPercentage() == game.getCheeseManager().getBlueCheeseCollectedPercentage() && !game.getCheeseManager().hasRedFinishedCollecting() && !game.getCheeseManager().hasBlueFinishedCollecting()) {
-                        game.getTeamManager().noWinGame()
-                    }
-                } else {
-                    if(game.getCheeseManager().getRedCheeseCollected() > game.getCheeseManager().getBlueCheeseCollected() && !game.getCheeseManager().hasRedFinishedCollecting() && !game.getCheeseManager().hasBlueFinishedCollecting()) {
-                        game.getTeamManager().redWinGame()
-                    } else if(game.getCheeseManager().getRedCheeseCollected() < game.getCheeseManager().getBlueCheeseCollected() && !game.getCheeseManager().hasRedFinishedCollecting() && !game.getCheeseManager().hasBlueFinishedCollecting()) {
-                        game.getTeamManager().blueWinGame()
-                    } else if(game.getCheeseManager().getRedCheeseCollected() == game.getCheeseManager().getBlueCheeseCollected() && !game.getCheeseManager().hasRedFinishedCollecting() && !game.getCheeseManager().hasBlueFinishedCollecting()) {
-                        game.getTeamManager().noWinGame()
-                    }
+                if(game.getCheeseManager().getRedCheeseCollected() > game.getCheeseManager().getBlueCheeseCollected() && !game.getCheeseManager().hasRedFinishedCollecting() && !game.getCheeseManager().hasBlueFinishedCollecting()) {
+                    game.getTeamManager().redWinGame()
+                } else if(game.getCheeseManager().getRedCheeseCollected() < game.getCheeseManager().getBlueCheeseCollected() && !game.getCheeseManager().hasRedFinishedCollecting() && !game.getCheeseManager().hasBlueFinishedCollecting()) {
+                    game.getTeamManager().blueWinGame()
+                } else if(game.getCheeseManager().getRedCheeseCollected() == game.getCheeseManager().getBlueCheeseCollected() && !game.getCheeseManager().hasRedFinishedCollecting() && !game.getCheeseManager().hasBlueFinishedCollecting()) {
+                    game.getTeamManager().noWinGame()
                 }
             }
             if(timeLeft == 62) {

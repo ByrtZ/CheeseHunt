@@ -1,7 +1,6 @@
 package me.byrt.cheesehunt.event
 
 import me.byrt.cheesehunt.Main
-import me.byrt.cheesehunt.command.ModifierOptions
 import me.byrt.cheesehunt.manager.GameState
 import me.byrt.cheesehunt.manager.RoundState
 import me.byrt.cheesehunt.manager.Teams
@@ -28,23 +27,7 @@ class BlockBreakDropEvent : Listener {
         if(Main.getGame().getBuildMode() && e.player.isOp) {
             e.isCancelled = false
         } else {
-            if(Main.getGame().getModifier() == ModifierOptions.IMPOSTOR) {
-                if(Main.getGame().getPlayerManager().getRedImpostor() == e.player.uniqueId || Main.getGame().getPlayerManager().getBlueImpostor() == e.player.uniqueId) {
-                    if(e.block.type == Material.SPONGE) {
-                        e.player.sendMessage(Component.text("⚠ You can't break any blocks as you are an Impostor.").color(NamedTextColor.RED))
-                        e.player.playSound(e.player.location, "entity.enderman.teleport", SoundCategory.HOSTILE, 1f, 0f)
-                    }
-                    e.isCancelled = true
-                } else if(Main.getGame().getPlayerManager().getRedImpostor() != e.player.uniqueId || Main.getGame().getPlayerManager().getBlueImpostor() != e.player.uniqueId) {
-                    if(e.block.type == Material.SPONGE) {
-                        playerCollectCheese(e.block.location, e.player)
-                        e.isCancelled = false
-                    } else {
-                        e.isCancelled = true
-                    }
-                }
-            }
-            else if(e.block.type == Material.SPONGE && Main.getGame().getRoundState() == RoundState.ROUND_TWO && Main.getGame().getGameState() == GameState.IN_GAME && Main.getGame().getModifier() != ModifierOptions.IMPOSTOR) {
+            if(e.block.type == Material.SPONGE && Main.getGame().getRoundState() == RoundState.ROUND_TWO && Main.getGame().getGameState() == GameState.IN_GAME) {
                 playerCollectCheese(e.block.location, e.player)
                 e.isCancelled = false
             } else {
@@ -64,37 +47,35 @@ class BlockBreakDropEvent : Listener {
     }
 
     private fun announcePlayerCollectedCheese(player : Player, collector : Player) {
-        if(Main.getGame().getModifier() != ModifierOptions.BOTTOMLESS_CHEESE) {
-            if(player == collector) {
-                Main.getGame().getItemManager().givePlayerCheese(collector)
-                collector.sendMessage(Component.text("[")
+        if(player == collector) {
+            Main.getGame().getItemManager().givePlayerCheese(collector)
+            collector.sendMessage(Component.text("[")
+                .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                .append(Component.text("] "))
+                .append(Component.text("You collected a piece of cheese!").color(NamedTextColor.GREEN))
+            )
+            collector.playSound(collector.location, "entity.player.levelup", 1f, 1.5f)
+        } else {
+            if(Main.getGame().getTeamManager().getPlayerTeam(collector.uniqueId) == Teams.RED) {
+                player.sendMessage(Component.text("[")
                     .append(Component.text("▶").color(NamedTextColor.YELLOW))
                     .append(Component.text("] "))
-                    .append(Component.text("You collected a piece of cheese!").color(NamedTextColor.GREEN))
+                    .append(Component.text(collector.name).color(NamedTextColor.RED))
+                    .append(Component.text(" collected a piece of cheese.")).color(NamedTextColor.WHITE)
                 )
-                collector.playSound(collector.location, "entity.player.levelup", 1f, 1.5f)
-            } else {
-                if(Main.getGame().getTeamManager().getPlayerTeam(collector.uniqueId) == Teams.RED) {
-                    player.sendMessage(Component.text("[")
-                        .append(Component.text("▶").color(NamedTextColor.YELLOW))
-                        .append(Component.text("] "))
-                        .append(Component.text(collector.name).color(NamedTextColor.RED))
-                        .append(Component.text(" collected a piece of cheese.")).color(NamedTextColor.WHITE)
-                    )
-                } else if(Main.getGame().getTeamManager().getPlayerTeam(collector.uniqueId) == Teams.BLUE) {
-                    player.sendMessage(Component.text("[")
-                        .append(Component.text("▶").color(NamedTextColor.YELLOW))
-                        .append(Component.text("] "))
-                        .append(Component.text(collector.name).color(NamedTextColor.BLUE))
-                        .append(Component.text(" collected a piece of cheese.")).color(NamedTextColor.WHITE)
-                    )
-                }
+            } else if(Main.getGame().getTeamManager().getPlayerTeam(collector.uniqueId) == Teams.BLUE) {
+                player.sendMessage(Component.text("[")
+                    .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                    .append(Component.text("] "))
+                    .append(Component.text(collector.name).color(NamedTextColor.BLUE))
+                    .append(Component.text(" collected a piece of cheese.")).color(NamedTextColor.WHITE)
+                )
+            }
 
-                if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED && Main.getGame().getTeamManager().getPlayerTeam(collector.uniqueId) == Teams.RED || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE && Main.getGame().getTeamManager().getPlayerTeam(collector.uniqueId) == Teams.BLUE) {
-                    player.playSound(player.location, "entity.player.levelup", 1f, 1.5f)
-                } else if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED && Main.getGame().getTeamManager().getPlayerTeam(collector.uniqueId) == Teams.BLUE || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE && Main.getGame().getTeamManager().getPlayerTeam(collector.uniqueId) == Teams.RED) {
-                    player.playSound(player.location, "entity.wandering_trader.no", 1f, 1f)
-                }
+            if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED && Main.getGame().getTeamManager().getPlayerTeam(collector.uniqueId) == Teams.RED || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE && Main.getGame().getTeamManager().getPlayerTeam(collector.uniqueId) == Teams.BLUE) {
+                player.playSound(player.location, "entity.player.levelup", 1f, 1.5f)
+            } else if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED && Main.getGame().getTeamManager().getPlayerTeam(collector.uniqueId) == Teams.BLUE || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE && Main.getGame().getTeamManager().getPlayerTeam(collector.uniqueId) == Teams.RED) {
+                player.playSound(player.location, "entity.wandering_trader.no", 1f, 1f)
             }
         }
     }

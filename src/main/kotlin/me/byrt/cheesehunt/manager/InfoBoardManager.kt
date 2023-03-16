@@ -1,13 +1,13 @@
 package me.byrt.cheesehunt.manager
 
 import me.byrt.cheesehunt.Main
+
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
-import org.bukkit.entity.Player
 import org.bukkit.scoreboard.*
 
 class InfoBoardManager(private val game : Game) {
@@ -43,8 +43,12 @@ class InfoBoardManager(private val game : Game) {
         cheeseHuntBoard.unregister()
     }
 
-    fun showScoreboard(player : Player) {
-        player.scoreboard = scoreboard
+    fun showScoreboard() {
+        cheeseHuntBoard.displaySlot = DisplaySlot.SIDEBAR
+    }
+
+    fun hideScoreboard() {
+        cheeseHuntBoard.displaySlot = null
     }
 
     fun addPlacedStatsToScoreboard() {

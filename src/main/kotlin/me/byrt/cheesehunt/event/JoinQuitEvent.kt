@@ -20,10 +20,11 @@ class JoinQuitEvent : Listener {
     @EventHandler
     private fun onPlayerJoin(e : PlayerJoinEvent) {
         if(Main.getGame().getMusicLooper()) {
+            Main.getGame().getInfoBoardManager().hideScoreboard()
             e.player.teleport(Location(Bukkit.getWorld("Cheese"), -99.5, -21.0, -110.5, 0.0f, 0.0f))
             e.joinMessage(null)
         } else {
-            Main.getGame().getInfoBoardManager().showScoreboard(e.player)
+            Main.getGame().getInfoBoardManager().showScoreboard()
             e.player.teleport(Location(Bukkit.getWorld("Cheese"), 0.5, -52.0 ,0.5, 0.0f, 0.0f))
             e.joinMessage(Component.text("${e.player.name} joined the game.").color(TextColor.fromHexString("#ffff00")))
         }

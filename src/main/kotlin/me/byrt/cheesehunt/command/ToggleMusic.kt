@@ -30,16 +30,18 @@ class ToggleMusic : BaseCommand {
                         player.sendMessage(Component.text("Looping music has been disabled by ${sender.name}.\nPlayers joining from now on will not receive a music loop.").color(NamedTextColor.RED))
                         player.playSound(musicToggleSuccessSound)
                     }
-                    Main.getGame().setMusicLooper(false)
+                    Main.getGame().getMusicLoop().removeFromMusicLoop(player)
+                    player.stopSound("event.downtime.loop")
                 }
+                Main.getGame().setMusicLooper(false)
             } else {
                 for(player in Bukkit.getOnlinePlayers()) {
                     if(player.isOp) {
                         player.sendMessage(Component.text("Looping music has been enabled by ${sender.name}.\nLeave and rejoin the server to start your music loop!").color(NamedTextColor.GREEN))
                         player.playSound(musicToggleSuccessSound)
                     }
-                    Main.getGame().setMusicLooper(true)
                 }
+                Main.getGame().setMusicLooper(true)
             }
         } else {
             sender.sendMessage(Component.text("You can only toggle Music Looping when the game is idle.").color(NamedTextColor.RED))

@@ -35,5 +35,4 @@ class MusicLoop(private val game : Game) {
     fun removeFromMusicLoop(player : Player) {
         musicLoopMap.remove(player.uniqueId)?.cancel()
     }
-
 }

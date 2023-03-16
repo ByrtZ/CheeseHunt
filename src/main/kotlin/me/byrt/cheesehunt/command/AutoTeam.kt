@@ -27,13 +27,11 @@ class AutoTeam : BaseCommand {
         sender.playSound(shuffleStartSound)
         var i = 0
         Main.getPlugin().server.onlinePlayers.shuffled().forEach {
-            Main.getGame().getTeamManager().removeFromTeam(it.uniqueId, Main.getGame().getTeamManager().getPlayerTeam(it.uniqueId))
+            Main.getGame().getTeamManager().removeFromTeam(it, it.uniqueId, Main.getGame().getTeamManager().getPlayerTeam(it.uniqueId))
             if (i % 2 == 0) {
-                Main.getGame().getTeamManager().addToTeam(it.uniqueId, Teams.RED)
-                Main.getGame().getItemManager().playerJoinTeamEquip(it, Teams.RED)
+                Main.getGame().getTeamManager().addToTeam(it, it.uniqueId, Teams.RED)
             } else {
-                Main.getGame().getTeamManager().addToTeam(it.uniqueId, Teams.BLUE)
-                Main.getGame().getItemManager().playerJoinTeamEquip(it, Teams.BLUE)
+                Main.getGame().getTeamManager().addToTeam(it, it.uniqueId, Teams.BLUE)
             }
             i++
         }

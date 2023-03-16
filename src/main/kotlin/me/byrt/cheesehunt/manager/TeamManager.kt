@@ -8,6 +8,7 @@ import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.title.Title
 
 import org.bukkit.Bukkit
+import org.bukkit.entity.Player
 import org.bukkit.scoreboard.Team
 
 import java.time.Duration
@@ -23,45 +24,48 @@ class TeamManager(private val game : Game) {
     private var uncollectedCheeseDisplayTeam: Team = Bukkit.getScoreboardManager().mainScoreboard.registerNewTeam("uncollectedCheeseDisplay")
     private var adminDisplayTeam: Team = Bukkit.getScoreboardManager().mainScoreboard.registerNewTeam("admin")
 
-    fun addToTeam(uuid : UUID, team : Teams) {
+    fun addToTeam(player : Player, uuid : UUID, team : Teams) {
         when(team) {
             Teams.RED -> {
-                if(blueTeam.contains(uuid)) { removeFromTeam(uuid, Teams.BLUE) }
-                if(spectators.contains(uuid)) { removeFromTeam(uuid, Teams.SPECTATOR) }
+                if(blueTeam.contains(uuid)) { removeFromTeam(player, uuid, Teams.BLUE) }
+                if(spectators.contains(uuid)) { removeFromTeam(player, uuid, Teams.SPECTATOR) }
                 redTeam.add(uuid)
                 redDisplayTeam.addPlayer(Bukkit.getOfflinePlayer(uuid))
-                Bukkit.getServer().getPlayer(uuid)?.sendMessage(Component.text("You are now on the ")
+                player.sendMessage(Component.text("You are now on the ")
                     .color(NamedTextColor.WHITE)
                     .append(Component.text("Red Team")
                         .color(NamedTextColor.RED))
                         .append(Component.text(".")))
+                game.getItemManager().playerJoinTeamEquip(player, Teams.RED)
             }
             Teams.BLUE -> {
-                if(redTeam.contains(uuid)) { removeFromTeam(uuid, Teams.RED) }
-                if(spectators.contains(uuid)) { removeFromTeam(uuid, Teams.SPECTATOR) }
+                if(redTeam.contains(uuid)) { removeFromTeam(player, uuid, Teams.RED) }
+                if(spectators.contains(uuid)) { removeFromTeam(player, uuid, Teams.SPECTATOR) }
                 blueTeam.add(uuid)
                 blueDisplayTeam.addPlayer(Bukkit.getOfflinePlayer(uuid))
-                Bukkit.getServer().getPlayer(uuid)?.sendMessage(Component.text("You are now on the ")
+                player.sendMessage(Component.text("You are now on the ")
                     .color(NamedTextColor.WHITE)
                     .append(Component.text("Blue Team")
                         .color(NamedTextColor.BLUE))
                     .append(Component.text(".")))
+                game.getItemManager().playerJoinTeamEquip(player, Teams.BLUE)
             }
             Teams.SPECTATOR -> {
-                if(redTeam.contains(uuid)) { removeFromTeam(uuid, Teams.RED) }
-                if(blueTeam.contains(uuid)) { removeFromTeam(uuid, Teams.BLUE) }
+                if(redTeam.contains(uuid)) { removeFromTeam(player, uuid, Teams.RED) }
+                if(blueTeam.contains(uuid)) { removeFromTeam(player, uuid, Teams.BLUE) }
                 spectators.add(uuid)
-                Bukkit.getServer().getPlayer(uuid)?.sendMessage(Component.text("You are now a Spectator."))
+                player.sendMessage(Component.text("You are now a Spectator."))
+                game.getItemManager().playerJoinTeamEquip(player, Teams.SPECTATOR)
             }
         }
     }
 
-    fun removeFromTeam(uuid : UUID, team : Teams) {
+    fun removeFromTeam(player : Player, uuid : UUID, team : Teams) {
         when(team) {
             Teams.RED -> {
                 redTeam.remove(uuid)
                 redDisplayTeam.removePlayer(Bukkit.getOfflinePlayer(uuid))
-                Bukkit.getServer().getPlayer(uuid)?.sendMessage(Component.text("You are no longer on ")
+                player.sendMessage(Component.text("You are no longer on ")
                     .color(NamedTextColor.WHITE)
                     .append(Component.text("Red Team")
                         .color(NamedTextColor.RED))
@@ -70,7 +74,7 @@ class TeamManager(private val game : Game) {
             Teams.BLUE -> {
                 blueTeam.remove(uuid)
                 blueDisplayTeam.removePlayer(Bukkit.getOfflinePlayer(uuid))
-                Bukkit.getServer().getPlayer(uuid)?.sendMessage(Component.text("You are no longer on ")
+                player.sendMessage(Component.text("You are no longer on ")
                     .color(NamedTextColor.WHITE)
                     .append(Component.text("Blue Team")
                         .color(NamedTextColor.BLUE))
@@ -78,7 +82,7 @@ class TeamManager(private val game : Game) {
             }
             Teams.SPECTATOR -> {
                 spectators.remove(uuid)
-                Bukkit.getServer().getPlayer(uuid)?.sendMessage(Component.text("You are no longer a Spectator."))
+                player.sendMessage(Component.text("You are no longer a Spectator."))
             }
         }
     }

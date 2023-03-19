@@ -53,7 +53,7 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
                         player.playSound(player.location, "entity.item.pickup", 1f, 1f)
                         player.sendMessage(Component.text("-----------------------------------------------------\n\n").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
                             .append(Component.text(" Welcome to Cheese Hunt!\n\n").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.STRIKETHROUGH, false)
-                            .append(Component.text(" Here's how to play...").color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, true).decoration(TextDecoration.BOLD, false)
+                            .append(Component.text("    Here's how to play...").color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, true).decoration(TextDecoration.BOLD, false)
                             .append(Component.text("\n\n\n\n\n")
                             .append(Component.text("-----------------------------------------------------").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
                                         )
@@ -248,6 +248,9 @@ class GameCountdownTask(private var game: Game) : BukkitRunnable() {
                 }
             }
             if (timeLeft <= 0) {
+                if(game.getRoundState() == RoundState.ROUND_TWO) {
+                    game.getCheeseManager().checkCheeseCollected() // Used if a team for some reason does not place any cheese during Round One.
+                }
                 for (player in Bukkit.getOnlinePlayers()) {
                     player.playSound(player.location, "block.note_block.pling", 1f, 1f)
                     player.playSound(player.location, "block.note_block.pling", 1f, 2f)

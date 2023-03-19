@@ -6,14 +6,16 @@ import me.byrt.cheesehunt.manager.Teams
 import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
+
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
-
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
-import net.kyori.adventure.title.TitlePart
+import net.kyori.adventure.title.Title
 
 import org.bukkit.entity.Player
+
+import java.time.Duration
 
 @Suppress("unused")
 class AutoTeam : BaseCommand {
@@ -23,7 +25,7 @@ class AutoTeam : BaseCommand {
     @CommandDescription("Automatically assigns everyone online to a team.")
     @CommandPermission("cheesehunt.autoteam")
     fun autoTeam(sender : Player) {
-        sender.sendTitlePart(TitlePart.SUBTITLE, Component.text("Shuffling teams...", NamedTextColor.RED))
+        sender.showTitle(Title.title(Component.text(""), Component.text("Shuffling teams...").color(NamedTextColor.RED), Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(3), Duration.ofSeconds(1))))
         sender.playSound(shuffleStartSound)
         var i = 0
         Main.getPlugin().server.onlinePlayers.shuffled().forEach {
@@ -36,7 +38,7 @@ class AutoTeam : BaseCommand {
             i++
         }
         sender.sendMessage(Component.text("Successfully split all online players into teams.").color(NamedTextColor.GREEN))
-        sender.sendTitlePart(TitlePart.SUBTITLE, Component.text("Teams shuffled randomly!", NamedTextColor.GREEN))
+        sender.showTitle(Title.title(Component.text(""), Component.text("Teams shuffled randomly!").color(NamedTextColor.GREEN), Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(1), Duration.ofSeconds(1))))
         sender.playSound(shuffleCompleteSound)
     }
 }

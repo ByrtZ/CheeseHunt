@@ -2,6 +2,10 @@ package me.byrt.cheesehunt.manager
 
 import me.byrt.cheesehunt.Main
 
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextDecoration
+
 import org.bukkit.*
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.Firework
@@ -10,7 +14,6 @@ import org.bukkit.inventory.ItemStack
 
 import java.math.RoundingMode
 import java.text.DecimalFormat
-
 import java.util.*
 
 import kotlin.collections.ArrayList
@@ -28,8 +31,8 @@ class CheeseManager(private val game : Game) {
     private var uncollectedCheese = ArrayList<Location>()
     private var playerCollectedCheese = mutableMapOf<UUID, Int>()
 
-    fun incrementCheesePlaced(team : Teams) {
-        when(team) {
+    fun incrementCheesePlaced(player : Player) {
+        when(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId)) {
             Teams.RED -> {
                 redTotalCheesePlaced += 1
             }
@@ -42,16 +45,18 @@ class CheeseManager(private val game : Game) {
         }
     }
 
-    fun incrementCheeseCollected(team : Teams) {
-        when(team) {
+    fun incrementCheeseCollected(player : Player) {
+        when(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId)) {
             Teams.RED -> {
                 redTotalCheeseCollected += 1
+                updateCollectedCheese(player.uniqueId)
             }
             Teams.BLUE -> {
                 blueTotalCheeseCollected += 1
+                updateCollectedCheese(player.uniqueId)
             }
             Teams.SPECTATOR -> {
-                Main.getPlugin().logger.info("[INCREMENTING ERROR] Game attempted to increment cheese collected for specators.")
+                Main.getPlugin().logger.info("[INCREMENTING ERROR] ${player.name} was on team ${Teams.SPECTATOR} when they collected cheese.")
             }
         }
     }
@@ -118,7 +123,7 @@ class CheeseManager(private val game : Game) {
         }
     }
 
-    fun updateCollectedCheese(uuid : UUID) {
+    private fun updateCollectedCheese(uuid : UUID) {
         playerCollectedCheese.putIfAbsent(uuid, 0)
         playerCollectedCheese[uuid] = (playerCollectedCheese[uuid]?.plus(1)) as Int
     }
@@ -129,6 +134,113 @@ class CheeseManager(private val game : Game) {
 
     fun getSortedCollectedCheeseMap(): Map<UUID, Int> {
         return playerCollectedCheese.toList().sortedBy { (_, int) -> int }.reversed().toMap()
+    }
+
+    fun checkCheesePlaced() {
+        if(!hasRedFinishedPlacing() && Main.getGame().getTeamManager().getRedTeam().size.times(4) == getRedCheesePlaced()) {
+            setRedFinishedPlacing(true)
+            for(player in Bukkit.getOnlinePlayers()) {
+                player.sendMessage(Component.text("[")
+                    .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                    .append(Component.text("] "))
+                    .append(Component.text("Red team has placed all their cheese.").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
+                )
+            }
+            if(hasRedFinishedPlacing() && hasBlueFinishedPlacing()) {
+                for(player in Bukkit.getOnlinePlayers()) {
+                    player.sendMessage(Component.text("[")
+                        .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                        .append(Component.text("] "))
+                        .append(Component.text("All cheese has been placed, get ready to hunt!").color(NamedTextColor.AQUA).decoration(TextDecoration.BOLD, true))
+                    )
+                }
+                Main.getGame().getGameCountdownTask().setTimeLeft(0)
+            }
+        }
+        if(!hasBlueFinishedPlacing() && Main.getGame().getTeamManager().getBlueTeam().size.times(4) == getBlueCheesePlaced()) {
+            setBlueFinishedPlacing(true)
+            for(player in Bukkit.getOnlinePlayers()) {
+                player.sendMessage(Component.text("[")
+                    .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                    .append(Component.text("] "))
+                    .append(Component.text("Blue team has placed all their cheese.").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
+                )
+            }
+            if(hasRedFinishedPlacing() && hasBlueFinishedPlacing()) {
+                for(player in Bukkit.getOnlinePlayers()) {
+                    player.sendMessage(Component.text("[")
+                        .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                        .append(Component.text("] "))
+                        .append(Component.text("All cheese has been placed, get ready to hunt!").color(NamedTextColor.AQUA).decoration(TextDecoration.BOLD, true))
+                    )
+                }
+                Main.getGame().getGameCountdownTask().setTimeLeft(0)
+            }
+        }
+    }
+
+    fun checkCheeseCollected() {
+        if(!hasRedFinishedCollecting() && getBlueCheesePlaced() == getRedCheeseCollected()) {
+            setRedFinishedCollecting(true)
+            for(player in Bukkit.getOnlinePlayers()) {
+                player.sendMessage(
+                    Component.text("[")
+                        .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                        .append(Component.text("] "))
+                        .append(
+                            Component.text("Red team finished collecting their cheese.").color(NamedTextColor.GOLD)
+                                .decoration(TextDecoration.BOLD, true)
+                    )
+                )
+            }
+            if(!blueFinishedCollecting) {
+                Main.getGame().getTeamManager().redWinGame()
+            }
+
+            if(hasRedFinishedCollecting() && hasBlueFinishedCollecting()) {
+                for(player in Bukkit.getOnlinePlayers()) {
+                    player.sendMessage(
+                        Component.text("[")
+                        .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                        .append(Component.text("] "))
+                        .append(
+                            Component.text("All cheese has been collected.").color(NamedTextColor.AQUA).decoration(
+                                TextDecoration.BOLD, true))
+                    )
+                }
+                Main.getGame().getGameCountdownTask().setTimeLeft(0)
+            }
+        }
+        if(!hasBlueFinishedCollecting() && getRedCheesePlaced() == getBlueCheeseCollected()) {
+            setBlueFinishedCollecting(true)
+            for(player in Bukkit.getOnlinePlayers()) {
+                player.sendMessage(
+                    Component.text("[")
+                    .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                    .append(Component.text("] "))
+                    .append(
+                        Component.text("Blue team finished collecting their cheese.").color(NamedTextColor.GOLD).decoration(
+                            TextDecoration.BOLD, true))
+                )
+            }
+            if(!redFinishedCollecting) {
+                Main.getGame().getTeamManager().blueWinGame()
+            }
+
+            if(hasRedFinishedCollecting() && hasBlueFinishedCollecting()) {
+                for(player in Bukkit.getOnlinePlayers()) {
+                    player.sendMessage(
+                        Component.text("[")
+                        .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                        .append(Component.text("] "))
+                        .append(
+                            Component.text("All cheese has been collected.").color(NamedTextColor.AQUA).decoration(
+                                TextDecoration.BOLD, true))
+                    )
+                }
+                Main.getGame().getGameCountdownTask().setTimeLeft(0)
+            }
+        }
     }
 
     fun teamWinFireworks(player : Player, teams : Teams) {
@@ -147,7 +259,7 @@ class CheeseManager(private val game : Game) {
                 )
                 fm.power = 0
                 f.fireworkMeta = fm
-                f.detonate()
+                f.ticksToDetonate = 1
             }
             Teams.BLUE -> {
                 val playerLoc = Location(player.world, player.location.x, player.location.y + 1, player.location.z)
@@ -163,7 +275,7 @@ class CheeseManager(private val game : Game) {
                 )
                 fm.power = 0
                 f.fireworkMeta = fm
-                f.detonate()
+                f.ticksToDetonate = 1
             }
             else -> {
                 // This is literally impossible to reach :)
@@ -171,16 +283,34 @@ class CheeseManager(private val game : Game) {
         }
     }
 
+    fun cheeseFirework(blockLoc : Location, player : Player) {
+        val blockToSpawnFireworkLoc = Location(blockLoc.world, blockLoc.x + 0.5, blockLoc.y + 2.0, blockLoc.z + 0.5)
+        val f: Firework = player.world.spawn(blockToSpawnFireworkLoc, Firework::class.java)
+        val fm = f.fireworkMeta
+        fm.addEffect(
+            FireworkEffect.builder()
+                .flicker(false)
+                .trail(false)
+                .with(FireworkEffect.Type.BALL)
+                .withColor(Color.ORANGE)
+                .withFade(Color.YELLOW)
+                .build()
+        )
+        fm.power = 0
+        f.fireworkMeta = fm
+        f.ticksToDetonate = 1
+    }
+
     fun getRedCheeseCollectedPercentage(): Double {
         val df = DecimalFormat("#.##")
         df.roundingMode = RoundingMode.FLOOR
-        return df.format(game.getCheeseManager().getRedCheeseCollected().toDouble() / game.getCheeseManager().getBlueCheesePlaced().toDouble() * 100).toDouble()
+        return df.format(redTotalCheeseCollected.toDouble() / blueTotalCheesePlaced.toDouble() * 100).toDouble()
     }
 
     fun getBlueCheeseCollectedPercentage(): Double {
         val df = DecimalFormat("#.##")
         df.roundingMode = RoundingMode.FLOOR
-        return df.format(game.getCheeseManager().getBlueCheeseCollected().toDouble() / game.getCheeseManager().getRedCheesePlaced().toDouble() * 100).toDouble()
+        return df.format(blueTotalCheeseCollected.toDouble() / redTotalCheesePlaced.toDouble() * 100).toDouble()
     }
 
     fun getRedCheesePlaced() : Int {
@@ -199,19 +329,19 @@ class CheeseManager(private val game : Game) {
         return blueTotalCheeseCollected
     }
 
-    fun hasRedFinishedPlacing() : Boolean {
+    private fun hasRedFinishedPlacing() : Boolean {
         return redFinishedPlacing
     }
 
-    fun setRedFinishedPlacing(state : Boolean) {
+    private fun setRedFinishedPlacing(state : Boolean) {
         redFinishedPlacing = state
     }
 
-    fun hasBlueFinishedPlacing() : Boolean {
+    private fun hasBlueFinishedPlacing() : Boolean {
         return blueFinishedPlacing
     }
 
-    fun setBlueFinishedPlacing(state : Boolean) {
+    private fun setBlueFinishedPlacing(state : Boolean) {
         blueFinishedPlacing = state
     }
 
@@ -219,7 +349,7 @@ class CheeseManager(private val game : Game) {
         return redFinishedCollecting
     }
 
-    fun setRedFinishedCollecting(state : Boolean) {
+    private fun setRedFinishedCollecting(state : Boolean) {
         redFinishedCollecting = state
     }
 
@@ -227,7 +357,7 @@ class CheeseManager(private val game : Game) {
         return blueFinishedCollecting
     }
 
-    fun setBlueFinishedCollecting(state : Boolean) {
+    private fun setBlueFinishedCollecting(state : Boolean) {
         blueFinishedCollecting = state
     }
 }

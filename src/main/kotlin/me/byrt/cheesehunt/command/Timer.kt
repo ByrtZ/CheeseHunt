@@ -21,46 +21,70 @@ class Timer : BaseCommand {
     @CommandPermission("cheesehunt.timer")
     fun timer(sender : Player, @Argument("setting") option : TimerOptions, @Argument("seconds") time : Int?) {
         if(Main.getGame().getTimerState() == TimerState.INACTIVE) {
-            sender.sendMessage(Component.text("You cannot manipulate the timer when it is inactive.").color(NamedTextColor.RED))
+            sender.sendMessage(Component.text("Unable to manipulate timer when inactive.").color(NamedTextColor.RED))
         } else {
             when(option) {
                 TimerOptions.SET -> {
                     if(Main.getGame().getGameState() == GameState.IDLE) {
-                        sender.sendMessage(Component.text("You cannot set the timer when there is no game active.").color(NamedTextColor.RED))
+                        sender.sendMessage(Component.text("Unable to set timer when no game active.").color(NamedTextColor.RED))
                     } else {
                         if(time == null || time <= 0) {
-                            sender.sendMessage(Component.text("You cannot set the timer to zero, less than zero or leave the argument blank!").color(NamedTextColor.RED))
+                            sender.sendMessage(Component.text("Unable to set timer to zero, less than zero or null.").color(NamedTextColor.RED))
                         } else {
-                            sender.sendMessage(Component.text("You set the timer to $time seconds.").color(NamedTextColor.GREEN))
+                            sender.sendMessage(Component.text("Timer set to $time seconds.").color(NamedTextColor.GREEN))
                             Main.getGame().getGameCountdownTask().setTimeLeft(time)
                         }
                     }
                 }
                 TimerOptions.PAUSE -> {
                     if(Main.getGame().getTimerState() != TimerState.ACTIVE) {
-                        sender.sendMessage(Component.text("You cannot pause the timer when the timer is not active!").color(NamedTextColor.RED))
+                        sender.sendMessage(Component.text("Unable to pause timer when inactive.").color(NamedTextColor.RED))
                     } else {
                         Main.getGame().getGameCountdownTask().pauseCountdownTask()
-                        sender.sendMessage(Component.text("You updated the timer state to ${Main.getGame().getTimerState()}.").color(NamedTextColor.GRAY))
+                        sender.sendMessage(Component.text("Updated timer state to ${Main.getGame().getTimerState()}.").color(NamedTextColor.GRAY))
                     }
                 }
                 TimerOptions.RESUME -> {
                     if(Main.getGame().getTimerState() != TimerState.PAUSED) {
-                        sender.sendMessage(Component.text("You cannot resume the timer when it is already active!").color(NamedTextColor.RED))
+                        sender.sendMessage(Component.text("Unable to resume timer when already active.").color(NamedTextColor.RED))
                     } else {
                         Main.getGame().getGameCountdownTask().resumeCountdownTask()
-                        sender.sendMessage(Component.text("You updated the timer state to ${Main.getGame().getTimerState()}.").color(NamedTextColor.GRAY))
+                        sender.sendMessage(Component.text("Updated timer state to ${Main.getGame().getTimerState()}.").color(NamedTextColor.GRAY))
                     }
                 }
                 TimerOptions.SKIP -> {
                     if(Main.getGame().getTimerState() != TimerState.INACTIVE) {
-                        sender.sendMessage(Component.text("You skipped the current timer.").color(NamedTextColor.GRAY))
+                        sender.sendMessage(Component.text("Skipped current timer.").color(NamedTextColor.GRAY))
                         Main.getGame().getGameCountdownTask().setTimeLeft(1)
                     } else {
-                        sender.sendMessage(Component.text("You cannot skip the timer during this state!").color(NamedTextColor.RED))
+                        sender.sendMessage(Component.text("Unable to skip timer during this state.").color(NamedTextColor.RED))
                     }
                 }
             }
+        }
+    }
+
+    @CommandMethod("p")
+    @CommandDescription("Allows quick timer pausing.")
+    @CommandPermission("cheesehunt.timer.pause")
+    fun quickPause(sender : Player) {
+        if(Main.getGame().getTimerState() != TimerState.ACTIVE) {
+            sender.sendMessage(Component.text("Unable to pause timer when timer is not active.").color(NamedTextColor.RED))
+        } else {
+            Main.getGame().getGameCountdownTask().pauseCountdownTask()
+            sender.sendMessage(Component.text("Updated timer state to ${Main.getGame().getTimerState()}.").color(NamedTextColor.GRAY))
+        }
+    }
+
+    @CommandMethod("s")
+    @CommandDescription("Allows quick timer resuming.")
+    @CommandPermission("cheesehunt.timer.resume")
+    fun quickResume(sender : Player) {
+        if(Main.getGame().getTimerState() != TimerState.PAUSED) {
+            sender.sendMessage(Component.text("Unable to resume timer when already active.").color(NamedTextColor.RED))
+        } else {
+            Main.getGame().getGameCountdownTask().resumeCountdownTask()
+            sender.sendMessage(Component.text("Updated timer state to ${Main.getGame().getTimerState()}.").color(NamedTextColor.GRAY))
         }
     }
 }

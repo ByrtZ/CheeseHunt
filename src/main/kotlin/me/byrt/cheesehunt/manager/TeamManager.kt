@@ -31,7 +31,7 @@ class TeamManager(private val game : Game) {
                 if(spectators.contains(uuid)) { removeFromTeam(player, uuid, Teams.SPECTATOR) }
                 redTeam.add(uuid)
                 redDisplayTeam.addPlayer(Bukkit.getOfflinePlayer(uuid))
-                player.sendMessage(Component.text("You are now on the ")
+                player.sendMessage(Component.text("You are now on ")
                     .color(NamedTextColor.WHITE)
                     .append(Component.text("Red Team")
                         .color(NamedTextColor.RED))
@@ -43,7 +43,7 @@ class TeamManager(private val game : Game) {
                 if(spectators.contains(uuid)) { removeFromTeam(player, uuid, Teams.SPECTATOR) }
                 blueTeam.add(uuid)
                 blueDisplayTeam.addPlayer(Bukkit.getOfflinePlayer(uuid))
-                player.sendMessage(Component.text("You are now on the ")
+                player.sendMessage(Component.text("You are now on ")
                     .color(NamedTextColor.WHITE)
                     .append(Component.text("Blue Team")
                         .color(NamedTextColor.BLUE))
@@ -160,7 +160,7 @@ class TeamManager(private val game : Game) {
                 player.showTitle(
                     Title.title(
                         Component.text("Your team lost!").color(NamedTextColor.RED),
-                        Component.text("Git gud!").color(NamedTextColor.RED),
+                        Component.text("Better luck next time!").color(NamedTextColor.RED),
                         Title.Times.times(
                             Duration.ofSeconds(1),
                             Duration.ofSeconds(5),
@@ -196,7 +196,7 @@ class TeamManager(private val game : Game) {
                 player.showTitle(
                     Title.title(
                         Component.text("Your team lost!").color(NamedTextColor.RED),
-                        Component.text("Git gud!").color(NamedTextColor.RED),
+                        Component.text("Better luck next time.").color(NamedTextColor.RED),
                         Title.Times.times(
                             Duration.ofSeconds(1),
                             Duration.ofSeconds(5),

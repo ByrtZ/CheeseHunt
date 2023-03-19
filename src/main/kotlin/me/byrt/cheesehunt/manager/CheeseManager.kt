@@ -1,6 +1,8 @@
 package me.byrt.cheesehunt.manager
 
 import me.byrt.cheesehunt.Main
+import net.kyori.adventure.key.Key
+import net.kyori.adventure.sound.Sound
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -195,6 +197,10 @@ class CheeseManager(private val game : Game) {
             }
             if(!blueFinishedCollecting) {
                 Main.getGame().getTeamManager().redWinGame()
+            } else {
+                for(player in Bukkit.getOnlinePlayers()) {
+                    player.playSound(Sound.sound(Key.key("block.respawn_anchor.deplete"), Sound.Source.MASTER, 1f, 1f))
+                }
             }
 
             if(hasRedFinishedCollecting() && hasBlueFinishedCollecting()) {
@@ -225,6 +231,10 @@ class CheeseManager(private val game : Game) {
             }
             if(!redFinishedCollecting) {
                 Main.getGame().getTeamManager().blueWinGame()
+            } else {
+                for(player in Bukkit.getOnlinePlayers()) {
+                    player.playSound(Sound.sound(Key.key("block.respawn_anchor.deplete"), Sound.Source.MASTER, 1f, 1f))
+                }
             }
 
             if(hasRedFinishedCollecting() && hasBlueFinishedCollecting()) {

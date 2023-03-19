@@ -24,7 +24,7 @@ class StartGame : BaseCommand {
     @CommandDescription("Starts a game of Cheese Hunt.")
     @CommandPermission("cheesehunt.startgame")
     fun start(sender : Player) {
-        if(Main.getGame().getGameState() == GameState.IDLE) {
+        if(Main.getGame().getGameState() == GameState.IDLE && !Main.getGame().getMusicLooper()) {
             if(Main.getGame().getTeamManager().getRedTeam().size >= 1 && Main.getGame().getTeamManager().getBlueTeam().size >= 1) {
                 sender.sendMessage(Component.text("Starting Cheese Hunt game!").color(NamedTextColor.GREEN))
                 Main.getGame().setGameState(GameState.STARTING)

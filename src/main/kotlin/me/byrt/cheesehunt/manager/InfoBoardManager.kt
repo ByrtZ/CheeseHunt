@@ -13,25 +13,20 @@ import org.bukkit.scoreboard.*
 class InfoBoardManager(private val game : Game) {
     private var scoreboardManager: ScoreboardManager = Bukkit.getScoreboardManager()
     private var scoreboard: Scoreboard = scoreboardManager.mainScoreboard
-    private var cheeseHuntBoard: Objective = scoreboard.registerNewObjective(
-        "cheese_hunt_board",
-        Criteria.DUMMY,
-        Component.text("Cheese Hunt").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, true)
-    )
-
-    private var currentGameText: Score = cheeseHuntBoard.getScore(ChatColor.AQUA.toString() + "" + ChatColor.BOLD + "Game: " + ChatColor.RESET + "Cheese Hunt")
-    private var currentMapText: Score = cheeseHuntBoard.getScore(ChatColor.AQUA.toString() + "" + ChatColor.BOLD + "Map: " + ChatColor.RESET + "Classic")
-    private var currentRoundText: Score = cheeseHuntBoard.getScore(ChatColor.GREEN.toString() + "" + ChatColor.BOLD + "Round: " + ChatColor.RESET + "None")
-    private var gameStatusText: Score = cheeseHuntBoard.getScore(ChatColor.RED.toString() + "" + ChatColor.BOLD + "Game status: " + ChatColor.RESET + "Waiting...")
-
-    private var blankSpaceOne: Score = cheeseHuntBoard.getScore("§")
-    private var blankSpaceTwo: Score = cheeseHuntBoard.getScore("§§")
-    private var redCheesePlaced: Score = cheeseHuntBoard.getScore(ChatColor.RED.toString() + "" + ChatColor.BOLD + "Red Team  - " + ChatColor.RESET + "0/0 placed")
-    private var blueCheesePlaced: Score = cheeseHuntBoard.getScore(ChatColor.BLUE.toString() + "" + ChatColor.BOLD + "Blue Team - " + ChatColor.RESET + "0/0 placed")
-    private var redCheeseCollected: Score = cheeseHuntBoard.getScore(ChatColor.RED.toString() + "" + ChatColor.BOLD + "Red Team  - " + ChatColor.RESET + "0/0 collected")
-    private var blueCheeseCollected: Score = cheeseHuntBoard.getScore(ChatColor.BLUE.toString() + "" + ChatColor.BOLD + "Blue Team - " + ChatColor.RESET + "0/0 collected")
+    private lateinit var cheeseHuntBoard: Objective
+    private lateinit var currentGameText: Score
+    private lateinit var currentMapText: Score
+    private lateinit var currentRoundText: Score
+    private lateinit var gameStatusText: Score
+    private lateinit var blankSpaceOne: Score
+    private lateinit var blankSpaceTwo: Score
+    private lateinit var redCheesePlaced: Score
+    private lateinit var blueCheesePlaced: Score
+    private lateinit var redCheeseCollected: Score
+    private lateinit var blueCheeseCollected: Score
 
     fun buildScoreboard() {
+        constructScoreboardInfo()
         cheeseHuntBoard.displaySlot = DisplaySlot.SIDEBAR
         currentGameText.score = 7
         currentMapText.score = 6
@@ -40,7 +35,28 @@ class InfoBoardManager(private val game : Game) {
     }
 
     fun destroyScoreboard() {
+        cheeseHuntBoard.displaySlot = null
         cheeseHuntBoard.unregister()
+    }
+
+    private fun constructScoreboardInfo() {
+        cheeseHuntBoard = scoreboard.registerNewObjective(
+        "cheese_hunt_board",
+        Criteria.DUMMY,
+        Component.text("Cheese Hunt").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, true)
+        )
+
+        currentGameText = cheeseHuntBoard.getScore(ChatColor.AQUA.toString() + "" + ChatColor.BOLD + "Game: " + ChatColor.RESET + "Cheese Hunt")
+        currentMapText = cheeseHuntBoard.getScore(ChatColor.AQUA.toString() + "" + ChatColor.BOLD + "Map: " + ChatColor.RESET + "Classic")
+        currentRoundText = cheeseHuntBoard.getScore(ChatColor.GREEN.toString() + "" + ChatColor.BOLD + "Round: " + ChatColor.RESET + "None")
+        gameStatusText = cheeseHuntBoard.getScore(ChatColor.RED.toString() + "" + ChatColor.BOLD + "Game status: " + ChatColor.RESET + "Waiting...")
+
+        blankSpaceOne = cheeseHuntBoard.getScore("§")
+        blankSpaceTwo = cheeseHuntBoard.getScore("§§")
+        redCheesePlaced = cheeseHuntBoard.getScore(ChatColor.RED.toString() + "" + ChatColor.BOLD + "Red Team  - " + ChatColor.RESET + "0/0 placed")
+        blueCheesePlaced = cheeseHuntBoard.getScore(ChatColor.BLUE.toString() + "" + ChatColor.BOLD + "Blue Team - " + ChatColor.RESET + "0/0 placed")
+        redCheeseCollected = cheeseHuntBoard.getScore(ChatColor.RED.toString() + "" + ChatColor.BOLD + "Red Team  - " + ChatColor.RESET + "0/0 collected")
+        blueCheeseCollected = cheeseHuntBoard.getScore(ChatColor.BLUE.toString() + "" + ChatColor.BOLD + "Blue Team - " + ChatColor.RESET + "0/0 collected")
     }
 
     fun showScoreboard() {

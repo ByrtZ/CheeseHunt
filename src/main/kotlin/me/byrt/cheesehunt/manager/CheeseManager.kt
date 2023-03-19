@@ -370,4 +370,17 @@ class CheeseManager(private val game : Game) {
     private fun setBlueFinishedCollecting(state : Boolean) {
         blueFinishedCollecting = state
     }
+
+    fun resetVars() {
+        redTotalCheesePlaced = 0
+        blueTotalCheesePlaced = 0
+        redTotalCheeseCollected = 0
+        blueTotalCheeseCollected = 0
+        redFinishedPlacing = false
+        blueFinishedPlacing = false
+        redFinishedCollecting = false
+        blueFinishedCollecting = false
+        uncollectedCheese.clear()
+        playerCollectedCheese.clear()
+    }
 }

@@ -33,7 +33,7 @@ class Game(private val plugin : Main) {
                     RoundState.ROUND_ONE -> {
                         buildMode = false
                         gameCountdownTask.setTimeLeft(80)
-                        gameCountdownTask.runTaskTimer(plugin, 0, 20)
+                        gameCountdownTask.gameLoop()
                     }
                     RoundState.ROUND_TWO -> {
                         gameCountdownTask.setTimeLeft(15)

@@ -57,14 +57,7 @@ class ItemManager(private val game : Game) {
 
     fun givePlayerCheese(player : Player) {
         if(game.getRoundState() == RoundState.ROUND_ONE) {
-            val cheese = ItemStack(Material.SPONGE, 4)
-            val cheeseMeta: ItemMeta = cheese.itemMeta
-            cheeseMeta.displayName(Component.text("Cheese").color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false))
-            cheese.itemMeta = cheeseMeta
-            player.inventory.addItem(cheese)
-        }
-        if(game.getRoundState() == RoundState.ROUND_TWO) {
-            val cheese = ItemStack(Material.SPONGE, 1)
+            val cheese = ItemStack(Material.YELLOW_DYE, 4)
             val cheeseMeta: ItemMeta = cheese.itemMeta
             cheeseMeta.displayName(Component.text("Cheese").color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false))
             cheese.itemMeta = cheeseMeta
@@ -73,7 +66,7 @@ class ItemManager(private val game : Game) {
     }
 
     fun givePlayerHoe(player : Player) {
-        val cheeseHarvester = ItemStack(Material.STONE_HOE)
+        val cheeseHarvester = ItemStack(Material.GRAY_DYE)
         val cheeseHarvesterMeta: ItemMeta = cheeseHarvester.itemMeta
         cheeseHarvesterMeta.displayName(Component.text("Cheese Harvester 1000").color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
         cheeseHarvesterMeta.isUnbreakable = true

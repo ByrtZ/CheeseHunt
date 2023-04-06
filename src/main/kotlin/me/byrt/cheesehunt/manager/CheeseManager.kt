@@ -1,12 +1,6 @@
 package me.byrt.cheesehunt.manager
 
 import me.byrt.cheesehunt.Main
-import net.kyori.adventure.key.Key
-import net.kyori.adventure.sound.Sound
-
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.NamedTextColor
-import net.kyori.adventure.text.format.TextDecoration
 
 import org.bukkit.*
 import org.bukkit.entity.ArmorStand
@@ -136,121 +130,6 @@ class CheeseManager(private val game : Game) {
 
     fun getSortedCollectedCheeseMap(): Map<UUID, Int> {
         return playerCollectedCheese.toList().sortedBy { (_, int) -> int }.reversed().toMap()
-    }
-
-    fun checkCheesePlaced() {
-        if(!hasRedFinishedPlacing() && Main.getGame().getTeamManager().getRedTeam().size.times(4) == getRedCheesePlaced()) {
-            setRedFinishedPlacing(true)
-            for(player in Bukkit.getOnlinePlayers()) {
-                player.sendMessage(Component.text("[")
-                    .append(Component.text("▶").color(NamedTextColor.YELLOW))
-                    .append(Component.text("] "))
-                    .append(Component.text("Red team has placed all their cheese.").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
-                )
-            }
-            if(hasRedFinishedPlacing() && hasBlueFinishedPlacing()) {
-                for(player in Bukkit.getOnlinePlayers()) {
-                    player.sendMessage(Component.text("[")
-                        .append(Component.text("▶").color(NamedTextColor.YELLOW))
-                        .append(Component.text("] "))
-                        .append(Component.text("All cheese has been placed, get ready to hunt!").color(NamedTextColor.AQUA).decoration(TextDecoration.BOLD, true))
-                    )
-                }
-                Main.getGame().getGameCountdownTask().setTimeLeft(0)
-            }
-        }
-        if(!hasBlueFinishedPlacing() && Main.getGame().getTeamManager().getBlueTeam().size.times(4) == getBlueCheesePlaced()) {
-            setBlueFinishedPlacing(true)
-            for(player in Bukkit.getOnlinePlayers()) {
-                player.sendMessage(Component.text("[")
-                    .append(Component.text("▶").color(NamedTextColor.YELLOW))
-                    .append(Component.text("] "))
-                    .append(Component.text("Blue team has placed all their cheese.").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
-                )
-            }
-            if(hasRedFinishedPlacing() && hasBlueFinishedPlacing()) {
-                for(player in Bukkit.getOnlinePlayers()) {
-                    player.sendMessage(Component.text("[")
-                        .append(Component.text("▶").color(NamedTextColor.YELLOW))
-                        .append(Component.text("] "))
-                        .append(Component.text("All cheese has been placed, get ready to hunt!").color(NamedTextColor.AQUA).decoration(TextDecoration.BOLD, true))
-                    )
-                }
-                Main.getGame().getGameCountdownTask().setTimeLeft(0)
-            }
-        }
-    }
-
-    fun checkCheeseCollected() {
-        if(!hasRedFinishedCollecting() && getBlueCheesePlaced() == getRedCheeseCollected()) {
-            setRedFinishedCollecting(true)
-            for(player in Bukkit.getOnlinePlayers()) {
-                player.sendMessage(
-                    Component.text("[")
-                        .append(Component.text("▶").color(NamedTextColor.YELLOW))
-                        .append(Component.text("] "))
-                        .append(
-                            Component.text("Red team finished collecting their cheese.").color(NamedTextColor.GOLD)
-                                .decoration(TextDecoration.BOLD, true)
-                    )
-                )
-            }
-            if(!blueFinishedCollecting) {
-                Main.getGame().getTeamManager().redWinGame()
-            } else {
-                for(player in Bukkit.getOnlinePlayers()) {
-                    player.playSound(Sound.sound(Key.key("block.respawn_anchor.deplete"), Sound.Source.MASTER, 1f, 1f))
-                }
-            }
-
-            if(hasRedFinishedCollecting() && hasBlueFinishedCollecting()) {
-                for(player in Bukkit.getOnlinePlayers()) {
-                    player.sendMessage(
-                        Component.text("[")
-                        .append(Component.text("▶").color(NamedTextColor.YELLOW))
-                        .append(Component.text("] "))
-                        .append(
-                            Component.text("All cheese has been collected.").color(NamedTextColor.AQUA).decoration(
-                                TextDecoration.BOLD, true))
-                    )
-                }
-                Main.getGame().getGameCountdownTask().setTimeLeft(0)
-            }
-        }
-        if(!hasBlueFinishedCollecting() && getRedCheesePlaced() == getBlueCheeseCollected()) {
-            setBlueFinishedCollecting(true)
-            for(player in Bukkit.getOnlinePlayers()) {
-                player.sendMessage(
-                    Component.text("[")
-                    .append(Component.text("▶").color(NamedTextColor.YELLOW))
-                    .append(Component.text("] "))
-                    .append(
-                        Component.text("Blue team finished collecting their cheese.").color(NamedTextColor.GOLD).decoration(
-                            TextDecoration.BOLD, true))
-                )
-            }
-            if(!redFinishedCollecting) {
-                Main.getGame().getTeamManager().blueWinGame()
-            } else {
-                for(player in Bukkit.getOnlinePlayers()) {
-                    player.playSound(Sound.sound(Key.key("block.respawn_anchor.deplete"), Sound.Source.MASTER, 1f, 1f))
-                }
-            }
-
-            if(hasRedFinishedCollecting() && hasBlueFinishedCollecting()) {
-                for(player in Bukkit.getOnlinePlayers()) {
-                    player.sendMessage(
-                        Component.text("[")
-                        .append(Component.text("▶").color(NamedTextColor.YELLOW))
-                        .append(Component.text("] "))
-                        .append(
-                            Component.text("All cheese has been collected.").color(NamedTextColor.AQUA).decoration(
-                                TextDecoration.BOLD, true))
-                    )
-                }
-                Main.getGame().getGameCountdownTask().setTimeLeft(0)
-            }
-        }
     }
 
     fun teamWinFireworks(player : Player, teams : Teams) {

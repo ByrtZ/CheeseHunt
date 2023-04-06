@@ -8,6 +8,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent
 class PlayerHurtPlayerEvent : Listener {
     @EventHandler
     private fun playerDamagePlayer(e : EntityDamageByEntityEvent) {
-            e.isCancelled = true
+        e.isCancelled = true
     }
 }

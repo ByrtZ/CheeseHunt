@@ -1,6 +1,7 @@
 package me.byrt.cheesehunt.command
 
 import me.byrt.cheesehunt.Main
+import me.byrt.cheesehunt.manager.GameState
 import me.byrt.cheesehunt.manager.Teams
 
 import cloud.commandframework.annotations.CommandDescription
@@ -25,20 +26,24 @@ class AutoTeam : BaseCommand {
     @CommandDescription("Automatically assigns everyone online to a team.")
     @CommandPermission("cheesehunt.autoteam")
     fun autoTeam(sender : Player) {
-        sender.showTitle(Title.title(Component.text(""), Component.text("Shuffling teams...").color(NamedTextColor.RED), Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(3), Duration.ofSeconds(1))))
-        sender.playSound(shuffleStartSound)
-        var i = 0
-        Main.getPlugin().server.onlinePlayers.shuffled().forEach {
-            Main.getGame().getTeamManager().removeFromTeam(it, it.uniqueId, Main.getGame().getTeamManager().getPlayerTeam(it.uniqueId))
-            if (i % 2 == 0) {
-                Main.getGame().getTeamManager().addToTeam(it, it.uniqueId, Teams.RED)
-            } else {
-                Main.getGame().getTeamManager().addToTeam(it, it.uniqueId, Teams.BLUE)
+        if(Main.getGame().getGameState() == GameState.IDLE) {
+            sender.showTitle(Title.title(Component.text(""), Component.text("Shuffling teams...").color(NamedTextColor.RED), Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(3), Duration.ofSeconds(1))))
+            sender.playSound(shuffleStartSound)
+            var i = 0
+            Main.getPlugin().server.onlinePlayers.shuffled().forEach {
+                Main.getGame().getTeamManager().removeFromTeam(it, it.uniqueId, Main.getGame().getTeamManager().getPlayerTeam(it.uniqueId))
+                if (i % 2 == 0) {
+                    Main.getGame().getTeamManager().addToTeam(it, it.uniqueId, Teams.RED)
+                } else {
+                    Main.getGame().getTeamManager().addToTeam(it, it.uniqueId, Teams.BLUE)
+                }
+                i++
             }
-            i++
+            sender.sendMessage(Component.text("Successfully split all online players into teams.").color(NamedTextColor.GREEN))
+            sender.showTitle(Title.title(Component.text(""), Component.text("Teams shuffled randomly!").color(NamedTextColor.GREEN), Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(1), Duration.ofSeconds(1))))
+            sender.playSound(shuffleCompleteSound)
+        } else {
+            sender.sendMessage(Component.text("Unable to modify teams in this state.", NamedTextColor.RED))
         }
-        sender.sendMessage(Component.text("Successfully split all online players into teams.").color(NamedTextColor.GREEN))
-        sender.showTitle(Title.title(Component.text(""), Component.text("Teams shuffled randomly!").color(NamedTextColor.GREEN), Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(1), Duration.ofSeconds(1))))
-        sender.playSound(shuffleCompleteSound)
     }
 }

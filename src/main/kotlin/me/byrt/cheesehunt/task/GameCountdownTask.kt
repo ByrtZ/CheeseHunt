@@ -37,7 +37,7 @@ class GameCountdownTask(private var game: Game) {
 
                 // Game/round starting front end
                 if (game.getGameState() == GameState.STARTING && game.getTimerState() == TimerState.ACTIVE) {
-                    if(game.getRoundState() == RoundState.ROUND_ONE) { // Game tutorial and round one starting titles
+                    if(game.getRoundState() == RoundState.ROUND_ONE) { // Game tutorial
                         if(timeLeft == 75) {
                             for(player in Bukkit.getOnlinePlayers()) {
                                 player.showTitle(Title.title(
@@ -56,8 +56,8 @@ class GameCountdownTask(private var game: Game) {
                             for(player in Bukkit.getOnlinePlayers()) {
                                 player.playSound(player.location, "entity.item.pickup", 1f, 1f)
                                 player.sendMessage(Component.text("-----------------------------------------------------\n\n").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
-                                    .append(Component.text(" Welcome to Cheese Hunt!\n\n").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.STRIKETHROUGH, false)
-                                        .append(Component.text("    Here's how to play...").color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, true).decoration(TextDecoration.BOLD, false)
+                                    .append(Component.text("   Welcome to Cheese Hunt!\n\n").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.STRIKETHROUGH, false)
+                                        .append(Component.text("       Here's how to play...").color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, true).decoration(TextDecoration.BOLD, false)
                                             .append(Component.text("\n\n\n\n\n")
                                                 .append(Component.text("-----------------------------------------------------").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
                                                 )
@@ -71,11 +71,11 @@ class GameCountdownTask(private var game: Game) {
                             for(player in Bukkit.getOnlinePlayers()) {
                                 player.playSound(player.location, "entity.item.pickup", 1f, 1f)
                                 player.sendMessage(Component.text("-----------------------------------------------------").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
-                                    .append(Component.text(" Rounds:\n").color(NamedTextColor.WHITE).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.STRIKETHROUGH, false)
-                                        .append(Component.text(" • Cheese Hunt is a two round game.\n").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, false)
-                                            .append(Component.text(" • Round 1 consists of you and your team hiding Cheese.\n").color(NamedTextColor.WHITE)
-                                                .append(Component.text(" • Round 2 consists of you and your team hunting enemy Cheese.\n").color(NamedTextColor.WHITE)
-                                                    .append(Component.text(" • You switch to the enemy map to hunt Cheese in Round 2.\n\n\n").color(NamedTextColor.WHITE)
+                                    .append(Component.text(" Game:\n").color(NamedTextColor.WHITE).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.STRIKETHROUGH, false)
+                                        .append(Component.text(" • Cheese Hunt is a game.\n").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, false)
+                                            .append(Component.text(" • Insert\n").color(NamedTextColor.WHITE)
+                                                .append(Component.text(" • tutorial\n").color(NamedTextColor.WHITE)
+                                                    .append(Component.text(" • here.\n\n\n").color(NamedTextColor.WHITE)
                                                         .append(Component.text("-----------------------------------------------------").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
                                                         )
                                                     )
@@ -91,8 +91,8 @@ class GameCountdownTask(private var game: Game) {
                                 player.playSound(player.location, "entity.item.pickup", 1f, 1f)
                                 player.sendMessage(Component.text("-----------------------------------------------------").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
                                     .append(Component.text(" Items:\n").color(NamedTextColor.WHITE).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.STRIKETHROUGH, false)
-                                        .append(Component.text(" • You will be given 4 pieces of Cheese to hide in your team's map during Round 1.\n").color(NamedTextColor.WHITE).decoration(TextDecoration.BOLD, false)
-                                            .append(Component.text(" • You will be given a Cheese Harvester 1000 to hunt Cheese in the enemy's map during Round 2.\n").color(NamedTextColor.WHITE)
+                                        .append(Component.text(" • yea.\n").color(NamedTextColor.WHITE).decoration(TextDecoration.BOLD, false)
+                                            .append(Component.text(" • made you look.\n").color(NamedTextColor.WHITE)
                                                 .append(Component.text("\n\n\n")
                                                     .append(Component.text("-----------------------------------------------------").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
                                                     )
@@ -108,8 +108,8 @@ class GameCountdownTask(private var game: Game) {
                                 player.playSound(player.location, "entity.item.pickup", 1f, 1f)
                                 player.sendMessage(Component.text("-----------------------------------------------------").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
                                     .append(Component.text(" Win Criteria:\n").color(NamedTextColor.WHITE).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.STRIKETHROUGH, false)
-                                        .append(Component.text(" • In order to win, you must hunt the Cheese faster in the enemy's map, than the enemy can in your team's map.\n\n").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, false)
-                                            .append(Component.text(" • If both teams fail to collect all Cheese in their maps, the team that has collected the most Cheese will win.").color(NamedTextColor.RED)
+                                        .append(Component.text(" • git gud ig.\n\n").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, false)
+                                            .append(Component.text(" • lmao.").color(NamedTextColor.RED)
                                                 .append(Component.text("\n\n\n")
                                                     .append(Component.text("-----------------------------------------------------").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
                                                     )
@@ -125,7 +125,7 @@ class GameCountdownTask(private var game: Game) {
                                 player.playSound(player.location, "entity.item.pickup", 1f, 1f)
                                 player.sendMessage(Component.text("-----------------------------------------------------").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
                                     .append(Component.text(" Starting soon:\n\n").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.STRIKETHROUGH, false)
-                                        .append(Component.text(" • Standby for the game to begin...\n\n").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, false)
+                                        .append(Component.text("        Standby for the game to begin...\n\n").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true)
                                             .append(Component.text(" • May the best Cheese hiders and Cheese hunters win.").color(NamedTextColor.GOLD)
                                                 .append(Component.text("\n\n\n\n")
                                                     .append(Component.text("-----------------------------------------------------").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
@@ -157,7 +157,7 @@ class GameCountdownTask(private var game: Game) {
                                 player.playSound(player.location, "block.note_block.pling", 1f, 1f)
                                 if (timeLeft == 3) {
                                     player.showTitle(Title.title(
-                                        Component.text("Hiding starts in").color(NamedTextColor.AQUA),
+                                        Component.text("Starting in").color(NamedTextColor.AQUA),
                                         Component.text("►$timeLeft◄").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true),
                                         Title.Times.times(
                                             Duration.ofSeconds(0),
@@ -169,7 +169,7 @@ class GameCountdownTask(private var game: Game) {
                                 }
                                 if (timeLeft == 2) {
                                     player.showTitle(Title.title(
-                                        Component.text("Hiding starts in").color(NamedTextColor.AQUA),
+                                        Component.text("Starting in").color(NamedTextColor.AQUA),
                                         Component.text("►$timeLeft◄").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, true),
                                         Title.Times.times(
                                             Duration.ofSeconds(0),
@@ -181,64 +181,7 @@ class GameCountdownTask(private var game: Game) {
                                 }
                                 if (timeLeft == 1) {
                                     player.showTitle(Title.title(
-                                        Component.text("Hiding starts in").color(NamedTextColor.AQUA),
-                                        Component.text("►$timeLeft◄").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true),
-                                        Title.Times.times(
-                                            Duration.ofSeconds(0),
-                                            Duration.ofSeconds(5),
-                                            Duration.ofSeconds(0)
-                                        )
-                                    )
-                                    )
-                                }
-                            }
-                        }
-                    } else if(game.getRoundState() == RoundState.ROUND_TWO) { // Round two starting titles
-                        if (timeLeft in 4..10) {
-                            for (player in Bukkit.getOnlinePlayers()) {
-                                player.showTitle(Title.title(
-                                    Component.text("Hunting starts in").color(NamedTextColor.AQUA),
-                                    Component.text("►$timeLeft◄").decoration(TextDecoration.BOLD, true),
-                                    Title.Times.times(
-                                        Duration.ofSeconds(0),
-                                        Duration.ofSeconds(5),
-                                        Duration.ofSeconds(0)
-                                    )
-                                )
-                                )
-                                player.playSound(player.location, "block.note_block.bass", 0.75f, 1f)
-                            }
-                        }
-                        if (timeLeft == 3 || timeLeft == 2 || timeLeft == 1) {
-                            for (player in Bukkit.getOnlinePlayers()) {
-                                player.playSound(player.location, "block.note_block.pling", 1f, 1f)
-                                if (timeLeft == 3) {
-                                    player.showTitle(Title.title(
-                                        Component.text("Hunting starts in").color(NamedTextColor.AQUA),
-                                        Component.text("►$timeLeft◄").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true),
-                                        Title.Times.times(
-                                            Duration.ofSeconds(0),
-                                            Duration.ofSeconds(5),
-                                            Duration.ofSeconds(0)
-                                        )
-                                    )
-                                    )
-                                }
-                                if (timeLeft == 2) {
-                                    player.showTitle(Title.title(
-                                        Component.text("Hunting starts in").color(NamedTextColor.AQUA),
-                                        Component.text("►$timeLeft◄").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, true),
-                                        Title.Times.times(
-                                            Duration.ofSeconds(0),
-                                            Duration.ofSeconds(5),
-                                            Duration.ofSeconds(0)
-                                        )
-                                    )
-                                    )
-                                }
-                                if (timeLeft == 1) {
-                                    player.showTitle(Title.title(
-                                        Component.text("Hunting starts in").color(NamedTextColor.AQUA),
+                                        Component.text("Starting in").color(NamedTextColor.AQUA),
                                         Component.text("►$timeLeft◄").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true),
                                         Title.Times.times(
                                             Duration.ofSeconds(0),
@@ -260,9 +203,6 @@ class GameCountdownTask(private var game: Game) {
                                 player.gameMode = GameMode.SURVIVAL
                             }
                             player.resetTitle()
-                        }
-                        if(game.getRoundState() == RoundState.ROUND_TWO) {
-                            game.getCheeseManager().checkCheeseCollected() // Used if a team for some reason does not place any cheese during Round One.
                         }
                         game.setGameState(GameState.IN_GAME)
                     }
@@ -294,7 +234,7 @@ class GameCountdownTask(private var game: Game) {
 
                 // Round ending front end
                 if (timeLeft <= 0 && game.getGameState() == GameState.IN_GAME && game.getTimerState() == TimerState.ACTIVE) {
-                    if (game.getRoundState() == RoundState.ROUND_TWO) {
+                    if (game.getRoundState() == RoundState.ROUND_ONE) {
                         for (player in Bukkit.getOnlinePlayers()) {
                             player.playSound(player.location, "block.note_block.pling", 1f, 1f)
                             player.playSound(player.location, "block.note_block.pling", 1f, 2f)
@@ -318,121 +258,24 @@ class GameCountdownTask(private var game: Game) {
                             }
                         }
                         game.setGameState(GameState.GAME_END)
-                    } else {
-                        for (player in Bukkit.getOnlinePlayers()) {
-                            player.playSound(player.location, "block.note_block.pling", 1f, 1f)
-                            player.playSound(player.location, "block.note_block.pling", 1f, 2f)
-                            player.stopSound("mcc.rocket_spleef", SoundCategory.VOICE)
-                            player.stopSound("mcc.overtime", SoundCategory.VOICE)
-                            player.showTitle(Title.title(
-                                Component.text("Round Over!").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true),
-                                Component.text(""),
-                                Title.Times.times(
-                                    Duration.ofSeconds(0),
-                                    Duration.ofSeconds(4),
-                                    Duration.ofSeconds(1)
-                                )
-                            )
-                            )
-                            if(!game.getTeamManager().isSpectator(player.uniqueId)) {
-                                player.gameMode = GameMode.ADVENTURE
-                                player.allowFlight = true
-                                player.isFlying = true
-                            }
-                        }
-                        game.setGameState(GameState.ROUND_END)
                     }
                 }
 
                 // Increment round if round one ended
                 if (game.getGameState() == GameState.ROUND_END && game.getTimerState() == TimerState.ACTIVE) {
                     if (timeLeft <= 0) {
-                        if (game.getRoundState() != RoundState.ROUND_TWO) {
-                            when (game.getRoundState()) {
-                                RoundState.ROUND_ONE -> {
-                                    game.setRoundState(RoundState.ROUND_TWO)
-                                    game.setGameState(GameState.STARTING)
-                                }
-                                RoundState.ROUND_TWO -> {
-                                    Main.getPlugin().logger.info("[COUNTDOWN TASK ERROR] Something weird happened with the round end statements")
-                                }
-                            }
-                        }
+                        game.setGameState(GameState.STARTING)
                     }
                 }
 
                 // Game end cycle
                 if (game.getGameState() == GameState.GAME_END && game.getTimerState() == TimerState.ACTIVE) {
-                    if(timeLeft == 80) {
-                        if(!game.getCheeseManager().hasRedFinishedCollecting() || !game.getCheeseManager().hasBlueFinishedCollecting()) {
-                            for(player in Bukkit.getOnlinePlayers()) {
-                                player.sendMessage(Component.text("The game ended with lost cheese...").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
-                                player.sendMessage(Component.text("Now showing all uncollected cheese.").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
-                            }
-                            game.getCheeseManager().markUncollectedCheese()
-                        }
-                    }
-                    if(timeLeft == 70) {
-                        for(player in Bukkit.getOnlinePlayers()) {
-                            player.sendMessage(Component.text("\nTeam Cheese Collections:").decoration(TextDecoration.BOLD, true))
-                        }
-                    }
-                    if(timeLeft == 68) {
-                        for(player in Bukkit.getOnlinePlayers()) {
-                            player.sendMessage(Component.text("Red Team ").color(NamedTextColor.RED)
-                                .append(Component.text("collected ${game.getCheeseManager().getRedCheeseCollected()}/${game.getCheeseManager().getBlueCheesePlaced()} cheese.").color(NamedTextColor.WHITE))
-                            )
-                            player.sendMessage(Component.text("Blue Team ").color(NamedTextColor.BLUE)
-                                .append(Component.text("collected ${game.getCheeseManager().getBlueCheeseCollected()}/${game.getCheeseManager().getRedCheesePlaced()} cheese.").color(NamedTextColor.WHITE))
-                            )
-                        }
-                    }
-                    if(timeLeft == 67) {
-                        if(game.getCheeseManager().getRedCheeseCollected() > game.getCheeseManager().getBlueCheeseCollected() && !game.getCheeseManager().hasRedFinishedCollecting() && !game.getCheeseManager().hasBlueFinishedCollecting()) {
-                            game.getTeamManager().redWinGame()
-                        } else if(game.getCheeseManager().getRedCheeseCollected() < game.getCheeseManager().getBlueCheeseCollected() && !game.getCheeseManager().hasRedFinishedCollecting() && !game.getCheeseManager().hasBlueFinishedCollecting()) {
-                            game.getTeamManager().blueWinGame()
-                        } else if(game.getCheeseManager().getRedCheeseCollected() == game.getCheeseManager().getBlueCheeseCollected() && !game.getCheeseManager().hasRedFinishedCollecting() && !game.getCheeseManager().hasBlueFinishedCollecting()) {
-                            game.getTeamManager().noWinGame()
-                        }
-                    }
-                    if(timeLeft == 62) {
-                        for(player in Bukkit.getOnlinePlayers()) {
-                            player.sendMessage(Component.text("\nIndividual Cheese Collections:").decoration(TextDecoration.BOLD, true))
-                        }
-                    }
-                    if(timeLeft == 60) {
-                        val sortedCollectedCheeseMap = game.getCheeseManager().getSortedCollectedCheeseMap()
-                        var i = 1
-                        sortedCollectedCheeseMap.forEach { (uuid, cheeseCollected) ->
-                            for(player in Bukkit.getOnlinePlayers()) {
-                                if(game.getTeamManager().isInRedTeam(uuid)) {
-                                    player.sendMessage(Component.text("$i. ")
-                                        .append(Component.text("${Bukkit.getPlayer(uuid)?.player?.name}").color(NamedTextColor.RED))
-                                        .append(Component.text(" collected $cheeseCollected cheese.").color(NamedTextColor.WHITE))
-                                    )
-                                }
-                                if(game.getTeamManager().isInBlueTeam(uuid)) {
-                                    player.sendMessage(Component.text("$i. ")
-                                        .append(Component.text("${Bukkit.getPlayer(uuid)?.player?.name}").color(NamedTextColor.BLUE))
-                                        .append(Component.text(" collected $cheeseCollected cheese.").color(NamedTextColor.WHITE))
-                                    )
-                                }
-                            }
-                            i++
-                        }
-                    }
                     if (timeLeft <= 0) {
-                        for (player in Bukkit.getOnlinePlayers()) { player.sendMessage(Component.text("\nThank you for playing!\nThe server will be restarting shortly.\n").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true)) }
                         game.getPlayerManager().clearAllItems()
                         game.getPlayerManager().teleportPlayersToSpawn()
                         game.setTimerState(TimerState.INACTIVE)
-                        if(!game.getCheeseManager().hasRedFinishedCollecting() || !game.getCheeseManager().hasBlueFinishedCollecting()) {
-                            game.getCheeseManager().clearUnmarkedCheeseMarkers()
-                        }
                         game.getBlockManager().resetBarriers()
                         cancelGameTask()
-
                     }
                 }
 

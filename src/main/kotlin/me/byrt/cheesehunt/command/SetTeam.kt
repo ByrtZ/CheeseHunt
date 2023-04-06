@@ -7,6 +7,7 @@ import cloud.commandframework.annotations.Argument
 import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
+import me.byrt.cheesehunt.manager.GameState
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -20,12 +21,16 @@ class SetTeam : BaseCommand {
     @CommandDescription("Puts the specified player on the specified team.")
     @CommandPermission("cheesehunt.jointeam")
     fun setTeam(sender : Player, @Argument("team") team : Teams, @Argument("player") player : Player) {
-        if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED && team == Teams.RED || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE && team == Teams.BLUE || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.SPECTATOR && team == Teams.SPECTATOR) {
-            sender.sendMessage(Component.text("This player is already on ${team.toString().lowercase()} team.").color(NamedTextColor.RED))
+        if(Main.getGame().getGameState() == GameState.IDLE) {
+            if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED && team == Teams.RED || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE && team == Teams.BLUE || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.SPECTATOR && team == Teams.SPECTATOR) {
+                sender.sendMessage(Component.text("This player is already on ${team.toString().lowercase()} team.").color(NamedTextColor.RED))
+            } else {
+                sender.sendMessage(Component.text("Attempting to add ${player.name} to ${team.toString().lowercase()} team...").color(NamedTextColor.GRAY))
+                sender.sendMessage(Component.text("Successfully added ${player.name} to ${team.toString().lowercase()} team.").color(NamedTextColor.GREEN))
+                Main.getGame().getTeamManager().addToTeam(player, player.uniqueId, team)
+            }
         } else {
-            sender.sendMessage(Component.text("Attempting to add ${player.name} to ${team.toString().lowercase()} team...").color(NamedTextColor.GRAY))
-            sender.sendMessage(Component.text("Successfully added ${player.name} to ${team.toString().lowercase()} team.").color(NamedTextColor.GREEN))
-            Main.getGame().getTeamManager().addToTeam(player, player.uniqueId, team)
+            sender.sendMessage(Component.text("Unable to modify teams in this state.", NamedTextColor.RED))
         }
     }
 }

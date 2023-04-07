@@ -6,6 +6,7 @@ import me.byrt.cheesehunt.manager.GameState
 import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
+import me.byrt.cheesehunt.manager.Sounds
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
@@ -17,8 +18,8 @@ import org.bukkit.entity.Player
 
 @Suppress("unused")
 class Buildmode : BaseCommand {
-    private val buildToggleSuccessSound: Sound = Sound.sound(Key.key("entity.mooshroom.convert"), Sound.Source.MASTER, 1f, 1f)
-    private val buildToggleFailSound: Sound = Sound.sound(Key.key("entity.enderman.teleport"), Sound.Source.MASTER, 1f, 0f)
+    private val buildToggleSuccessSound: Sound = Sound.sound(Key.key(Sounds.Command.BUILDMODE_SUCCESS), Sound.Source.MASTER, 1f, 1f)
+    private val buildToggleFailSound: Sound = Sound.sound(Key.key(Sounds.Command.BUILDMODE_FAIL), Sound.Source.MASTER, 1f, 0f)
     @CommandMethod("buildmode")
     @CommandDescription("Toggles the ability to build for operators while not in game.")
     @CommandPermission("cheesehunt.buildmode")

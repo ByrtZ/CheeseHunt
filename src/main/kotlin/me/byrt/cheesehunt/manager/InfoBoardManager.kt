@@ -53,7 +53,7 @@ class InfoBoardManager(private val game : Game) {
         currentRoundText = cheeseHuntBoard.getScore(ChatColor.GREEN.toString() + "" + ChatColor.BOLD + "Round: " + ChatColor.RESET + "None")
         gameStatusText = cheeseHuntBoard.getScore(ChatColor.RED.toString() + "" + ChatColor.BOLD + "Game status: " + ChatColor.RESET + "Waiting...")
         gameScoreText = cheeseHuntBoard.getScore(ChatColor.AQUA.toString() + "" + ChatColor.BOLD + "Game Coins: " + ChatColor.RESET + "(" + ChatColor.YELLOW + "x1.0" + ChatColor.RESET + ")")
-        redScore = cheeseHuntBoard.getScore(" 1. " + ChatColor.RED.toString() + "Red Team " + ChatColor.RESET + "                0")
+        redScore = cheeseHuntBoard.getScore(" 1. " + ChatColor.RED.toString() + "Red Team " + ChatColor.RESET + "                 0")
         blueScore = cheeseHuntBoard.getScore(" 2. " + ChatColor.BLUE.toString() + "Blue Team " + ChatColor.RESET + "                0")
         blankSpaceOne = cheeseHuntBoard.getScore("§")
         blankSpaceTwo = cheeseHuntBoard.getScore("§§")
@@ -61,10 +61,6 @@ class InfoBoardManager(private val game : Game) {
 
     fun showScoreboard() {
         cheeseHuntBoard.displaySlot = DisplaySlot.SIDEBAR
-    }
-
-    fun hideScoreboard() {
-        cheeseHuntBoard.displaySlot = null
     }
 
     fun updateScoreboardTimer(displayTime : String, previousDisplayTime : String, gameState : GameState) {

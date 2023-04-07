@@ -7,6 +7,7 @@ import me.byrt.cheesehunt.manager.Teams
 import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
+import me.byrt.cheesehunt.manager.Sounds
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
@@ -20,8 +21,8 @@ import java.time.Duration
 
 @Suppress("unused")
 class AutoTeam : BaseCommand {
-    private val shuffleStartSound: Sound = Sound.sound(Key.key("block.note_block.flute"), Sound.Source.MASTER, 1f, 1f)
-    private val shuffleCompleteSound: Sound = Sound.sound(Key.key("block.note_block.flute"), Sound.Source.MASTER, 1f, 2f)
+    private val shuffleStartSound: Sound = Sound.sound(Key.key(Sounds.Command.SHUFFLE_START), Sound.Source.MASTER, 1f, 1f)
+    private val shuffleCompleteSound: Sound = Sound.sound(Key.key(Sounds.Command.SHUFFLE_COMPLETE), Sound.Source.MASTER, 1f, 2f)
     @CommandMethod("autoteam")
     @CommandDescription("Automatically assigns everyone online to a team.")
     @CommandPermission("cheesehunt.autoteam")

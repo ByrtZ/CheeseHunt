@@ -139,7 +139,7 @@ class TeamManager(private val game : Game) {
     fun redWinGame() {
         for(player in Bukkit.getOnlinePlayers()) {
             if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED) {
-                player.playSound(player.location, "ui.toast.challenge_complete", 1f, 1f)
+                player.playSound(player.location, Sounds.Round.WIN_ROUND, 1f, 1f)
                 game.getCheeseManager().teamWinFireworks(player, Teams.RED)
                 player.sendMessage(Component.text("\nYour team won the game!\n").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true))
                 player.showTitle(
@@ -155,7 +155,7 @@ class TeamManager(private val game : Game) {
                 )
             }
             if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE) {
-                player.playSound(player.location, "entity.ender_dragon.growl", 1f, 1f)
+                player.playSound(player.location, Sounds.Round.LOSE_ROUND, 1f, 1f)
                 player.sendMessage(Component.text("\nYour team lost the game!\n").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true))
                 player.showTitle(
                     Title.title(
@@ -175,7 +175,7 @@ class TeamManager(private val game : Game) {
     fun blueWinGame() {
         for(player in Bukkit.getOnlinePlayers()) {
             if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE) {
-                player.playSound(player.location, "ui.toast.challenge_complete", 1f, 1f)
+                player.playSound(player.location, Sounds.Round.WIN_ROUND, 1f, 1f)
                 game.getCheeseManager().teamWinFireworks(player, Teams.BLUE)
                 player.sendMessage(Component.text("\nYour team won the game!\n").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true))
                 player.showTitle(
@@ -191,7 +191,7 @@ class TeamManager(private val game : Game) {
                 )
             }
             if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED) {
-                player.playSound(player.location, "entity.ender_dragon.growl", 1f, 1f)
+                player.playSound(player.location, Sounds.Round.LOSE_ROUND, 1f, 1f)
                 player.sendMessage(Component.text("\nYour team lost the game!\n").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true))
                 player.showTitle(
                     Title.title(
@@ -211,7 +211,7 @@ class TeamManager(private val game : Game) {
     fun noWinGame() {
         for(player in Bukkit.getOnlinePlayers()) {
             if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE) {
-                player.playSound(player.location, "entity.wither.spawn", 1f, 2f)
+                player.playSound(player.location, Sounds.Round.DRAW_ROUND, 1f, 2f)
                 player.sendMessage(Component.text("\nNo team won!\n").color(NamedTextColor.YELLOW).decoration(
                     TextDecoration.BOLD, true))
                 player.showTitle(

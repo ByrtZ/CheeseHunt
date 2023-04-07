@@ -2,6 +2,7 @@ package me.byrt.cheesehunt.command
 
 import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
+import me.byrt.cheesehunt.manager.Sounds
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 
@@ -13,7 +14,7 @@ import org.bukkit.entity.Player
 
 @Suppress("unused")
 class Ping : BaseCommand {
-    private val pingSound: Sound = Sound.sound(Key.key("entity.experience_orb.pickup"), Sound.Source.MASTER, 1f, 1f)
+    private val pingSound: Sound = Sound.sound(Key.key(Sounds.Command.PING), Sound.Source.MASTER, 1f, 1f)
     @CommandMethod("ping")
     @CommandDescription("Returns the executing player's ping")
     fun ping(sender : Player) {

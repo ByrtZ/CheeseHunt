@@ -6,6 +6,7 @@ import me.byrt.cheesehunt.manager.GameState
 import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
+import me.byrt.cheesehunt.manager.Sounds
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
@@ -18,13 +19,13 @@ import org.bukkit.entity.Player
 
 @Suppress("unused")
 class StartGame : BaseCommand {
-    private val startGameSuccessSound: Sound = Sound.sound(Key.key("block.end_portal.spawn"), Sound.Source.MASTER, 1f, 1f)
-    private val startGameFailSound: Sound = Sound.sound(Key.key("entity.enderman.teleport"), Sound.Source.MASTER, 1f, 0f)
+    private val startGameSuccessSound: Sound = Sound.sound(Key.key(Sounds.Start.START_GAME_SUCCESS), Sound.Source.MASTER, 1f, 1f)
+    private val startGameFailSound: Sound = Sound.sound(Key.key(Sounds.Start.START_GAME_FAIL), Sound.Source.MASTER, 1f, 0f)
     @CommandMethod("startgame")
     @CommandDescription("Starts a game of Cheese Hunt.")
     @CommandPermission("cheesehunt.startgame")
     fun start(sender : Player) {
-        if(Main.getGame().getGameState() == GameState.IDLE && !Main.getGame().getMusicLooper()) {
+        if(Main.getGame().getGameState() == GameState.IDLE) {
             if(Main.getGame().getTeamManager().getRedTeam().size >= 1 && Main.getGame().getTeamManager().getBlueTeam().size >= 1) {
                 sender.sendMessage(Component.text("Starting Cheese Hunt game!").color(NamedTextColor.GREEN))
                 Main.getGame().setGameState(GameState.STARTING)

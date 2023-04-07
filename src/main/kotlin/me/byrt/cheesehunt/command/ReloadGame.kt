@@ -5,10 +5,7 @@ import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 
 import me.byrt.cheesehunt.Main
-import me.byrt.cheesehunt.manager.GameState
-import me.byrt.cheesehunt.manager.RoundState
-import me.byrt.cheesehunt.manager.Teams
-import me.byrt.cheesehunt.manager.TimerState
+import me.byrt.cheesehunt.manager.*
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
@@ -23,8 +20,8 @@ import java.time.Duration
 
 @Suppress("unused")
 class ReloadGame : BaseCommand {
-    private val reloadStartSound: Sound = Sound.sound(Key.key("block.note_block.flute"), Sound.Source.MASTER, 1f, 1f)
-    private val reloadCompleteSound: Sound = Sound.sound(Key.key("block.note_block.flute"), Sound.Source.MASTER, 1f, 2f)
+    private val reloadStartSound: Sound = Sound.sound(Key.key(Sounds.Command.SHUFFLE_START), Sound.Source.MASTER, 1f, 1f)
+    private val reloadCompleteSound: Sound = Sound.sound(Key.key(Sounds.Command.SHUFFLE_COMPLETE), Sound.Source.MASTER, 1f, 2f)
     @CommandMethod("reloadgame")
     @CommandDescription("Allows the executing player to reset the game.")
     @CommandPermission("cheesehunt.reloadgame")

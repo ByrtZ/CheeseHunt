@@ -54,7 +54,7 @@ class GameCountdownTask(private var game: Game) {
                         }
                         if(timeLeft == 70) {
                             for(player in Bukkit.getOnlinePlayers()) {
-                                player.playSound(player.location, "entity.item.pickup", 1f, 1f)
+                                player.playSound(player.location, Sounds.Tutorial.TUTORIAL_POP, 1f, 1f)
                                 player.sendMessage(Component.text("-----------------------------------------------------\n\n").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
                                     .append(Component.text("   Welcome to Cheese Hunt!\n\n").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.STRIKETHROUGH, false)
                                         .append(Component.text("       Here's how to play...").color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, true).decoration(TextDecoration.BOLD, false)
@@ -69,7 +69,7 @@ class GameCountdownTask(private var game: Game) {
                         }
                         if(timeLeft == 65) {
                             for(player in Bukkit.getOnlinePlayers()) {
-                                player.playSound(player.location, "entity.item.pickup", 1f, 1f)
+                                player.playSound(player.location, Sounds.Tutorial.TUTORIAL_POP, 1f, 1f)
                                 player.sendMessage(Component.text("-----------------------------------------------------").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
                                     .append(Component.text(" Game:\n").color(NamedTextColor.WHITE).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.STRIKETHROUGH, false)
                                         .append(Component.text(" • Cheese Hunt is a game.\n").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, false)
@@ -88,7 +88,7 @@ class GameCountdownTask(private var game: Game) {
                         }
                         if(timeLeft == 55) {
                             for(player in Bukkit.getOnlinePlayers()) {
-                                player.playSound(player.location, "entity.item.pickup", 1f, 1f)
+                                player.playSound(player.location, Sounds.Tutorial.TUTORIAL_POP, 1f, 1f)
                                 player.sendMessage(Component.text("-----------------------------------------------------").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
                                     .append(Component.text(" Items:\n").color(NamedTextColor.WHITE).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.STRIKETHROUGH, false)
                                         .append(Component.text(" • yea.\n").color(NamedTextColor.WHITE).decoration(TextDecoration.BOLD, false)
@@ -105,7 +105,7 @@ class GameCountdownTask(private var game: Game) {
                         }
                         if(timeLeft == 40) {
                             for(player in Bukkit.getOnlinePlayers()) {
-                                player.playSound(player.location, "entity.item.pickup", 1f, 1f)
+                                player.playSound(player.location, Sounds.Tutorial.TUTORIAL_POP, 1f, 1f)
                                 player.sendMessage(Component.text("-----------------------------------------------------").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
                                     .append(Component.text(" Win Criteria:\n").color(NamedTextColor.WHITE).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.STRIKETHROUGH, false)
                                         .append(Component.text(" • git gud ig.\n\n").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, false)
@@ -122,7 +122,7 @@ class GameCountdownTask(private var game: Game) {
                         }
                         if(timeLeft == 25) {
                             for(player in Bukkit.getOnlinePlayers()) {
-                                player.playSound(player.location, "entity.item.pickup", 1f, 1f)
+                                player.playSound(player.location, Sounds.Tutorial.TUTORIAL_POP, 1f, 1f)
                                 player.sendMessage(Component.text("-----------------------------------------------------").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
                                     .append(Component.text(" Starting soon:\n\n").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.STRIKETHROUGH, false)
                                         .append(Component.text("        Standby for the game to begin...\n\n").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true)
@@ -140,7 +140,7 @@ class GameCountdownTask(private var game: Game) {
                         if (timeLeft in 4..10) {
                             for (player in Bukkit.getOnlinePlayers()) {
                                 player.showTitle(Title.title(
-                                    Component.text("Hiding starts in").color(NamedTextColor.AQUA),
+                                    Component.text("Starting in").color(NamedTextColor.AQUA),
                                     Component.text("►$timeLeft◄").decoration(TextDecoration.BOLD, true),
                                     Title.Times.times(
                                         Duration.ofSeconds(0),
@@ -149,12 +149,12 @@ class GameCountdownTask(private var game: Game) {
                                     )
                                 )
                                 )
-                                player.playSound(player.location, "block.note_block.bass", 0.75f, 1f)
+                                player.playSound(player.location, Sounds.Timer.STARTING_TICK, 0.75f, 1f)
                             }
                         }
                         if (timeLeft == 3 || timeLeft == 2 || timeLeft == 1) {
                             for (player in Bukkit.getOnlinePlayers()) {
-                                player.playSound(player.location, "block.note_block.pling", 1f, 1f)
+                                player.playSound(player.location, Sounds.Timer.STARTING_TICK_FINAL, 1f, 1f)
                                 if (timeLeft == 3) {
                                     player.showTitle(Title.title(
                                         Component.text("Starting in").color(NamedTextColor.AQUA),
@@ -196,9 +196,9 @@ class GameCountdownTask(private var game: Game) {
                     }
                     if (timeLeft <= 0) {
                         for (player in Bukkit.getOnlinePlayers()) {
-                            player.playSound(player.location, "block.note_block.pling", 1f, 1f)
-                            player.playSound(player.location, "block.note_block.pling", 1f, 2f)
-                            player.playSound(player.location, "mcc.rocket_spleef",  SoundCategory.VOICE, 0.75f, 1f)
+                            player.playSound(player.location, Sounds.Round.ROUND_END_PLING, 1f, 1f)
+                            player.playSound(player.location, Sounds.Round.ROUND_END_PLING, 1f, 2f)
+                            Main.getGame().getMusicLoop().startMusicLoop(player, Main.getPlugin(), Music.MAIN)
                             if(!game.getTeamManager().isSpectator(player.uniqueId)) {
                                 player.gameMode = GameMode.SURVIVAL
                             }
@@ -210,24 +210,25 @@ class GameCountdownTask(private var game: Game) {
 
                 // <=30s remaining
                 if (game.getGameState() == GameState.IN_GAME && game.getTimerState() == TimerState.ACTIVE) {
+                    if(timeLeft == 31) {
+                        for(player in Bukkit.getOnlinePlayers()) {
+                            player.playSound(player.location, Sounds.Music.OVERTIME_INTRO_MUSIC, 1f, 1f)
+                        }
+                    }
                     if (timeLeft in 11..30 || timeLeft % 60 == 0) {
                         for (player in Bukkit.getOnlinePlayers()) {
-                            player.playSound(player.location, "block.note_block.bass", 0.75f, 1f)
+                            player.playSound(player.location, Sounds.Timer.CLOCK_TICK, 0.75f, 1f)
                         }
                         if (timeLeft == 28) {
                             for (player in Bukkit.getOnlinePlayers()) {
-                                player.playSound(player.location, "mcc.overtime", SoundCategory.VOICE, 0.75f, 1f)
-                            }
-                        }
-                        if (timeLeft == 27) {
-                            for (player in Bukkit.getOnlinePlayers()) {
-                                player.stopSound("mcc.rocket_spleef", SoundCategory.VOICE)
+                                Main.getGame().getMusicLoop().stopMusicLoop(player, Music.MAIN)
+                                Main.getGame().getMusicLoop().startMusicLoop(player, Main.getPlugin(), Music.OVERTIME)
                             }
                         }
                     }
                     if (timeLeft in 0..10) {
                         for (player in Bukkit.getOnlinePlayers()) {
-                            player.playSound(player.location, "block.note_block.bass", 0.75f, 2f)
+                            player.playSound(player.location, Sounds.Timer.CLOCK_TICK_HIGH, 0.75f, 2f)
                         }
                     }
                 }
@@ -236,11 +237,13 @@ class GameCountdownTask(private var game: Game) {
                 if (timeLeft <= 0 && game.getGameState() == GameState.IN_GAME && game.getTimerState() == TimerState.ACTIVE) {
                     if (game.getRoundState() == RoundState.ROUND_ONE) {
                         for (player in Bukkit.getOnlinePlayers()) {
-                            player.playSound(player.location, "block.note_block.pling", 1f, 1f)
-                            player.playSound(player.location, "block.note_block.pling", 1f, 2f)
-                            player.stopSound("mcc.rocket_spleef", SoundCategory.VOICE)
-                            player.stopSound("mcc.overtime", SoundCategory.VOICE)
-                            player.playSound(player.location, "mcc.overovertime", SoundCategory.VOICE, 0.75f, 1f)
+                            player.playSound(player.location, Sounds.GameOver.GAME_OVER_PLING, 1f, 1f)
+                            player.playSound(player.location, Sounds.GameOver.GAME_OVER_PLING, 1f, 2f)
+                            player.playSound(player.location, Sounds.GameOver.GAME_OVER_EFFECT_1, 1f, 1f)
+                            player.playSound(player.location, Sounds.GameOver.GAME_OVER_EFFECT_2, 1f, 1f)
+                            Main.getGame().getMusicLoop().stopMusicLoop(player, Music.MAIN)
+                            Main.getGame().getMusicLoop().stopMusicLoop(player, Music.OVERTIME)
+                            player.playSound(player.location, Sounds.Music.GAME_OVER_MUSIC, SoundCategory.VOICE, 0.85f, 1f)
                             player.showTitle(Title.title(
                                 Component.text("Game Over!").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true),
                                 Component.text(""),
@@ -258,13 +261,6 @@ class GameCountdownTask(private var game: Game) {
                             }
                         }
                         game.setGameState(GameState.GAME_END)
-                    }
-                }
-
-                // Increment round if round one ended
-                if (game.getGameState() == GameState.ROUND_END && game.getTimerState() == TimerState.ACTIVE) {
-                    if (timeLeft <= 0) {
-                        game.setGameState(GameState.STARTING)
                     }
                 }
 
@@ -306,6 +302,10 @@ class GameCountdownTask(private var game: Game) {
         setTimerTimeLeft = String.format("%02d:%02d", setTimeLeft / 60, setTimeLeft % 60)
         game.getInfoBoardManager().updateScoreboardTimer(setTimerTimeLeft!!, displayTime, game.getGameState())
         timeLeft = setTimeLeft
+    }
+
+    fun getTimeLeft() : Int {
+        return timeLeft
     }
 
     fun resetVars() {

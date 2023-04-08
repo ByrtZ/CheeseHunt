@@ -90,14 +90,14 @@ class PlayerDeathEvent : Listener {
             if(allPlayer != player) {
                 allPlayer.sendMessage(Component.text(playerKilled.name, Main.getGame().getTeamManager().getTeamColour(playerKilled)).append(Component.text(" was eliminated by ", NamedTextColor.WHITE).append(Component.text(player.name, Main.getGame().getTeamManager().getTeamColour(player)))))
             } else {
-                allPlayer.sendMessage(Component.text("[+5] You eliminated ").append(Component.text(playerKilled.name, Main.getGame().getTeamManager().getTeamColour(playerKilled))).append(Component.text("!")))
+                allPlayer.sendMessage(Component.text("[+5 coins] You eliminated ").append(Component.text(playerKilled.name, Main.getGame().getTeamManager().getTeamColour(playerKilled))).append(Component.text("!")))
             }
         }
         player.playSound(player.location, Sounds.Elimination.ELIMINATION, 1f, 1.25f)
         player.showTitle(
             Title.title(
                 Component.text(""),
-                Component.text("[").append(Component.text("⚔", NamedTextColor.GREEN).append(Component.text("] ")).append(Component.text(playerKilled.name, Main.getGame().getTeamManager().getTeamColour(playerKilled)))),
+                Component.text("[").append(Component.text("⚔", NamedTextColor.GREEN).append(Component.text("] ", NamedTextColor.WHITE)).append(Component.text(playerKilled.name, Main.getGame().getTeamManager().getTeamColour(playerKilled)))),
                 Title.Times.times(Duration.ZERO, Duration.ofSeconds(1), Duration.ofSeconds(1))
             )
         )

@@ -21,10 +21,14 @@ class RespawnManager(private val game: Game) {
 
     fun startRespawnLoop(player : Player, plugin : Plugin, team : Teams) {
         val bukkitRunnable = object: BukkitRunnable() {
-            var respawnTimer = 5
+            var respawnTimer = 6
             override fun run() {
                 respawnTimer--
-                player.playSound(player.location, Sounds.Respawn.RESPAWN_TIMER, 1f, 2f)
+                if(respawnTimer > 0) {
+                    player.playSound(player.location, Sounds.Respawn.RESPAWN_TIMER, 1f, 2f)
+                } else {
+                    player.playSound(player.location, Sounds.Respawn.RESPAWN, 1000f, 1f)
+                }
                 player.showTitle(
                     Title.title(
                     Component.text("Respawning in...", NamedTextColor.YELLOW),

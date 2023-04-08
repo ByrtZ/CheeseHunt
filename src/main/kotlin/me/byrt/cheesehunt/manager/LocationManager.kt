@@ -28,18 +28,19 @@ class LocationManager(private var game : Game) {
         when(team) {
             Teams.RED -> {
                 if(redSpawnCounter >= 3) {
-                    redSpawnCounter = -1
+                    redSpawnCounter = 0
+                } else {
+                    redSpawnCounter++
                 }
-                redSpawnCounter++
             }
             Teams.BLUE -> {
                 if(blueSpawnCounter >= 3) {
-                    blueSpawnCounter = -1
+                    blueSpawnCounter = 0
+                } else {
+                    blueSpawnCounter++
                 }
-                blueSpawnCounter++
-            }
-            Teams.SPECTATOR -> {
-                Main.getPlugin().logger.info("This is impossible.")
+            } else -> {
+                Main.getPlugin().logger.severe("An error occurred when attempting to increment a spawn location counter.")
             }
         }
     }

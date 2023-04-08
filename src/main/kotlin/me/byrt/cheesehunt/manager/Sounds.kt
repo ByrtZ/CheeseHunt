@@ -31,6 +31,7 @@ class Sounds(private val game : Game) {
     }
     object Respawn {
         const val RESPAWN_TIMER = "ui.button.click"
+        const val RESPAWN = "block.beacon.power_select"
     }
     object Elimination {
         const val ELIMINATION = "entity.player.levelup"

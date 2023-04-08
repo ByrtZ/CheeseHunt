@@ -1,47 +1,36 @@
 package me.byrt.cheesehunt.manager
 
+import org.bukkit.Bukkit.getWorld
+import org.bukkit.Material
+
 class BlockManager(private val game : Game) {
     fun removeBarriers() {
         when(game.getRoundState()) {
             RoundState.ROUND_ONE -> {
-                /*for (x in 14..19) { // Removing red round one barrier
-                    for (y in -43..-40) {
-                        getWorld("Cheese")?.getBlockAt(x, y, 41)?.type = Material.AIR
+                for (z in 999..1001) { // Removing red barrier
+                    for (y in 3..5) {
+                        getWorld("Cheese")?.getBlockAt(950, y, z)?.type = Material.AIR
                     }
                 }
-
-                for (x in -66..-61) { // Removing blue round one barrier
-                    for (y in -43..-40) {
-                        getWorld("Cheese")?.getBlockAt(x, y, 41)?.type = Material.AIR
+                for (z in 999..1001) { // Removing blue barrier
+                    for (y in 3..5) {
+                        getWorld("Cheese")?.getBlockAt(1050, y, z)?.type = Material.AIR
                     }
-                }*/
+                }
             }
         }
     }
 
     fun resetBarriers() {
-        /*for (x in 14..19) { // Removing red round one barrier
-            for (y in -43..-40) {
-                getWorld("Cheese")?.getBlockAt(x, y, 41)?.type = Material.RED_STAINED_GLASS
+        for (z in 999..1001) { // Resetting red barrier
+            for (y in 3..5) {
+                getWorld("Cheese")?.getBlockAt(950, y, z)?.type = Material.BARRIER
             }
         }
-
-        for (x in -66..-61) { // Removing blue round one barrier
-            for (y in -43..-40) {
-                getWorld("Cheese")?.getBlockAt(x, y, 41)?.type = Material.BLUE_STAINED_GLASS
+        for (z in 999..1001) { // Resetting blue barrier
+            for (y in 3..5) {
+                getWorld("Cheese")?.getBlockAt(1050, y, z)?.type = Material.BARRIER
             }
         }
-
-        for (x in -66..-61) { // Removing blue round two barrier
-            for (y in -52..-49) {
-                getWorld("Cheese")?.getBlockAt(x, y, 74)?.type = Material.RED_STAINED_GLASS
-            }
-        }
-
-        for (x in 14..19) { // Removing blue round two barrier
-            for (y in -52..-49) {
-                getWorld("Cheese")?.getBlockAt(x, y, 74)?.type = Material.BLUE_STAINED_GLASS
-            }
-        }*/
     }
 }

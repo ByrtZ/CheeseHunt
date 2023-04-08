@@ -30,6 +30,7 @@ class Main : JavaPlugin() {
         setupEventListeners()
         game.getInfoBoardManager().buildScoreboard()
         game.getTeamManager().buildDisplayTeams()
+        game.getLocationManager().populateSpawns()
         game.getTabListManager().populateCheesePuns()
     }
 

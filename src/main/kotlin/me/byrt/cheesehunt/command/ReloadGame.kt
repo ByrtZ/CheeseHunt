@@ -14,8 +14,8 @@ import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.title.Title
 
 import org.bukkit.Bukkit
-
 import org.bukkit.entity.Player
+
 import java.time.Duration
 
 @Suppress("unused")
@@ -38,6 +38,7 @@ class ReloadGame : BaseCommand {
             Main.getGame().getInfoBoardManager().destroyScoreboard()
             Main.getGame().getInfoBoardManager().buildScoreboard()
             Main.getGame().getPlayerManager().resetPlayers()
+            Main.getGame().getLocationManager().resetSpawnCounters()
             for(player in Bukkit.getOnlinePlayers()) {
                 Main.getGame().getTeamManager().addToTeam(player, player.uniqueId, Teams.SPECTATOR)
                 if(player.isOp) {

@@ -29,6 +29,12 @@ class Sounds(private val game : Game) {
         const val START_GAME_SUCCESS = "block.end_portal.spawn"
         const val START_GAME_FAIL = "entity.enderman.teleport"
     }
+    object Respawn {
+        const val RESPAWN_TIMER = "ui.button.click"
+    }
+    object Elimination {
+        const val ELIMINATION = "entity.player.levelup"
+    }
     object Tutorial {
         const val TUTORIAL_POP = "entity.item.pickup"
     }

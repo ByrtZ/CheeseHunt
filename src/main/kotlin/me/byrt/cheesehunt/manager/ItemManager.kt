@@ -55,23 +55,25 @@ class ItemManager(private val game : Game) {
         }
     }
 
-    fun givePlayerCheese(player : Player) {
+    fun givePlayerKit(player : Player) {
         if(game.getRoundState() == RoundState.ROUND_ONE) {
-            val cheese = ItemStack(Material.YELLOW_DYE, 4)
-            val cheeseMeta: ItemMeta = cheese.itemMeta
-            cheeseMeta.displayName(Component.text("Cheese?").color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false))
-            cheese.itemMeta = cheeseMeta
-            player.inventory.addItem(cheese)
-        }
-    }
+            val mainWeapon = ItemStack(Material.STONE_SWORD, 1)
+            val mainWeaponMeta: ItemMeta = mainWeapon.itemMeta
+            mainWeaponMeta.displayName(Component.text("Combat Sword").color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
+            mainWeaponMeta.isUnbreakable = true
+            mainWeaponMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES)
+            mainWeapon.itemMeta = mainWeaponMeta
+            player.inventory.addItem(mainWeapon)
 
-    fun givePlayerHoe(player : Player) {
-        val cheeseHarvester = ItemStack(Material.GRAY_DYE)
-        val cheeseHarvesterMeta: ItemMeta = cheeseHarvester.itemMeta
-        cheeseHarvesterMeta.displayName(Component.text("Cheese Harvester 1000?").color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
-        cheeseHarvesterMeta.isUnbreakable = true
-        cheeseHarvesterMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES)
-        cheeseHarvester.itemMeta = cheeseHarvesterMeta
-        player.inventory.addItem(cheeseHarvester)
+            val subWeapon = ItemStack(Material.BOW, 1)
+            val subWeaponMeta: ItemMeta = mainWeapon.itemMeta
+            subWeaponMeta.displayName(Component.text("Combat Bow").color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
+            subWeaponMeta.isUnbreakable = true
+            subWeaponMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES)
+            subWeapon.itemMeta = subWeaponMeta
+            player.inventory.addItem(subWeapon)
+
+            player.inventory.addItem(ItemStack(Material.ARROW, 8))
+        }
     }
 }

@@ -6,10 +6,6 @@ import org.bukkit.*
 import org.bukkit.entity.Player
 
 class PlayerManager(private var game : Game) {
-    private val redRoundOneSpawn = Location(Main.getPlugin().server.getWorld("Cheese"), 17.0, -43.0, 38.5, 0.0f, 0.0f)
-    private val blueRoundOneSpawn = Location(Main.getPlugin().server.getWorld("Cheese"), -63.0, -43.0, 38.5, 0.0f, 0.0f)
-    private val spawn = Location(Main.getPlugin().server.getWorld("Cheese"), 0.5, -52.0 ,0.5, 0.0f, 0.0f)
-
     fun setPlayersNotFlying() {
         Bukkit.getOnlinePlayers().stream().filter { player: Player -> player.allowFlight }.forEach {
                 player: Player -> disableFlightPlayers(player)
@@ -32,7 +28,7 @@ class PlayerManager(private var game : Game) {
         when(game.getRoundState()) {
             RoundState.ROUND_ONE -> {
                 if(game.getTeamManager().getPlayerTeam(player.uniqueId) != Teams.SPECTATOR) {
-                    game.getItemManager().givePlayerCheese(player)
+                    game.getItemManager().givePlayerKit(player)
                 }
             }
         }
@@ -62,13 +58,21 @@ class PlayerManager(private var game : Game) {
     private fun teleportPlayers(player : Player) {
         if(Main.getGame().getTeamManager().isInRedTeam(player.uniqueId)) {
             if(Main.getGame().getRoundState() == RoundState.ROUND_ONE) {
-                player.teleport(redRoundOneSpawn)
+                for(redPlayerUUID in Main.getGame().getTeamManager().getRedTeam()) {
+                    val redPlayer = Bukkit.getPlayer(redPlayerUUID)
+                    redPlayer!!.teleport(Main.getGame().getLocationManager().getRedSpawns()[Main.getGame().getLocationManager().getRedSpawnCounter()])
+                    Main.getGame().getLocationManager().incrementSpawnCounter(Teams.RED)
+                }
             } else {
                 Main.getPlugin().logger.info("[TELEPORTING ERROR] Something weird happened when trying to teleport players")
             }
         } else if(Main.getGame().getTeamManager().isInBlueTeam(player.uniqueId)) {
             if(Main.getGame().getRoundState() == RoundState.ROUND_ONE) {
-                player.teleport(blueRoundOneSpawn)
+                for(bluePlayerUUID in Main.getGame().getTeamManager().getBlueTeam()) {
+                    val bluePlayer = Bukkit.getPlayer(bluePlayerUUID)
+                    bluePlayer!!.teleport(Main.getGame().getLocationManager().getBlueSpawns()[Main.getGame().getLocationManager().getBlueSpawnCounter()])
+                    Main.getGame().getLocationManager().incrementSpawnCounter(Teams.BLUE)
+                }
             } else {
                 Main.getPlugin().logger.info("[TELEPORTING ERROR] Something weird happened when trying to teleport players")
             }
@@ -79,7 +83,7 @@ class PlayerManager(private var game : Game) {
 
     fun teleportPlayersToSpawn() {
         for(player in Bukkit.getOnlinePlayers()) {
-            player.teleport(spawn)
+            player.teleport(Main.getGame().getLocationManager().getSpawn())
         }
     }
 
@@ -89,10 +93,10 @@ class PlayerManager(private var game : Game) {
             .forEach{ player: Player -> player.gameMode = GameMode.SPECTATOR }
     }
 
-    private fun setPlayersAdventure() {
-        for(player in Bukkit.getOnlinePlayers()) {
-            player.gameMode = GameMode.ADVENTURE
-        }
+    fun setPlayersAdventure() {
+        Bukkit.getOnlinePlayers().stream().filter { player: Player? -> player?.let {
+            Main.getGame().getTeamManager().getPlayerTeam(it.uniqueId) } != Teams.SPECTATOR}
+            .forEach{ player: Player -> player.gameMode = GameMode.ADVENTURE }
     }
 
     fun resetPlayers() {

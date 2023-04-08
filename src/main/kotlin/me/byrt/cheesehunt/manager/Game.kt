@@ -17,6 +17,8 @@ class Game(private val plugin : Main) {
     private val infoBoardManager = InfoBoardManager(this)
     private val tabListManager = TabListManager(this)
     private val soundManager = Sounds(this)
+    private val locationManager = LocationManager(this)
+    private val respawnManager = RespawnManager(this)
     private val gameCountdownTask = GameCountdownTask(this)
     private val musicLoop = MusicLoop(this)
 
@@ -32,6 +34,7 @@ class Game(private val plugin : Main) {
                 when(this.roundState) {
                     RoundState.ROUND_ONE -> {
                         buildMode = false
+                        playerManager.setPlayersAdventure()
                         gameCountdownTask.setTimeLeft(80)
                         gameCountdownTask.gameLoop()
                     }
@@ -104,6 +107,14 @@ class Game(private val plugin : Main) {
 
     fun getSoundManager(): Sounds {
         return this.soundManager
+    }
+
+    fun getLocationManager(): LocationManager {
+        return this.locationManager
+    }
+
+    fun getRespawnManager(): RespawnManager {
+        return this.respawnManager
     }
 
     fun getGameCountdownTask(): GameCountdownTask {

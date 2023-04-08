@@ -12,7 +12,11 @@ import org.bukkit.event.block.BlockDropItemEvent
 class BlockBreakDropEvent : Listener {
     @EventHandler
     private fun onBlockBreak(e : BlockBreakEvent) {
-        e.isCancelled = !(Main.getGame().getBuildMode() && e.player.isOp)
+        if(e.player.itemInHand.type == Material.DEBUG_STICK && e.player.gameMode == GameMode.CREATIVE) {
+            e.isCancelled = true
+        } else {
+            e.isCancelled = !(Main.getGame().getBuildMode() && e.player.isOp)
+        }
     }
 
     @EventHandler

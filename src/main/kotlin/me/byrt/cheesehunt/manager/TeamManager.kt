@@ -229,6 +229,16 @@ class TeamManager(private val game : Game) {
         }
     }
 
+    fun getTeamColour(player : Player) : NamedTextColor {
+        if(isInRedTeam(player.uniqueId)) {
+            return NamedTextColor.RED
+        }
+        if(isInBlueTeam(player.uniqueId)) {
+            return NamedTextColor.BLUE
+        }
+        return NamedTextColor.BLACK
+    }
+
     fun isInRedTeam(uuid : UUID): Boolean {
         return redTeam.contains(uuid)
     }

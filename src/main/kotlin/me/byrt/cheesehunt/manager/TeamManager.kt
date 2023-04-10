@@ -1,6 +1,7 @@
 package me.byrt.cheesehunt.manager
 
 import me.byrt.cheesehunt.Main
+import me.byrt.cheesehunt.state.Teams
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -36,7 +37,7 @@ class TeamManager(private val game : Game) {
                     .append(Component.text("Red Team")
                         .color(NamedTextColor.RED))
                         .append(Component.text(".")))
-                game.getItemManager().playerJoinTeamEquip(player, Teams.RED)
+                game.getItemManager().givePlayerTeamBoots(player, Teams.RED)
             }
             Teams.BLUE -> {
                 if(redTeam.contains(uuid)) { removeFromTeam(player, uuid, Teams.RED) }
@@ -48,14 +49,14 @@ class TeamManager(private val game : Game) {
                     .append(Component.text("Blue Team")
                         .color(NamedTextColor.BLUE))
                     .append(Component.text(".")))
-                game.getItemManager().playerJoinTeamEquip(player, Teams.BLUE)
+                game.getItemManager().givePlayerTeamBoots(player, Teams.BLUE)
             }
             Teams.SPECTATOR -> {
                 if(redTeam.contains(uuid)) { removeFromTeam(player, uuid, Teams.RED) }
                 if(blueTeam.contains(uuid)) { removeFromTeam(player, uuid, Teams.BLUE) }
                 spectators.add(uuid)
                 player.sendMessage(Component.text("You are now a Spectator."))
-                game.getItemManager().playerJoinTeamEquip(player, Teams.SPECTATOR)
+                game.getItemManager().givePlayerTeamBoots(player, Teams.SPECTATOR)
             }
         }
     }

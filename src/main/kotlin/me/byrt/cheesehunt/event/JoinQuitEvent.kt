@@ -1,9 +1,9 @@
 package me.byrt.cheesehunt.event
 
 import me.byrt.cheesehunt.Main
-import me.byrt.cheesehunt.manager.GameState
-import me.byrt.cheesehunt.manager.Music
-import me.byrt.cheesehunt.manager.Teams
+import me.byrt.cheesehunt.state.GameState
+import me.byrt.cheesehunt.task.Music
+import me.byrt.cheesehunt.state.Teams
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
@@ -42,7 +42,7 @@ class JoinQuitEvent : Listener {
     @EventHandler
     private fun onPlayerQuit(e : PlayerQuitEvent) {
         Main.getGame().getTeamManager().getPlayerTeam(e.player.uniqueId).let { Main.getGame().getTeamManager().removeFromTeam(e.player, e.player.uniqueId, it)}
-        Main.getGame().getMusicLoop().stopMusicLoop(e.player, Music.NULL)
+        Main.getGame().getMusicTask().stopMusicLoop(e.player, Music.NULL)
         e.quitMessage(Component.text("${e.player.name} left the game.").color(TextColor.fromHexString("#ffff00")))
     }
 }

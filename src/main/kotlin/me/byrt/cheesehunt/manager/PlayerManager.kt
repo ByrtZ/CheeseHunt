@@ -1,6 +1,8 @@
 package me.byrt.cheesehunt.manager
 
 import me.byrt.cheesehunt.Main
+import me.byrt.cheesehunt.state.RoundState
+import me.byrt.cheesehunt.state.Teams
 
 import org.bukkit.*
 import org.bukkit.entity.Player
@@ -20,7 +22,7 @@ class PlayerManager(private var game : Game) {
     }
 
     fun giveItemsToPlayers() {
-        Bukkit.getOnlinePlayers().stream().filter { player: Player -> player.gameMode == GameMode.SURVIVAL }
+        Bukkit.getOnlinePlayers().stream().filter { player: Player -> player.gameMode == GameMode.ADVENTURE }
             .forEach { player: Player -> giveItems(player) }
     }
 

@@ -1,9 +1,9 @@
 package me.byrt.cheesehunt.event
 
 import me.byrt.cheesehunt.Main
-import me.byrt.cheesehunt.manager.GameState
+import me.byrt.cheesehunt.state.GameState
 import me.byrt.cheesehunt.manager.Sounds
-import me.byrt.cheesehunt.manager.Teams
+import me.byrt.cheesehunt.state.Teams
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -26,9 +26,15 @@ class PlayerDeathEvent : Listener {
             e.isCancelled = true
         } else {
             val playerDied = e.player
-            val killer = e.player.killer!!
             death(playerDied)
-            eliminationDisplay(killer, playerDied)
+            if(e.player.killer is Player) {
+                val killer = e.player.killer!!
+                eliminationDisplay(killer, playerDied)
+            } else {
+                if(e.player.location.block.type == Material.STRUCTURE_VOID) {
+                    voidEliminationDisplay(playerDied)
+                }
+            }
             e.isCancelled = true
         }
     }
@@ -38,10 +44,10 @@ class PlayerDeathEvent : Listener {
         player.inventory.clear()
         if(Main.getGame().getTeamManager().isInRedTeam(player.uniqueId)) {
             deathFirework(player.location, Teams.RED)
-            Main.getGame().getRespawnManager().startRespawnLoop(player, Main.getPlugin(), Teams.RED)
+            Main.getGame().getRespawnTask().startRespawnLoop(player, Main.getPlugin(), Teams.RED)
         } else if(Main.getGame().getTeamManager().isInBlueTeam(player.uniqueId)) {
             deathFirework(player.location, Teams.BLUE)
-            Main.getGame().getRespawnManager().startRespawnLoop(player, Main.getPlugin(), Teams.BLUE)
+            Main.getGame().getRespawnTask().startRespawnLoop(player, Main.getPlugin(), Teams.BLUE)
         }
     }
 
@@ -88,9 +94,9 @@ class PlayerDeathEvent : Listener {
     private fun eliminationDisplay(player : Player, playerKilled : Player) {
         for(allPlayer in Bukkit.getOnlinePlayers()) {
             if(allPlayer != player) {
-                allPlayer.sendMessage(Component.text(playerKilled.name, Main.getGame().getTeamManager().getTeamColour(playerKilled)).append(Component.text(" was eliminated by ", NamedTextColor.WHITE).append(Component.text(player.name, Main.getGame().getTeamManager().getTeamColour(player)))))
+                allPlayer.sendMessage(Component.text(playerKilled.name, Main.getGame().getTeamManager().getTeamColour(playerKilled)).append(Component.text(" was eliminated by ", NamedTextColor.WHITE).append(Component.text(player.name, Main.getGame().getTeamManager().getTeamColour(player)).append(Component.text(".", NamedTextColor.WHITE)))))
             } else {
-                allPlayer.sendMessage(Component.text("[+5 coins] You eliminated ").append(Component.text(playerKilled.name, Main.getGame().getTeamManager().getTeamColour(playerKilled))).append(Component.text("!")))
+                allPlayer.sendMessage(Component.text("[+5 coins] You eliminated ").append(Component.text(playerKilled.name, Main.getGame().getTeamManager().getTeamColour(playerKilled))).append(Component.text("!", NamedTextColor.WHITE)))
             }
         }
         player.playSound(player.location, Sounds.Elimination.ELIMINATION, 1f, 1.25f)
@@ -101,5 +107,11 @@ class PlayerDeathEvent : Listener {
                 Title.Times.times(Duration.ZERO, Duration.ofSeconds(1), Duration.ofSeconds(1))
             )
         )
+    }
+
+    private fun voidEliminationDisplay(playerKilled : Player) {
+        for(player in Bukkit.getOnlinePlayers()) {
+            player.sendMessage(Component.text(playerKilled.name, Main.getGame().getTeamManager().getTeamColour(playerKilled)).append(Component.text(" tried to escape the island... ", NamedTextColor.WHITE)))
+        }
     }
 }

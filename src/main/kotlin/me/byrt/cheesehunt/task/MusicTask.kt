@@ -1,4 +1,7 @@
-package me.byrt.cheesehunt.manager
+package me.byrt.cheesehunt.task
+
+import me.byrt.cheesehunt.manager.Game
+import me.byrt.cheesehunt.manager.Sounds
 
 import org.bukkit.SoundCategory
 import org.bukkit.entity.Player
@@ -8,7 +11,7 @@ import org.bukkit.scheduler.BukkitRunnable
 import java.util.*
 
 @Suppress("unused")
-class MusicLoop(private val game : Game) {
+class MusicTask(private val game : Game) {
     private val musicLoopMap = mutableMapOf<UUID, BukkitRunnable>()
 
     fun startMusicLoop(player : Player, plugin : Plugin, music : Music) {

@@ -1,8 +1,8 @@
 package me.byrt.cheesehunt.command
 
 import me.byrt.cheesehunt.Main
-import me.byrt.cheesehunt.manager.GameState
-import me.byrt.cheesehunt.manager.Teams
+import me.byrt.cheesehunt.state.GameState
+import me.byrt.cheesehunt.state.Teams
 
 import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod

@@ -2,6 +2,9 @@ package me.byrt.cheesehunt.task
 
 import me.byrt.cheesehunt.Main
 import me.byrt.cheesehunt.manager.*
+import me.byrt.cheesehunt.state.GameState
+import me.byrt.cheesehunt.state.RoundState
+import me.byrt.cheesehunt.state.TimerState
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -9,7 +12,6 @@ import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.title.Title
 
 import org.bukkit.Bukkit
-import org.bukkit.GameMode
 import org.bukkit.SoundCategory
 import org.bukkit.scheduler.BukkitRunnable
 
@@ -198,10 +200,7 @@ class GameCountdownTask(private var game: Game) {
                         for (player in Bukkit.getOnlinePlayers()) {
                             player.playSound(player.location, Sounds.Round.ROUND_END_PLING, 1f, 1f)
                             player.playSound(player.location, Sounds.Round.ROUND_END_PLING, 1f, 2f)
-                            Main.getGame().getMusicLoop().startMusicLoop(player, Main.getPlugin(), Music.MAIN)
-                            if(!game.getTeamManager().isSpectator(player.uniqueId)) {
-                                player.gameMode = GameMode.SURVIVAL
-                            }
+                            Main.getGame().getMusicTask().startMusicLoop(player, Main.getPlugin(), Music.MAIN)
                             player.resetTitle()
                         }
                         game.setGameState(GameState.IN_GAME)
@@ -210,6 +209,12 @@ class GameCountdownTask(private var game: Game) {
 
                 // <=30s remaining
                 if (game.getGameState() == GameState.IN_GAME && game.getTimerState() == TimerState.ACTIVE) {
+                    if(timeLeft % 60 == 0 && timeLeft != 720) {
+                        for(player in Bukkit.getOnlinePlayers()) {
+                            player.sendMessage(Component.text("Cheese is being counted...", NamedTextColor.AQUA, TextDecoration.BOLD))
+                        }
+                        game.getCheeseManager().countCheeseInBases()
+                    }
                     if(timeLeft == 31) {
                         for(player in Bukkit.getOnlinePlayers()) {
                             player.playSound(player.location, Sounds.Music.OVERTIME_INTRO_MUSIC, 1f, 1f)
@@ -221,8 +226,8 @@ class GameCountdownTask(private var game: Game) {
                         }
                         if (timeLeft == 28) {
                             for (player in Bukkit.getOnlinePlayers()) {
-                                Main.getGame().getMusicLoop().stopMusicLoop(player, Music.MAIN)
-                                Main.getGame().getMusicLoop().startMusicLoop(player, Main.getPlugin(), Music.OVERTIME)
+                                Main.getGame().getMusicTask().stopMusicLoop(player, Music.MAIN)
+                                Main.getGame().getMusicTask().startMusicLoop(player, Main.getPlugin(), Music.OVERTIME)
                             }
                         }
                     }
@@ -241,8 +246,8 @@ class GameCountdownTask(private var game: Game) {
                             player.playSound(player.location, Sounds.GameOver.GAME_OVER_PLING, 1f, 2f)
                             player.playSound(player.location, Sounds.GameOver.GAME_OVER_EFFECT_1, 1f, 1f)
                             player.playSound(player.location, Sounds.GameOver.GAME_OVER_EFFECT_2, 1f, 1f)
-                            Main.getGame().getMusicLoop().stopMusicLoop(player, Music.MAIN)
-                            Main.getGame().getMusicLoop().stopMusicLoop(player, Music.OVERTIME)
+                            Main.getGame().getMusicTask().stopMusicLoop(player, Music.MAIN)
+                            Main.getGame().getMusicTask().stopMusicLoop(player, Music.OVERTIME)
                             player.playSound(player.location, Sounds.Music.GAME_OVER_MUSIC, SoundCategory.VOICE, 0.85f, 1f)
                             player.showTitle(Title.title(
                                 Component.text("Game Over!").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true),
@@ -251,11 +256,11 @@ class GameCountdownTask(private var game: Game) {
                                     Duration.ofSeconds(0),
                                     Duration.ofSeconds(4),
                                     Duration.ofSeconds(1)
+                                    )
                                 )
                             )
-                            )
+                            game.getPlayerManager().setPlayersAdventure()
                             if(!game.getTeamManager().isSpectator(player.uniqueId)) {
-                                player.gameMode = GameMode.ADVENTURE
                                 player.allowFlight = true
                                 player.isFlying = true
                             }

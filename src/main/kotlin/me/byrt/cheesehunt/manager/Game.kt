@@ -1,7 +1,12 @@
 package me.byrt.cheesehunt.manager
 
 import me.byrt.cheesehunt.Main
+import me.byrt.cheesehunt.state.GameState
+import me.byrt.cheesehunt.state.RoundState
+import me.byrt.cheesehunt.state.TimerState
 import me.byrt.cheesehunt.task.GameCountdownTask
+import me.byrt.cheesehunt.task.MusicTask
+import me.byrt.cheesehunt.task.RespawnTask
 
 @Suppress("unused")
 class Game(private val plugin : Main) {
@@ -18,9 +23,9 @@ class Game(private val plugin : Main) {
     private val tabListManager = TabListManager(this)
     private val soundManager = Sounds(this)
     private val locationManager = LocationManager(this)
-    private val respawnManager = RespawnManager(this)
+    private val respawnTask = RespawnTask(this)
     private val gameCountdownTask = GameCountdownTask(this)
-    private val musicLoop = MusicLoop(this)
+    private val musicTask = MusicTask(this)
 
     fun setGameState(newState : GameState) {
         this.gameState = newState
@@ -113,12 +118,16 @@ class Game(private val plugin : Main) {
         return this.locationManager
     }
 
-    fun getRespawnManager(): RespawnManager {
-        return this.respawnManager
+    fun getRespawnTask(): RespawnTask {
+        return this.respawnTask
     }
 
     fun getGameCountdownTask(): GameCountdownTask {
         return this.gameCountdownTask
+    }
+
+    fun getMusicTask(): MusicTask {
+        return this.musicTask
     }
 
     private fun roundStarting() {
@@ -126,6 +135,7 @@ class Game(private val plugin : Main) {
         playerManager.setPlayersNotFlying()
         playerManager.clearCheese()
         playerManager.teleportPlayersToGame()
+        playerManager.setPlayersAdventure()
     }
 
     private fun startRound() {
@@ -139,10 +149,6 @@ class Game(private val plugin : Main) {
 
     fun getBuildMode() : Boolean {
         return this.buildMode
-    }
-
-    fun getMusicLoop(): MusicLoop {
-        return this.musicLoop
     }
 
     fun cleanUp() {

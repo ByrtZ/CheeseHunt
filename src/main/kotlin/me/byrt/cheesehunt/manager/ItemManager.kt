@@ -1,8 +1,13 @@
 package me.byrt.cheesehunt.manager
 
+import me.byrt.cheesehunt.state.RoundState
+import me.byrt.cheesehunt.state.Teams
+
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
+
+import com.destroystokyo.paper.Namespaced
 
 import org.bukkit.Color
 import org.bukkit.Material
@@ -12,9 +17,11 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.LeatherArmorMeta
 
+import java.util.*
+
 @Suppress("unused")
 class ItemManager(private val game : Game) {
-    fun playerJoinTeamEquip(player : Player, team : Teams) {
+    fun givePlayerTeamBoots(player : Player, team : Teams) {
         when(team) {
             Teams.RED -> {
                 val teamABoots = ItemStack(Material.LEATHER_BOOTS)
@@ -66,14 +73,41 @@ class ItemManager(private val game : Game) {
             player.inventory.addItem(mainWeapon)
 
             val subWeapon = ItemStack(Material.BOW, 1)
-            val subWeaponMeta: ItemMeta = mainWeapon.itemMeta
+            val subWeaponMeta: ItemMeta = subWeapon.itemMeta
             subWeaponMeta.displayName(Component.text("Combat Bow").color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
             subWeaponMeta.isUnbreakable = true
             subWeaponMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES)
             subWeapon.itemMeta = subWeaponMeta
             player.inventory.addItem(subWeapon)
 
+            val cheeseCollector = ItemStack(Material.WOODEN_PICKAXE, 1)
+            val cheeseCollectorMeta: ItemMeta = cheeseCollector.itemMeta
+            cheeseCollectorMeta.displayName(Component.text("Cheese Collector").color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false))
+            cheeseCollectorMeta.isUnbreakable = true
+            cheeseCollectorMeta.setDestroyableKeys(Collections.singletonList(Material.SPONGE.key) as Collection<Namespaced>)
+            cheeseCollectorMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_DESTROYS)
+            cheeseCollector.itemMeta = cheeseCollectorMeta
+            player.inventory.addItem(cheeseCollector)
+
             player.inventory.addItem(ItemStack(Material.ARROW, 8))
         }
+    }
+
+    fun getCheeseItem(team : Teams) : ItemStack {
+        val cheese = ItemStack(Material.SPONGE, 1)
+        val cheeseMeta: ItemMeta = cheese.itemMeta
+        cheeseMeta.displayName(Component.text("Cheese").color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false))
+        when(team) {
+            Teams.RED -> {
+                cheeseMeta.setPlaceableKeys(Collections.singletonList(Material.RED_WOOL.key) as Collection<Namespaced>)
+            }
+            Teams.BLUE -> {
+                cheeseMeta.setPlaceableKeys(Collections.singletonList(Material.BLUE_WOOL.key) as Collection<Namespaced>)
+            } else -> {
+                //no.
+            }
+        }
+        cheese.itemMeta = cheeseMeta
+        return cheese
     }
 }

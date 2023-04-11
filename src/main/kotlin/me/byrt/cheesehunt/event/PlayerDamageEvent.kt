@@ -20,16 +20,17 @@ class PlayerDamageEvent : Listener {
                 if (Main.getGame().getCheeseManager().playerHasCheese(player)) {
                     Main.getGame().getCheeseManager().playerDropCheese(player)
                 }
+                if(e.damager is Arrow) {
+                    e.damager.remove()
+                }
                 e.isCancelled = false
             }
             if(e.entity is Player && e.damager is Player) {
                 val player = e.entity as Player
                 val damager = e.damager as Player
                 e.isCancelled =
-                    (Main.getGame().getTeamManager().isInRedTeam(player.uniqueId) && Main.getGame().getTeamManager()
-                        .isInRedTeam(damager.uniqueId) || Main.getGame().getTeamManager()
-                        .isInBlueTeam(player.uniqueId) && Main.getGame().getTeamManager()
-                        .isInBlueTeam(damager.uniqueId))
+                    (Main.getGame().getTeamManager().isInRedTeam(player.uniqueId) && Main.getGame().getTeamManager().isInRedTeam(damager.uniqueId)
+                     || Main.getGame().getTeamManager().isInBlueTeam(player.uniqueId) && Main.getGame().getTeamManager().isInBlueTeam(damager.uniqueId))
             }
         } else {
             e.isCancelled = true

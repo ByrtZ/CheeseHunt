@@ -107,6 +107,7 @@ class ItemManager(private val game : Game) {
                 //no.
             }
         }
+        cheeseMeta.addItemFlags(ItemFlag.HIDE_PLACED_ON)
         cheese.itemMeta = cheeseMeta
         return cheese
     }

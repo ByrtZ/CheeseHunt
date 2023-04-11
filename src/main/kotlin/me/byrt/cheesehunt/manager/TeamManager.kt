@@ -141,7 +141,7 @@ class TeamManager(private val game : Game) {
         for(player in Bukkit.getOnlinePlayers()) {
             if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED) {
                 player.playSound(player.location, Sounds.Round.WIN_ROUND, 1f, 1f)
-                game.getCheeseManager().teamWinFireworks(player, Teams.RED)
+                game.getCheeseManager().teamFireworks(player, Teams.RED)
                 player.sendMessage(Component.text("\nYour team won the game!\n").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true))
                 player.showTitle(
                     Title.title(
@@ -177,7 +177,7 @@ class TeamManager(private val game : Game) {
         for(player in Bukkit.getOnlinePlayers()) {
             if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE) {
                 player.playSound(player.location, Sounds.Round.WIN_ROUND, 1f, 1f)
-                game.getCheeseManager().teamWinFireworks(player, Teams.BLUE)
+                game.getCheeseManager().teamFireworks(player, Teams.BLUE)
                 player.sendMessage(Component.text("\nYour team won the game!\n").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true))
                 player.showTitle(
                     Title.title(

@@ -13,9 +13,9 @@ import org.bukkit.potion.PotionEffectType
 class CheeseInteractEvent : Listener {
     private fun playerInteract(e : PlayerInteractEvent) {
         if(Main.getGame().getGameState() == GameState.IN_GAME) {
-            if(e.clickedBlock?.type == Material.SPONGE && e.player.itemInHand.type == Material.WOODEN_PICKAXE) {
+            if(e.clickedBlock?.type == Material.SPONGE && e.player.activeItem.type == Material.WOODEN_PICKAXE) {
                 e.player.sendMessage("adding mining fatigue")
-                e.player.addPotionEffect(PotionEffect(PotionEffectType.SLOW_DIGGING, 2147483646, 1))
+                e.player.addPotionEffect(PotionEffect(PotionEffectType.SLOW_DIGGING, 1000000, 1))
             }
         }
     }

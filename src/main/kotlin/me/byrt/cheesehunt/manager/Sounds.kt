@@ -16,7 +16,7 @@ class Sounds(private val game : Game) {
     }
     object Round {
         const val ROUND_END_PLING = "block.note_block.pling"
-        const val WIN_ROUND = "ui.toast.challenge.complete"
+        const val WIN_ROUND = "ui.toast.challenge_complete"
         const val LOSE_ROUND = "entity.ender_dragon.growl"
         const val DRAW_ROUND = "entity.wither.spawn"
     }
@@ -33,8 +33,12 @@ class Sounds(private val game : Game) {
         const val RESPAWN_TIMER = "ui.button.click"
         const val RESPAWN = "block.beacon.power_select"
     }
-    object Elimination {
+    object Score {
         const val ELIMINATION = "entity.player.levelup"
+        const val COLLECT_CHEESE = "entity.wandering_trader.reappeared"
+        const val LOSE_CHEESE_PRIMARY = "block.note_block.didgeridoo"
+        const val LOSE_CHEESE_SECONDARY = "entity.wandering_trader.disappeared"
+        const val CLAIM_CHEESE = "entity.player.levelup"
     }
     object Tutorial {
         const val TUTORIAL_POP = "entity.item.pickup"

@@ -15,6 +15,5 @@ class ArrowLandEvent : Listener {
                 e.entity.remove()
             }
         }
-        return
     }
 }

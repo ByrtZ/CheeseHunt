@@ -1,6 +1,7 @@
 package me.byrt.cheesehunt.manager
 
 import me.byrt.cheesehunt.state.RoundState
+
 import org.bukkit.Bukkit.getWorld
 import org.bukkit.Material
 
@@ -31,6 +32,14 @@ class BlockManager(private val game : Game) {
         for (z in 999..1001) { // Resetting blue barrier
             for (y in 3..5) {
                 getWorld("Cheese")?.getBlockAt(1050, y, z)?.type = Material.BARRIER
+            }
+        }
+    }
+
+    fun placeFullCheeseSquare() {
+        for(x in 999..1001) {
+            for(z in 999..1001) {
+                getWorld("Cheese")?.getBlockAt(x, 0, z)?.type = Material.SPONGE
             }
         }
     }

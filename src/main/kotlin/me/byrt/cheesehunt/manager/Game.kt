@@ -1,12 +1,8 @@
 package me.byrt.cheesehunt.manager
 
 import me.byrt.cheesehunt.Main
-import me.byrt.cheesehunt.state.GameState
-import me.byrt.cheesehunt.state.RoundState
-import me.byrt.cheesehunt.state.TimerState
-import me.byrt.cheesehunt.task.GameCountdownTask
-import me.byrt.cheesehunt.task.MusicTask
-import me.byrt.cheesehunt.task.RespawnTask
+import me.byrt.cheesehunt.state.*
+import me.byrt.cheesehunt.task.*
 
 @Suppress("unused")
 class Game(private val plugin : Main) {
@@ -25,6 +21,7 @@ class Game(private val plugin : Main) {
     private val locationManager = LocationManager(this)
     private val respawnTask = RespawnTask(this)
     private val gameCountdownTask = GameCountdownTask(this)
+    private val scoreManager = ScoreManager(this)
     private val musicTask = MusicTask(this)
 
     fun setGameState(newState : GameState) {
@@ -124,6 +121,10 @@ class Game(private val plugin : Main) {
 
     fun getGameCountdownTask(): GameCountdownTask {
         return this.gameCountdownTask
+    }
+
+    fun getScoreManager(): ScoreManager {
+        return this.scoreManager
     }
 
     fun getMusicTask(): MusicTask {

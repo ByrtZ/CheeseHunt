@@ -5,6 +5,7 @@ import me.byrt.cheesehunt.state.Teams
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.title.Title
 
 import org.bukkit.*
 import org.bukkit.entity.Firework
@@ -14,6 +15,7 @@ import org.bukkit.potion.PotionEffectType
 
 import java.math.RoundingMode
 import java.text.DecimalFormat
+import java.time.Duration
 import java.util.*
 
 @Suppress("unused")
@@ -71,17 +73,25 @@ class CheeseManager(private val game : Game) {
                 }
             }
         }
+        game.getScoreManager().modifyScore(tempRedCheeseEarned * 15, ScoreMode.ADD, Teams.RED)
+        game.getScoreManager().modifyScore(tempBlueCheeseEarned * 15, ScoreMode.ADD, Teams.BLUE)
         for(player in Bukkit.getOnlinePlayers()) {
             if(tempRedCheeseEarned > 0) {
-                player.sendMessage(Component.text("Red Team ", NamedTextColor.RED).append(Component.text("earned ", NamedTextColor.WHITE)).append(Component.text("${tempRedCheeseEarned * 15} ", NamedTextColor.GOLD)).append(Component.text("coins by claiming ", NamedTextColor.WHITE)).append(Component.text("$tempRedCheeseEarned cheese!", NamedTextColor.WHITE)))
                 if(Main.getGame().getTeamManager().isInRedTeam(player.uniqueId)) {
-                    player.playSound(player.location, Sounds.Elimination.ELIMINATION, 1f, 1f)
+                    player.playSound(player.location, Sounds.Score.CLAIM_CHEESE, 1f, 1f)
+                    player.sendMessage(Component.text("[+${tempRedCheeseEarned * 15} ").append(Component.text("coins", NamedTextColor.GOLD)).append(Component.text("] ", NamedTextColor.WHITE)).append(Component.text("Your team earned coins by claiming $tempRedCheeseEarned cheese!", NamedTextColor.GREEN)))
+                    teamFireworks(player, Teams.RED)
+                } else if(Main.getGame().getTeamManager().isInBlueTeam(player.uniqueId)) {
+                    player.sendMessage(Component.text("Red Team ", NamedTextColor.RED).append(Component.text("earned ", NamedTextColor.WHITE)).append(Component.text("${tempRedCheeseEarned * 15} ", NamedTextColor.GOLD)).append(Component.text("coins by claiming ", NamedTextColor.WHITE)).append(Component.text("$tempRedCheeseEarned cheese!", NamedTextColor.WHITE)))
                 }
             }
             if(tempBlueCheeseEarned > 0) {
-                player.sendMessage(Component.text("Blue Team ", NamedTextColor.BLUE).append(Component.text("earned ", NamedTextColor.WHITE)).append(Component.text("${tempBlueCheeseEarned * 15} ", NamedTextColor.GOLD)).append(Component.text("coins by claiming ", NamedTextColor.WHITE)).append(Component.text("$tempBlueCheeseEarned cheese!", NamedTextColor.WHITE)))
                 if(Main.getGame().getTeamManager().isInBlueTeam(player.uniqueId)) {
-                    player.playSound(player.location, Sounds.Elimination.ELIMINATION, 1f, 1f)
+                    player.playSound(player.location, Sounds.Score.CLAIM_CHEESE, 1f, 1f)
+                    player.sendMessage(Component.text("[+${tempBlueCheeseEarned * 15} ").append(Component.text("coins", NamedTextColor.GOLD)).append(Component.text("] ", NamedTextColor.WHITE)).append(Component.text("Your team earned coins by claiming $tempBlueCheeseEarned cheese!", NamedTextColor.GREEN)))
+                    teamFireworks(player, Teams.BLUE)
+                } else if(Main.getGame().getTeamManager().isInRedTeam(player.uniqueId)) {
+                    player.sendMessage(Component.text("Blue Team ", NamedTextColor.BLUE).append(Component.text("earned ", NamedTextColor.WHITE)).append(Component.text("${tempBlueCheeseEarned * 15} ", NamedTextColor.GOLD)).append(Component.text("coins by claiming ", NamedTextColor.WHITE)).append(Component.text("$tempBlueCheeseEarned cheese!", NamedTextColor.WHITE)))
                 }
             }
         }
@@ -108,6 +118,8 @@ class CheeseManager(private val game : Game) {
                 allPlayers.sendMessage(Component.text("${player.name} picked up a piece of cheese!"))
             } else {
                 allPlayers.sendMessage(Component.text("You picked up a piece of cheese!", NamedTextColor.GREEN))
+                allPlayers.showTitle(Title.title(Component.text(""), Component.text("Cheese picked up!", NamedTextColor.GREEN), Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(1), Duration.ofSeconds(1))))
+                allPlayers.playSound(allPlayers.location, Sounds.Score.COLLECT_CHEESE, 1f, 1f)
             }
         }
     }
@@ -120,6 +132,9 @@ class CheeseManager(private val game : Game) {
                 allPlayers.sendMessage(Component.text("${player.name} lost a piece of cheese."))
             } else {
                 allPlayers.sendMessage(Component.text("You lost your piece of cheese.", NamedTextColor.RED))
+                allPlayers.showTitle(Title.title(Component.text(""), Component.text("Cheese dropped!", NamedTextColor.RED), Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(1), Duration.ofSeconds(1))))
+                allPlayers.playSound(allPlayers.location, Sounds.Score.LOSE_CHEESE_PRIMARY, 1f, 0f)
+                allPlayers.playSound(allPlayers.location, Sounds.Score.LOSE_CHEESE_SECONDARY, 1f, 1f)
             }
         }
         player.inventory.remove(Material.SPONGE)
@@ -179,7 +194,7 @@ class CheeseManager(private val game : Game) {
         playerCollectedCheese.clear()
     }
 
-    fun teamWinFireworks(player : Player, teams : Teams) {
+    fun teamFireworks(player : Player, teams : Teams) {
         when(teams) {
             Teams.RED -> {
                 val playerLoc = Location(player.world, player.location.x, player.location.y + 1, player.location.z)
@@ -227,7 +242,7 @@ class CheeseManager(private val game : Game) {
             FireworkEffect.builder()
                 .flicker(true)
                 .trail(false)
-                .with(FireworkEffect.Type.BURST)
+                .with(FireworkEffect.Type.BALL)
                 .withColor(Color.ORANGE)
                 .withFade(Color.YELLOW)
                 .build()

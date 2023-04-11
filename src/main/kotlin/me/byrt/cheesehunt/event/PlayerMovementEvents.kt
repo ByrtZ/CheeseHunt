@@ -20,7 +20,7 @@ class PlayerMovementEvents : Listener {
                 e.player.damage(20.0)
             }
             if(Main.getGame().getCheeseManager().playerHasCheese(e.player)) {
-                e.player.addPotionEffect(PotionEffect(PotionEffectType.SLOW, 10, 3))
+                e.player.addPotionEffect(PotionEffect(PotionEffectType.SLOW, 20, 3, false, false))
             }
         }
     }

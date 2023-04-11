@@ -211,9 +211,13 @@ class GameCountdownTask(private var game: Game) {
                 if (game.getGameState() == GameState.IN_GAME && game.getTimerState() == TimerState.ACTIVE) {
                     if(timeLeft % 60 == 0 && timeLeft != 720) {
                         for(player in Bukkit.getOnlinePlayers()) {
-                            player.sendMessage(Component.text("Cheese is being counted...", NamedTextColor.AQUA, TextDecoration.BOLD))
+                            player.sendMessage(Component.text("Cheese counted.", NamedTextColor.AQUA, TextDecoration.BOLD))
                         }
                         game.getCheeseManager().countCheeseInBases()
+                        game.getBlockManager().placeFullCheeseSquare()
+                        for(player in Bukkit.getOnlinePlayers()) {
+                            player.sendMessage(Component.text("New Cheese dropped.", NamedTextColor.AQUA, TextDecoration.BOLD))
+                        }
                     }
                     if(timeLeft == 31) {
                         for(player in Bukkit.getOnlinePlayers()) {
@@ -250,7 +254,7 @@ class GameCountdownTask(private var game: Game) {
                             Main.getGame().getMusicTask().stopMusicLoop(player, Music.OVERTIME)
                             player.playSound(player.location, Sounds.Music.GAME_OVER_MUSIC, SoundCategory.VOICE, 0.85f, 1f)
                             player.showTitle(Title.title(
-                                Component.text("Game Over!").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true),
+                                Component.text("Game Over!", NamedTextColor.RED, TextDecoration.BOLD),
                                 Component.text(""),
                                 Title.Times.times(
                                     Duration.ofSeconds(0),
@@ -271,6 +275,50 @@ class GameCountdownTask(private var game: Game) {
 
                 // Game end cycle
                 if (game.getGameState() == GameState.GAME_END && game.getTimerState() == TimerState.ACTIVE) {
+                    if(timeLeft == 27) {
+                        for(player in Bukkit.getOnlinePlayers()) {
+                            player.sendMessage(Component.text("\nTeam Placements:", NamedTextColor.WHITE, TextDecoration.BOLD))
+                        }
+                    }
+                    if(timeLeft == 25) {
+                        for(player in Bukkit.getOnlinePlayers()) {
+                            player.sendMessage("Red scored: ${game.getScoreManager().getRedScore()} coins.")
+                            player.sendMessage("Blue scored: ${game.getScoreManager().getBlueScore()} coins.")
+                        }
+                        if(game.getScoreManager().getRedScore() > game.getScoreManager().getBlueScore()) {
+                            game.getTeamManager().redWinGame()
+                        }
+                        if(game.getScoreManager().getRedScore() < game.getScoreManager().getBlueScore()) {
+                            game.getTeamManager().blueWinGame()
+                        }
+                        if(game.getScoreManager().getRedScore() == game.getScoreManager().getBlueScore()) {
+                            game.getTeamManager().noWinGame()
+                        }
+                    }
+                    if(timeLeft == 18) {
+                        for(player in Bukkit.getOnlinePlayers()) {
+                            player.sendMessage(Component.text("\nIndividual Cheese Collections:", NamedTextColor.WHITE, TextDecoration.BOLD))
+                        }
+                    }
+                    if(timeLeft == 16) {
+                        val sortedCollectedCheeseMap = game.getCheeseManager().getSortedCollectedCheeseMap()
+                        var i = 1
+                        sortedCollectedCheeseMap.forEach { (uuid, cheeseCollected) ->
+                            for(player in Bukkit.getOnlinePlayers()) {
+                                if(game.getTeamManager().isInRedTeam(uuid)) {
+                                    player.sendMessage(Component.text("$i. ")
+                                        .append(Component.text("${Bukkit.getPlayer(uuid)?.player?.name}", NamedTextColor.RED)
+                                        .append(Component.text(" collected $cheeseCollected cheese.", NamedTextColor.WHITE))))
+                                }
+                                if(game.getTeamManager().isInBlueTeam(uuid)) {
+                                    player.sendMessage(Component.text("$i. ")
+                                        .append(Component.text("${Bukkit.getPlayer(uuid)?.player?.name}", NamedTextColor.BLUE)
+                                        .append(Component.text(" collected $cheeseCollected cheese.", NamedTextColor.WHITE))))
+                                }
+                            }
+                            i++
+                        }
+                    }
                     if (timeLeft <= 0) {
                         game.getPlayerManager().clearAllItems()
                         game.getPlayerManager().teleportPlayersToSpawn()

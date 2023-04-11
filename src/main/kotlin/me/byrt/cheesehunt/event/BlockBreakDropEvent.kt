@@ -18,7 +18,7 @@ import org.bukkit.potion.PotionEffectType
 class BlockBreakDropEvent : Listener {
     @EventHandler
     private fun onBlockBreak(e : BlockBreakEvent) {
-        if(e.player.itemInHand.type == Material.DEBUG_STICK && e.player.gameMode == GameMode.CREATIVE) {
+        if(e.player.itemInHand.type == Material.DEBUG_STICK) {
             e.isCancelled = true
         } else {
             if(Main.getGame().getBuildMode() && e.player.isOp) {

@@ -12,7 +12,8 @@ class ArrowLandEvent : Listener {
     private fun onArrowLand(e : ProjectileHitEvent) {
         if(Main.getGame().getGameState() == GameState.IN_GAME) {
             if(e.entity is Arrow) {
-                e.entity.remove()
+                val arrow = e.entity as Arrow
+                arrow.remove() // NOT WORKING???
             }
         }
     }

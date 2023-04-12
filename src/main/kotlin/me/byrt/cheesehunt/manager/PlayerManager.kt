@@ -5,6 +5,7 @@ import me.byrt.cheesehunt.state.RoundState
 import me.byrt.cheesehunt.state.Teams
 
 import org.bukkit.*
+import org.bukkit.entity.Arrow
 import org.bukkit.entity.Player
 
 class PlayerManager(private var game : Game) {
@@ -99,6 +100,12 @@ class PlayerManager(private var game : Game) {
         Bukkit.getOnlinePlayers().stream().filter { player: Player? -> player?.let {
             Main.getGame().getTeamManager().getPlayerTeam(it.uniqueId) } != Teams.SPECTATOR}
             .forEach{ player: Player -> player.gameMode = GameMode.ADVENTURE }
+    }
+
+    fun removeAllArrows() {
+        for(arrow in Bukkit.getWorld("Cheese")?.getEntitiesByClass(Arrow::class.java)!!) {
+            arrow.remove()
+        }
     }
 
     fun resetPlayers() {

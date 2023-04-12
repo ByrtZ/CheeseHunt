@@ -207,16 +207,28 @@ class GameCountdownTask(private var game: Game) {
                     }
                 }
 
-                // <=30s remaining
+                // IN_GAME state
                 if (game.getGameState() == GameState.IN_GAME && game.getTimerState() == TimerState.ACTIVE) {
-                    if(timeLeft % 60 == 0 && timeLeft != 720) {
-                        for(player in Bukkit.getOnlinePlayers()) {
-                            player.sendMessage(Component.text("Cheese counted.", NamedTextColor.AQUA, TextDecoration.BOLD))
+                    if(timeLeft % 180 == 0) {
+                        if(timeLeft != 0) {
+                            game.getBlockManager().placeFullCheeseSquare()
+                            for(player in Bukkit.getOnlinePlayers()) {
+                                player.sendMessage(Component.text("[")
+                                    .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                                    .append(Component.text("] "))
+                                    .append(Component.text("A cheese payload has been dropped in the center.", NamedTextColor.AQUA, TextDecoration.BOLD))
+                                )
+                            }
                         }
-                        game.getCheeseManager().countCheeseInBases()
-                        game.getBlockManager().placeFullCheeseSquare()
-                        for(player in Bukkit.getOnlinePlayers()) {
-                            player.sendMessage(Component.text("New Cheese dropped.", NamedTextColor.AQUA, TextDecoration.BOLD))
+                        if(timeLeft != 720) {
+                            for(player in Bukkit.getOnlinePlayers()) {
+                                player.sendMessage(Component.text("[")
+                                    .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                                    .append(Component.text("] "))
+                                    .append(Component.text("Cheese in team bases has been counted!", NamedTextColor.AQUA, TextDecoration.BOLD))
+                                )
+                            }
+                            game.getCheeseManager().countCheeseInBases()
                         }
                     }
                     if(timeLeft == 31) {
@@ -263,6 +275,9 @@ class GameCountdownTask(private var game: Game) {
                                     )
                                 )
                             )
+                            if(game.getCheeseManager().playerHasCheese(player)) {
+                                game.getCheeseManager().setPlayerHasCheese(player, false)
+                            }
                             game.getPlayerManager().setPlayersAdventure()
                             if(!game.getTeamManager().isSpectator(player.uniqueId)) {
                                 player.allowFlight = true
@@ -275,12 +290,12 @@ class GameCountdownTask(private var game: Game) {
 
                 // Game end cycle
                 if (game.getGameState() == GameState.GAME_END && game.getTimerState() == TimerState.ACTIVE) {
-                    if(timeLeft == 27) {
+                    if(timeLeft == 25) {
                         for(player in Bukkit.getOnlinePlayers()) {
                             player.sendMessage(Component.text("\nTeam Placements:", NamedTextColor.WHITE, TextDecoration.BOLD))
                         }
                     }
-                    if(timeLeft == 25) {
+                    if(timeLeft == 23) {
                         for(player in Bukkit.getOnlinePlayers()) {
                             player.sendMessage("Red scored: ${game.getScoreManager().getRedScore()} coins.")
                             player.sendMessage("Blue scored: ${game.getScoreManager().getBlueScore()} coins.")
@@ -324,6 +339,7 @@ class GameCountdownTask(private var game: Game) {
                         game.getPlayerManager().teleportPlayersToSpawn()
                         game.setTimerState(TimerState.INACTIVE)
                         game.getBlockManager().resetBarriers()
+                        game.getPlayerManager().removeAllArrows()
                         cancelGameTask()
                     }
                 }

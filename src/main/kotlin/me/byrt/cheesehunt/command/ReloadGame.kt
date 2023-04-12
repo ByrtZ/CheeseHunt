@@ -43,6 +43,7 @@ class ReloadGame : BaseCommand {
             Main.getGame().getInfoBoardManager().buildScoreboard()
             Main.getGame().getPlayerManager().resetPlayers()
             Main.getGame().getLocationManager().resetSpawnCounters()
+            Main.getGame().getScoreManager().resetScores()
             for(player in Bukkit.getOnlinePlayers()) {
                 Main.getGame().getTeamManager().addToTeam(player, player.uniqueId, Teams.SPECTATOR)
                 if(player.isOp) {

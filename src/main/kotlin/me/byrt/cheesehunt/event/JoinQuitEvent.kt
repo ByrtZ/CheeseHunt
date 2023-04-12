@@ -43,6 +43,10 @@ class JoinQuitEvent : Listener {
     private fun onPlayerQuit(e : PlayerQuitEvent) {
         Main.getGame().getTeamManager().getPlayerTeam(e.player.uniqueId).let { Main.getGame().getTeamManager().removeFromTeam(e.player, e.player.uniqueId, it)}
         Main.getGame().getMusicTask().stopMusicLoop(e.player, Music.NULL)
+        Main.getGame().getRespawnTask().stopRespawnLoop(e.player)
+        if(Main.getGame().getCheeseManager().playerHasCheese(e.player)) {
+            Main.getGame().getCheeseManager().setPlayerHasCheese(e.player, false)
+        }
         e.quitMessage(Component.text("${e.player.name} left the game.").color(TextColor.fromHexString("#ffff00")))
     }
 }

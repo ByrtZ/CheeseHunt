@@ -61,6 +61,7 @@ class PlayerDeathEvent : Listener {
             }
         }
         Main.getGame().getScoreManager().modifyScore(5, ScoreMode.ADD, Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId))
+        Main.getGame().getInfoBoardManager().updateScoreboardScores()
         player.playSound(player.location, Sounds.Score.ELIMINATION, 1f, 1.25f)
         player.showTitle(
             Title.title(

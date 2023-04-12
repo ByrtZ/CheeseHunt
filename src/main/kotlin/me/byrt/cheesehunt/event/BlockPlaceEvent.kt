@@ -19,6 +19,7 @@ class BlockPlaceEvent : Listener {
         if(e.block.type == Material.SPONGE && e.blockAgainst.type == Material.RED_WOOL || e.blockAgainst.type == Material.BLUE_WOOL && Main.getGame().getGameState() == GameState.IN_GAME) {
             Main.getGame().getCheeseManager().setPlayerHasCheese(e.player, false)
             e.player.sendMessage(Component.text("You placed a piece of cheese in your base!", NamedTextColor.GREEN))
+            e.player.inventory.remove(Material.SPONGE)
             e.isCancelled = false
         }
     }

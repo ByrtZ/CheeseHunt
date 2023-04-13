@@ -209,10 +209,22 @@ class GameCountdownTask(private var game: Game) {
 
                 // IN_GAME state
                 if (game.getGameState() == GameState.IN_GAME && game.getTimerState() == TimerState.ACTIVE) {
+                    if(timeLeft == 120) {
+                        game.getBlockManager().removeBlastDoors()
+                        for(player in Bukkit.getOnlinePlayers()) {
+                        player.playSound(player.location, Sounds.Alert.BLAST_DOORS_OPEN, 1f, 1f)
+                            player.sendMessage(Component.text("[")
+                                .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                                .append(Component.text("] "))
+                                .append(Component.text("Doors to the center are now open, 2 minutes remain.", NamedTextColor.RED, TextDecoration.BOLD))
+                            )
+                        }
+                    }
                     if(timeLeft % 180 == 0) {
                         if(timeLeft != 0) {
                             game.getBlockManager().placeFullCheeseSquare()
                             for(player in Bukkit.getOnlinePlayers()) {
+                                player.playSound(player.location, Sounds.Alert.GENERAL_ALERT, 1f, 1f)
                                 player.sendMessage(Component.text("[")
                                     .append(Component.text("▶").color(NamedTextColor.YELLOW))
                                     .append(Component.text("] "))
@@ -221,14 +233,15 @@ class GameCountdownTask(private var game: Game) {
                             }
                         }
                         if(timeLeft != 720) {
+                            game.getCheeseManager().countCheeseInBases()
                             for(player in Bukkit.getOnlinePlayers()) {
+                                player.playSound(player.location, Sounds.Alert.GENERAL_ALERT, 1f, 1f)
                                 player.sendMessage(Component.text("[")
                                     .append(Component.text("▶").color(NamedTextColor.YELLOW))
                                     .append(Component.text("] "))
                                     .append(Component.text("Cheese in team bases has been counted!", NamedTextColor.AQUA, TextDecoration.BOLD))
                                 )
                             }
-                            game.getCheeseManager().countCheeseInBases()
                         }
                     }
                     if(timeLeft == 31) {
@@ -338,7 +351,7 @@ class GameCountdownTask(private var game: Game) {
                         game.getPlayerManager().clearAllItems()
                         game.getPlayerManager().teleportPlayersToSpawn()
                         game.setTimerState(TimerState.INACTIVE)
-                        game.getBlockManager().resetBarriers()
+                        game.getBlockManager().resetAllBlocks()
                         game.getPlayerManager().removeAllArrows()
                         cancelGameTask()
                     }

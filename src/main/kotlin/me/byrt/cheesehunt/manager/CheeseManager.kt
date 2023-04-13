@@ -109,7 +109,7 @@ class CheeseManager(private val game : Game) {
                     .append(Component.text("▶").color(NamedTextColor.YELLOW))
                     .append(Component.text("] "))
                     .append(Component.text(player.name, game.getTeamManager().getTeamColour(player)))
-                    .append(Component.text(" picked up a piece of cheese!"))
+                    .append(Component.text(" picked up a piece of cheese."))
                 )
             } else {
                 allPlayers.sendMessage(Component.text("You picked up a piece of cheese!", NamedTextColor.GREEN))
@@ -165,6 +165,11 @@ class CheeseManager(private val game : Game) {
                 if(playerHasCheese(player)) {
                     holdingCheeseFirework(player)
                     player.addPotionEffect(PotionEffect(PotionEffectType.GLOWING, 10, 255, false, false))
+                    if(hasCheeseTimer % 2 == 0) {
+                        player.sendActionBar(Component.text("⚠ You have a piece of cheese! ⚠", NamedTextColor.RED))
+                    } else {
+                        player.sendActionBar(Component.text("⚠ You have a piece of cheese! ⚠", NamedTextColor.DARK_RED))
+                    }
                 } else {
                     player.removePotionEffect(PotionEffectType.GLOWING)
                     stopHasCheeseLoop(player)
@@ -179,6 +184,7 @@ class CheeseManager(private val game : Game) {
     fun stopHasCheeseLoop(player : Player) {
         playersWithCheeseLoopMap.remove(player.uniqueId)?.cancel()
         player.removePotionEffect(PotionEffectType.GLOWING)
+        player.sendActionBar(Component.text(" "))
     }
 
     fun getRedCheesePlaced() : Int {

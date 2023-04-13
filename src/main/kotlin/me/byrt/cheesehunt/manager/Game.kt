@@ -36,7 +36,6 @@ class Game(private val plugin : Main) {
                 when(this.roundState) {
                     RoundState.ROUND_ONE -> {
                         buildMode = false
-                        playerManager.setPlayersAdventure()
                         gameCountdownTask.setTimeLeft(80)
                         gameCountdownTask.gameLoop()
                     }
@@ -54,6 +53,7 @@ class Game(private val plugin : Main) {
             }
             GameState.GAME_END -> {
                 setTimerState(TimerState.ACTIVE)
+                teamManager.showDisplayTeamNames()
                 gameCountdownTask.setTimeLeft(30)
             }
         }
@@ -137,6 +137,8 @@ class Game(private val plugin : Main) {
         playerManager.clearCheese()
         playerManager.teleportPlayersToGame()
         playerManager.setPlayersAdventure()
+        blockManager.resetAllBlocks()
+        teamManager.hideDisplayTeamNames()
     }
 
     private fun startRound() {

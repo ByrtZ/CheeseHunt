@@ -40,6 +40,10 @@ class Sounds(private val game : Game) {
         const val LOSE_CHEESE_SECONDARY = "entity.wandering_trader.disappeared"
         const val CLAIM_CHEESE = "entity.player.levelup"
     }
+    object Alert {
+        const val GENERAL_ALERT = "block.note_block.bit"
+        const val BLAST_DOORS_OPEN = "block.end_portal.spawn"
+    }
     object Tutorial {
         const val TUTORIAL_POP = "entity.item.pickup"
     }

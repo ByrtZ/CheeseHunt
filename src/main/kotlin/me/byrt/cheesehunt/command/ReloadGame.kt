@@ -38,7 +38,7 @@ class ReloadGame : BaseCommand {
             Main.getGame().setTimerState(TimerState.INACTIVE)
             Main.getGame().getCheeseManager().resetVars()
             Main.getGame().getGameCountdownTask().resetVars()
-            Main.getGame().getBlockManager().resetBarriers()
+            Main.getGame().getBlockManager().resetAllBlocks()
             Main.getGame().getInfoBoardManager().destroyScoreboard()
             Main.getGame().getInfoBoardManager().buildScoreboard()
             Main.getGame().getPlayerManager().resetPlayers()

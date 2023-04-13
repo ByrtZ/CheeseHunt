@@ -120,6 +120,16 @@ class TeamManager(private val game : Game) {
         adminDisplayTeam.setAllowFriendlyFire(false)
     }
 
+    fun showDisplayTeamNames() {
+        redDisplayTeam.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.ALWAYS)
+        blueDisplayTeam.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.ALWAYS)
+    }
+
+    fun hideDisplayTeamNames() {
+        redDisplayTeam.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.FOR_OWN_TEAM)
+        blueDisplayTeam.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.FOR_OWN_TEAM)
+    }
+
     fun destroyDisplayTeams() {
         redDisplayTeam.unregister()
         blueDisplayTeam.unregister()

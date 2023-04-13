@@ -1,5 +1,6 @@
 package me.byrt.cheesehunt.event
 
+import io.papermc.paper.event.block.BlockBreakBlockEvent
 import me.byrt.cheesehunt.Main
 import me.byrt.cheesehunt.state.GameState
 
@@ -21,8 +22,8 @@ class BlockBreakDropEvent : Listener {
         if(e.player.inventory.itemInMainHand.type == Material.DEBUG_STICK) {
             e.isCancelled = true
         } else {
-            if(Main.getGame().getBuildMode() && e.player.isOp) {
-                e.isCancelled = false
+            if(Main.getGame().getGameState() != GameState.IN_GAME) {
+                e.isCancelled = !(Main.getGame().getBuildMode() && e.player.isOp)
             }
             if(Main.getGame().getGameState() == GameState.IN_GAME) {
                 if(e.block.type == Material.SPONGE && !Main.getGame().getCheeseManager().playerHasCheese(e.player)) {
@@ -46,5 +47,10 @@ class BlockBreakDropEvent : Listener {
     @EventHandler
     private fun onBlockItemDrop(e : BlockDropItemEvent) {
         e.isCancelled = true
+    }
+
+    @EventHandler
+    private fun onBlockBreakBlock(e : BlockBreakBlockEvent) {
+        e.drops.clear()
     }
 }

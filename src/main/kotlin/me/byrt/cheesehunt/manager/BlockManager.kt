@@ -47,7 +47,7 @@ class BlockManager(private val game : Game) {
             }
         }
 
-        for(x in 1009..1010) {
+        for(x in 1010 downTo 1009) {
             for(y in 0..2) {
                 for(z in 999..1001) {
                     getWorld("Cheese")?.getBlockAt(x, y, z)?.type = Material.AIR

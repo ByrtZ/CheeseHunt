@@ -57,10 +57,10 @@ class PlayerDeathEvent : Listener {
             if(allPlayer != player) {
                 allPlayer.sendMessage(Component.text(playerKilled.name, Main.getGame().getTeamManager().getTeamColour(playerKilled)).append(Component.text(" was eliminated by ", NamedTextColor.WHITE).append(Component.text(player.name, Main.getGame().getTeamManager().getTeamColour(player)).append(Component.text(".", NamedTextColor.WHITE)))))
             } else {
-                allPlayer.sendMessage(Component.text("[+5 ").append(Component.text("coins", NamedTextColor.GOLD).append(Component.text("] You eliminated ", NamedTextColor.WHITE)).append(Component.text(playerKilled.name, Main.getGame().getTeamManager().getTeamColour(playerKilled))).append(Component.text("!", NamedTextColor.WHITE))))
+                allPlayer.sendMessage(Component.text("[+${5 * Main.getGame().getScoreManager().getMultiplier()} ").append(Component.text("coins", NamedTextColor.GOLD).append(Component.text("] You eliminated ", NamedTextColor.WHITE)).append(Component.text(playerKilled.name, Main.getGame().getTeamManager().getTeamColour(playerKilled))).append(Component.text("!", NamedTextColor.WHITE))))
             }
         }
-        Main.getGame().getScoreManager().modifyScore(5, ScoreMode.ADD, Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId))
+        Main.getGame().getScoreManager().modifyScore(5 * Main.getGame().getScoreManager().getMultiplier(), ScoreMode.ADD, Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId))
         Main.getGame().getInfoBoardManager().updateScoreboardScores()
         player.playSound(player.location, Sounds.Score.ELIMINATION, 1f, 1.25f)
         player.showTitle(

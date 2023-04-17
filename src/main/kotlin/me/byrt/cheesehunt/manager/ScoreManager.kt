@@ -2,6 +2,22 @@ package me.byrt.cheesehunt.manager
 
 import me.byrt.cheesehunt.state.Teams
 
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextDecoration
+import net.kyori.adventure.title.Title
+
+import org.bukkit.Bukkit
+import org.bukkit.Color
+import org.bukkit.FireworkEffect
+import org.bukkit.Location
+import org.bukkit.entity.Firework
+import org.bukkit.entity.Player
+
+import java.time.Duration
+
+import kotlin.random.Random
+
 @Suppress("unused")
 class ScoreManager(private val game : Game) {
     private var redScore = 0
@@ -10,6 +26,8 @@ class ScoreManager(private val game : Game) {
     private var previousBlueScore = 0
     private var placements = ArrayList<Teams>()
     private var previousPlacements = ArrayList<Teams>()
+    private var multiplier = 1
+    private var multiplierMinute = 0
 
     fun calcPlacements() : ArrayList<Teams>? {
         previousPlacements = placements
@@ -46,6 +64,72 @@ class ScoreManager(private val game : Game) {
         }
     }
 
+    fun setMultiplier(newMultiplier : Int) {
+        game.getInfoBoardManager().updateScoreboardMultiplier(multiplier, newMultiplier)
+        multiplier = newMultiplier
+        if(newMultiplier == 1) {
+            for(player in Bukkit.getOnlinePlayers()) {
+                player.playSound(player.location, Sounds.Score.MULTIPLIER_RESET, 1f, 1f)
+                player.sendMessage(
+                    Component.text("[")
+                        .append(Component.text("▶").color(NamedTextColor.GOLD))
+                        .append(Component.text("] "))
+                        .append(Component.text("Coin multiplier has returned to ", NamedTextColor.GREEN, TextDecoration.BOLD))
+                        .append(Component.text("x$multiplier.0", NamedTextColor.YELLOW, TextDecoration.BOLD))
+                        .append(Component.text(".", NamedTextColor.GREEN, TextDecoration.BOLD))
+                )
+            }
+        } else {
+            for(player in Bukkit.getOnlinePlayers()) {
+                player.playSound(player.location, Sounds.Score.NEW_MULTIPLIER, 0.5f, 2f)
+                player.sendMessage(
+                    Component.text("[")
+                        .append(Component.text("▶").color(NamedTextColor.GOLD))
+                        .append(Component.text("] "))
+                        .append(Component.text("Coin multiplier is now ", NamedTextColor.GREEN, TextDecoration.BOLD))
+                        .append(Component.text("x$multiplier.0 ", NamedTextColor.YELLOW, TextDecoration.BOLD))
+                        .append(Component.text("for 1 minute!", NamedTextColor.GREEN, TextDecoration.BOLD))
+                )
+                player.showTitle(Title.title(Component.text("MULTIPLIER MINUTE", NamedTextColor.GOLD), Component.text("x${multiplier}.0 coins for 1 minute!").color(NamedTextColor.YELLOW), Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(3), Duration.ofSeconds(1))))
+                multiplierMinuteFirework(player)
+            }
+        }
+    }
+
+    private fun multiplierMinuteFirework(player : Player) {
+        val playerLoc = Location(player.world, player.location.x, player.location.y + 25.0, player.location.z)
+        val f: Firework = player.world.spawn(playerLoc, Firework::class.java)
+        val fm = f.fireworkMeta
+        fm.addEffect(
+            FireworkEffect.builder()
+                .flicker(false)
+                .trail(false)
+                .with(FireworkEffect.Type.BURST)
+                .withColor(Color.ORANGE)
+                .build()
+        )
+        fm.power = 0
+        f.fireworkMeta = fm
+        f.ticksToDetonate = 1
+    }
+
+    fun getMultiplier() : Int {
+        return multiplier
+    }
+
+    fun setNewRandomMultiplierMinute() {
+        multiplierMinute = Random.nextInt(1, 10)
+        for(operator in Bukkit.getOnlinePlayers()) {
+            if(operator.isOp) {
+                operator.sendMessage(Component.text("Multiplier minute will occur when the timer hits $multiplierMinute.5 minute(s) remaining.", NamedTextColor.GOLD))
+            }
+        }
+    }
+
+    fun getMultiplierMinute() : Int {
+        return multiplierMinute
+    }
+
     fun getRedScore() : Int {
         return redScore
     }
@@ -67,6 +151,8 @@ class ScoreManager(private val game : Game) {
         blueScore = 0
         previousRedScore = 0
         previousBlueScore = 0
+        multiplier = 1
+        multiplierMinute = 0
     }
 }
 

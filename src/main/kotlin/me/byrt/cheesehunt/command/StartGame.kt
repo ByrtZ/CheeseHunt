@@ -33,6 +33,7 @@ class StartGame : BaseCommand {
                     player.sendMessage(Component.text("\nA Cheese Hunt game is starting!\n").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
                     player.playSound(startGameSuccessSound)
                 }
+                Main.getGame().getScoreManager().setNewRandomMultiplierMinute()
             } else {
                 sender.sendMessage(Component.text("There are not enough players on teams to start a Cheese Hunt game.").color(NamedTextColor.RED))
                 sender.playSound(startGameFailSound)

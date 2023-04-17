@@ -73,21 +73,21 @@ class CheeseManager(private val game : Game) {
                 }
             }
         }
-        game.getScoreManager().modifyScore(tempRedCheeseEarned * 15, ScoreMode.ADD, Teams.RED)
-        game.getScoreManager().modifyScore(tempBlueCheeseEarned * 15, ScoreMode.ADD, Teams.BLUE)
+        game.getScoreManager().modifyScore(tempRedCheeseEarned * 15 * game.getScoreManager().getMultiplier(), ScoreMode.ADD, Teams.RED)
+        game.getScoreManager().modifyScore(tempBlueCheeseEarned * 15 * game.getScoreManager().getMultiplier(), ScoreMode.ADD, Teams.BLUE)
         Main.getGame().getInfoBoardManager().updateScoreboardScores()
         for(player in Bukkit.getOnlinePlayers()) {
             if(tempRedCheeseEarned > 0) {
                 if(Main.getGame().getTeamManager().isInRedTeam(player.uniqueId)) {
                     player.playSound(player.location, Sounds.Score.CLAIM_CHEESE, 1f, 1f)
-                    player.sendMessage(Component.text("[+${tempRedCheeseEarned * 15} ").append(Component.text("coins", NamedTextColor.GOLD)).append(Component.text("] ", NamedTextColor.WHITE)).append(Component.text("Your team earned coins by claiming $tempRedCheeseEarned cheese!", NamedTextColor.GREEN)))
+                    player.sendMessage(Component.text("[+${tempRedCheeseEarned * 15 * game.getScoreManager().getMultiplier()} ").append(Component.text("coins", NamedTextColor.GOLD)).append(Component.text("] ", NamedTextColor.WHITE)).append(Component.text("Your team earned coins by claiming $tempRedCheeseEarned cheese!", NamedTextColor.GREEN)))
                     teamFireworks(player, Teams.RED)
                 }
             }
             if(tempBlueCheeseEarned > 0) {
                 if(Main.getGame().getTeamManager().isInBlueTeam(player.uniqueId)) {
                     player.playSound(player.location, Sounds.Score.CLAIM_CHEESE, 1f, 1f)
-                    player.sendMessage(Component.text("[+${tempBlueCheeseEarned * 15} ").append(Component.text("coins", NamedTextColor.GOLD)).append(Component.text("] ", NamedTextColor.WHITE)).append(Component.text("Your team earned coins by claiming $tempBlueCheeseEarned cheese!", NamedTextColor.GREEN)))
+                    player.sendMessage(Component.text("[+${tempBlueCheeseEarned * 15 * game.getScoreManager().getMultiplier()} ").append(Component.text("coins", NamedTextColor.GOLD)).append(Component.text("] ", NamedTextColor.WHITE)).append(Component.text("Your team earned coins by claiming $tempBlueCheeseEarned cheese!", NamedTextColor.GREEN)))
                     teamFireworks(player, Teams.BLUE)
                 }
             }
@@ -120,8 +120,8 @@ class CheeseManager(private val game : Game) {
     }
 
     fun playerDropCheese(player : Player) {
-        player.addPotionEffect(PotionEffect(PotionEffectType.SLOW, 40, 255, false, false))
-        player.addPotionEffect(PotionEffect(PotionEffectType.DARKNESS, 40, 255, false, false))
+        player.addPotionEffect(PotionEffect(PotionEffectType.SLOW, 30, 0, false, false))
+        player.addPotionEffect(PotionEffect(PotionEffectType.DARKNESS, 30, 255, false, false))
         for(allPlayers in Bukkit.getOnlinePlayers()) {
             if(allPlayers != player) {
                 allPlayers.sendMessage(Component.text("[")

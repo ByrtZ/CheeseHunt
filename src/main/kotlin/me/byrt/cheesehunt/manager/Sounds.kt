@@ -39,6 +39,8 @@ class Sounds(private val game : Game) {
         const val LOSE_CHEESE_PRIMARY = "block.note_block.didgeridoo"
         const val LOSE_CHEESE_SECONDARY = "entity.wandering_trader.disappeared"
         const val CLAIM_CHEESE = "entity.player.levelup"
+        const val NEW_MULTIPLIER = "block.portal.travel"
+        const val MULTIPLIER_RESET = "entity.ender_eye.death"
     }
     object Alert {
         const val GENERAL_ALERT = "block.note_block.bit"

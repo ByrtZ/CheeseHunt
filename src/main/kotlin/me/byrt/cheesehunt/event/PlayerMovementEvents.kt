@@ -2,6 +2,7 @@ package me.byrt.cheesehunt.event
 
 import me.byrt.cheesehunt.Main
 import me.byrt.cheesehunt.state.GameState
+import me.byrt.cheesehunt.state.Teams
 
 import org.bukkit.GameMode
 import org.bukkit.Material
@@ -16,7 +17,7 @@ class PlayerMovementEvents : Listener {
     @EventHandler
     private fun onLeaveMap(e : PlayerMoveEvent) {
         if(Main.getGame().getGameState() == GameState.IN_GAME) {
-            if(e.player.location.block.type == Material.STRUCTURE_VOID && e.player.gameMode != GameMode.SPECTATOR) {
+            if(e.player.location.block.type == Material.STRUCTURE_VOID && e.player.gameMode != GameMode.SPECTATOR && Main.getGame().getTeamManager().getPlayerTeam(e.player.uniqueId) != Teams.SPECTATOR) {
                 e.player.damage(20.0)
             }
             if(Main.getGame().getCheeseManager().playerHasCheese(e.player)) {

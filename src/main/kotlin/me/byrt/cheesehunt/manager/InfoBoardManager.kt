@@ -149,4 +149,11 @@ class InfoBoardManager(private val game : Game) {
             blueScore.score = 2
         }
     }
+
+    fun updateScoreboardMultiplier(currentMultiplier : Int, newMultiplier : Int) {
+        cheeseHuntBoard.scoreboard?.resetScores(ChatColor.AQUA.toString() + "" + ChatColor.BOLD + "Game Coins: " + ChatColor.RESET + "(" + ChatColor.YELLOW + "x1.0" + ChatColor.RESET + ")")
+        cheeseHuntBoard.scoreboard?.resetScores(ChatColor.AQUA.toString() + "" + ChatColor.BOLD + "Game Coins: " + ChatColor.RESET + "(" + ChatColor.YELLOW + "x$currentMultiplier.0" + ChatColor.RESET + ")")
+        gameScoreText = cheeseHuntBoard.getScore(ChatColor.AQUA.toString() + "" + ChatColor.BOLD + "Game Coins: " + ChatColor.RESET + "(" + ChatColor.YELLOW + "x$newMultiplier.0" + ChatColor.RESET + ")")
+        gameScoreText.score = 3
+    }
 }

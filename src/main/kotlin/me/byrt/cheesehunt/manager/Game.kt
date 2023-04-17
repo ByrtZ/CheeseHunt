@@ -22,6 +22,7 @@ class Game(private val plugin : Main) {
     private val respawnTask = RespawnTask(this)
     private val gameCountdownTask = GameCountdownTask(this)
     private val scoreManager = ScoreManager(this)
+    private val statsManager = StatisticsManager(this)
     private val musicTask = MusicTask(this)
 
     fun setGameState(newState : GameState) {
@@ -125,6 +126,10 @@ class Game(private val plugin : Main) {
 
     fun getScoreManager(): ScoreManager {
         return this.scoreManager
+    }
+
+    fun getStatsManager() : StatisticsManager {
+        return this.statsManager
     }
 
     fun getMusicTask(): MusicTask {

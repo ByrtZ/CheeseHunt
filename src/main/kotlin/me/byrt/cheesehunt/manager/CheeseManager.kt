@@ -23,31 +23,25 @@ class CheeseManager(private val game : Game) {
     private var blueCheeseEarned = 0
     private var tempRedCheeseEarned = 0
     private var tempBlueCheeseEarned = 0
-    private var redTotalCheeseCollected = 0
-    private var blueTotalCheeseCollected = 0
-    private var playerCollectedCheese = mutableMapOf<UUID, Int>()
+    private var redTotalCheesePickedUp = 0
+    private var blueTotalCheesePickedUp = 0
     private var playerHasCheese = mutableListOf<UUID>()
     private var playersWithCheeseLoopMap = mutableMapOf<UUID, BukkitRunnable>()
 
     private fun incrementCheeseCollected(player : Player) {
         when(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId)) {
             Teams.RED -> {
-                redTotalCheeseCollected += 1
-                updateCollectedCheese(player.uniqueId)
+                redTotalCheesePickedUp += 1
+                game.getStatsManager().incrementStat(player.uniqueId, Statistic.CHEESE_PICKED_UP)
             }
             Teams.BLUE -> {
-                blueTotalCheeseCollected += 1
-                updateCollectedCheese(player.uniqueId)
+                blueTotalCheesePickedUp += 1
+                game.getStatsManager().incrementStat(player.uniqueId, Statistic.CHEESE_PICKED_UP)
             }
             Teams.SPECTATOR -> {
                 Main.getPlugin().logger.info("[INCREMENTING ERROR] ${player.name} was on team ${Teams.SPECTATOR} when they collected cheese.")
             }
         }
-    }
-
-    private fun updateCollectedCheese(uuid : UUID) {
-        playerCollectedCheese.putIfAbsent(uuid, 0)
-        playerCollectedCheese[uuid] = (playerCollectedCheese[uuid]?.plus(1)) as Int
     }
 
     fun countCheeseInBases() {
@@ -120,8 +114,8 @@ class CheeseManager(private val game : Game) {
     }
 
     fun playerDropCheese(player : Player) {
-        player.addPotionEffect(PotionEffect(PotionEffectType.SLOW, 30, 0, false, false))
-        player.addPotionEffect(PotionEffect(PotionEffectType.DARKNESS, 30, 255, false, false))
+        player.addPotionEffect(PotionEffect(PotionEffectType.SLOW, 30, 1, false, false))
+        player.addPotionEffect(PotionEffect(PotionEffectType.DARKNESS, 40, 255, false, false))
         for(allPlayers in Bukkit.getOnlinePlayers()) {
             if(allPlayers != player) {
                 allPlayers.sendMessage(Component.text("[")
@@ -138,6 +132,7 @@ class CheeseManager(private val game : Game) {
             }
         }
         player.inventory.remove(Material.SPONGE)
+        game.getStatsManager().incrementStat(player.uniqueId, Statistic.CHEESE_DROPPED)
         if(playerHasCheese.contains(player.uniqueId)) {
             playerHasCheese.remove(player.uniqueId)
         }
@@ -196,11 +191,11 @@ class CheeseManager(private val game : Game) {
     }
 
     fun getRedCheeseCollected() : Int {
-        return redTotalCheeseCollected
+        return redTotalCheesePickedUp
     }
 
     fun getBlueCheeseCollected() : Int {
-        return blueTotalCheeseCollected
+        return blueTotalCheesePickedUp
     }
 
     fun resetVars() {
@@ -208,9 +203,8 @@ class CheeseManager(private val game : Game) {
         blueCheeseEarned = 0
         tempRedCheeseEarned = 0
         tempBlueCheeseEarned = 0
-        redTotalCheeseCollected = 0
-        blueTotalCheeseCollected = 0
-        playerCollectedCheese.clear()
+        redTotalCheesePickedUp = 0
+        blueTotalCheesePickedUp = 0
     }
 
     fun teamFireworks(player : Player, teams : Teams) {
@@ -286,13 +280,5 @@ class CheeseManager(private val game : Game) {
         fm.power = 0
         f.fireworkMeta = fm
         f.ticksToDetonate = 1
-    }
-
-    fun getUnsortedCheeseCollectedMap() : MutableMap<UUID, Int> {
-        return playerCollectedCheese
-    }
-
-    fun getSortedCollectedCheeseMap(): Map<UUID, Int> {
-        return playerCollectedCheese.toList().sortedBy { (_, int) -> int }.reversed().toMap()
     }
 }

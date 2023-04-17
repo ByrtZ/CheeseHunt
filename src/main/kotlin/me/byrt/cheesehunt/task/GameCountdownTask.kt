@@ -2,9 +2,7 @@ package me.byrt.cheesehunt.task
 
 import me.byrt.cheesehunt.Main
 import me.byrt.cheesehunt.manager.*
-import me.byrt.cheesehunt.state.GameState
-import me.byrt.cheesehunt.state.RoundState
-import me.byrt.cheesehunt.state.TimerState
+import me.byrt.cheesehunt.state.*
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -324,53 +322,59 @@ class GameCountdownTask(private var game: Game) {
                     }
                     if(timeLeft == 23) {
                         for(player in Bukkit.getOnlinePlayers()) {
-                            player.sendMessage("Red Team: ${game.getScoreManager().getRedScore()} coins.")
-                            player.sendMessage("Blue Team: ${game.getScoreManager().getBlueScore()} coins.")
+                            player.sendMessage(Component.text("Red Team", NamedTextColor.RED)
+                                .append(Component.text(": ${game.getScoreManager().getRedScore()} ", NamedTextColor.WHITE))
+                                .append(Component.text("coins", NamedTextColor.GOLD))
+                                .append(Component.text(".", NamedTextColor.WHITE)))
+                            player.sendMessage(Component.text("Blue Team", NamedTextColor.BLUE)
+                                .append(Component.text(": ${game.getScoreManager().getBlueScore()} ", NamedTextColor.WHITE))
+                                .append(Component.text("coins", NamedTextColor.GOLD))
+                                .append(Component.text(".", NamedTextColor.WHITE)))
                         }
-                        if(game.getScoreManager().getRedScore() > game.getScoreManager().getBlueScore()) {
-                            game.getTeamManager().redWinGame()
-                        }
-                        if(game.getScoreManager().getRedScore() < game.getScoreManager().getBlueScore()) {
-                            game.getTeamManager().blueWinGame()
-                        }
-                        if(game.getScoreManager().getRedScore() == game.getScoreManager().getBlueScore()) {
-                            game.getTeamManager().noWinGame()
+                        game.getScoreManager().winCheck()
+                    }
+                    if(timeLeft == 20) {
+                        for(player in Bukkit.getOnlinePlayers()) {
+                            player.sendMessage(Component.text("\nCheese Picked Up:", NamedTextColor.WHITE, TextDecoration.BOLD))
                         }
                     }
                     if(timeLeft == 18) {
+                        game.getStatsManager().statsBreakdown(Statistic.CHEESE_PICKED_UP)
+                    }
+                    if(timeLeft == 15) {
                         for(player in Bukkit.getOnlinePlayers()) {
-                            player.sendMessage(Component.text("\nIndividual Cheese Collections:", NamedTextColor.WHITE, TextDecoration.BOLD))
+                            player.sendMessage(Component.text("\nCheese Dropped:", NamedTextColor.WHITE, TextDecoration.BOLD))
                         }
                     }
-                    if(timeLeft == 16) {
-                        val sortedCollectedCheeseMap = game.getCheeseManager().getSortedCollectedCheeseMap()
-                        var i = 1
-                        sortedCollectedCheeseMap.forEach { (uuid, cheeseCollected) ->
-                            for(player in Bukkit.getOnlinePlayers()) {
-                                if(game.getTeamManager().isInRedTeam(uuid)) {
-                                    player.sendMessage(Component.text("$i. ")
-                                        .append(Component.text("${Bukkit.getPlayer(uuid)?.player?.name}", NamedTextColor.RED)
-                                        .append(Component.text(" collected $cheeseCollected cheese.", NamedTextColor.WHITE))))
-                                }
-                                if(game.getTeamManager().isInBlueTeam(uuid)) {
-                                    player.sendMessage(Component.text("$i. ")
-                                        .append(Component.text("${Bukkit.getPlayer(uuid)?.player?.name}", NamedTextColor.BLUE)
-                                        .append(Component.text(" collected $cheeseCollected cheese.", NamedTextColor.WHITE))))
-                                }
-                            }
-                            i++
+                    if(timeLeft == 13) {
+                        game.getStatsManager().statsBreakdown(Statistic.CHEESE_DROPPED)
+                    }
+                    if(timeLeft == 10) {
+                        for(player in Bukkit.getOnlinePlayers()) {
+                            player.sendMessage(Component.text("\nEliminations:", NamedTextColor.WHITE, TextDecoration.BOLD))
                         }
+                    }
+                    if(timeLeft == 8) {
+                        game.getStatsManager().statsBreakdown(Statistic.ELIMINATIONS)
+                    }
+                    if(timeLeft == 5) {
+                        for(player in Bukkit.getOnlinePlayers()) {
+                            player.sendMessage(Component.text("\nDeaths:", NamedTextColor.WHITE, TextDecoration.BOLD))
+                        }
+                    }
+                    if(timeLeft == 3) {
+                        game.getStatsManager().statsBreakdown(Statistic.DEATHS)
                     }
                     if (timeLeft <= 0) {
                         game.getPlayerManager().clearAllItems()
                         game.getPlayerManager().teleportPlayersToSpawn()
+                        game.getPlayerManager().setAllAdventure()
                         game.setTimerState(TimerState.INACTIVE)
                         game.getBlockManager().resetAllBlocks()
                         game.getPlayerManager().removeAllArrows()
                         cancelGameTask()
                     }
                 }
-
                 // Decrement timer by 1 if timer is active
                 if (game.getTimerState() == TimerState.ACTIVE) {
                     timeLeft--

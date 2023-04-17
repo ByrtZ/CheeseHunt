@@ -4,6 +4,7 @@ import me.byrt.cheesehunt.Main
 import me.byrt.cheesehunt.manager.ScoreMode
 import me.byrt.cheesehunt.state.GameState
 import me.byrt.cheesehunt.manager.Sounds
+import me.byrt.cheesehunt.manager.Statistic
 import me.byrt.cheesehunt.state.Teams
 
 import net.kyori.adventure.text.Component
@@ -32,7 +33,9 @@ class PlayerDeathEvent : Listener {
                 eliminationDisplay(killer, playerDied)
             } else {
                 if(e.player.location.block.type == Material.STRUCTURE_VOID) {
-                    if(Main.getGame().getCheeseManager().playerHasCheese(e.player)) Main.getGame().getCheeseManager().playerDropCheese(e.player)
+                    if(Main.getGame().getCheeseManager().playerHasCheese(e.player)) {
+                        Main.getGame().getCheeseManager().playerDropCheese(e.player)
+                    }
                     voidEliminationDisplay(playerDied)
                 }
             }
@@ -43,6 +46,7 @@ class PlayerDeathEvent : Listener {
     private fun death(player : Player) {
         player.gameMode = GameMode.SPECTATOR
         player.inventory.clear()
+        Main.getGame().getStatsManager().incrementStat(player.uniqueId, Statistic.DEATHS)
         if(Main.getGame().getTeamManager().isInRedTeam(player.uniqueId)) {
             Main.getGame().getCheeseManager().teamFireworks(player, Teams.RED)
             Main.getGame().getRespawnTask().startRespawnLoop(player, Main.getPlugin(), Teams.RED)
@@ -62,6 +66,7 @@ class PlayerDeathEvent : Listener {
         }
         Main.getGame().getScoreManager().modifyScore(5 * Main.getGame().getScoreManager().getMultiplier(), ScoreMode.ADD, Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId))
         Main.getGame().getInfoBoardManager().updateScoreboardScores()
+        Main.getGame().getStatsManager().incrementStat(player.uniqueId, Statistic.ELIMINATIONS)
         player.playSound(player.location, Sounds.Score.ELIMINATION, 1f, 1.25f)
         player.showTitle(
             Title.title(

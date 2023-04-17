@@ -110,6 +110,12 @@ class PlayerManager(private var game : Game) {
             .forEach{ player: Player -> player.gameMode = GameMode.ADVENTURE }
     }
 
+    fun setAllAdventure() {
+        for(player in Bukkit.getOnlinePlayers()) {
+            player.gameMode = GameMode.ADVENTURE
+        }
+    }
+
     fun removeAllArrows() {
         for(arrow in Bukkit.getWorld("Cheese")?.getEntitiesByClass(Arrow::class.java)!!) {
             arrow.remove()
@@ -119,7 +125,7 @@ class PlayerManager(private var game : Game) {
     fun resetPlayers() {
         clearAllItems()
         setPlayersNotFlying()
-        setPlayersAdventure()
+        setAllAdventure()
         teleportPlayersToSpawn()
     }
 }

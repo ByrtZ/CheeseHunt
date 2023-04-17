@@ -16,7 +16,7 @@ import org.bukkit.potion.PotionEffectType
 class PlayerInteractionsEvent : Listener {
     @EventHandler
     private fun onClickCheese(e : PlayerInteractEvent) {
-        if(Main.getGame().getGameState() == GameState.IN_GAME) {
+        if(Main.getGame().getGameState() != GameState.IDLE) {
             if(e.action == Action.LEFT_CLICK_BLOCK && e.clickedBlock?.type == Material.SPONGE && e.player.inventory.itemInMainHand.type == Material.WOODEN_PICKAXE) {
                 e.player.addPotionEffect(PotionEffect(PotionEffectType.SLOW_DIGGING, Int.MAX_VALUE, 0, false, false))
             }
@@ -31,7 +31,7 @@ class PlayerInteractionsEvent : Listener {
                 e.isCancelled = true
             }
         } else {
-            e.isCancelled = !Main.getGame().getBuildMode() && e.player.isOp
+            e.isCancelled = !(e.player.isOp && Main.getGame().getBuildMode())
         }
     }
 }

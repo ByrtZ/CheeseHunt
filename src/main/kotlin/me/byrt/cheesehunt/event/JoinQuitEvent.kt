@@ -29,9 +29,6 @@ class JoinQuitEvent : Listener {
 
         Main.getGame().getTeamManager().addToTeam(e.player, e.player.uniqueId, Teams.SPECTATOR)
 
-        if(e.player.isOp) {
-            Main.getGame().getTeamManager().addToAdminDisplay(e.player.uniqueId)
-        }
         if(Main.getGame().getGameState() == GameState.IDLE) {
             e.player.gameMode = GameMode.ADVENTURE
         } else {

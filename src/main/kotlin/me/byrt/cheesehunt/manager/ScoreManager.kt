@@ -97,15 +97,16 @@ class ScoreManager(private val game : Game) {
     }
 
     private fun multiplierMinuteFirework(player : Player) {
-        val playerLoc = Location(player.world, player.location.x, player.location.y + 25.0, player.location.z)
+        val playerLoc = Location(player.world, player.location.x, player.location.y + 20.0, player.location.z)
         val f: Firework = player.world.spawn(playerLoc, Firework::class.java)
         val fm = f.fireworkMeta
         fm.addEffect(
             FireworkEffect.builder()
-                .flicker(false)
+                .flicker(true)
                 .trail(false)
-                .with(FireworkEffect.Type.BURST)
-                .withColor(Color.ORANGE)
+                .with(FireworkEffect.Type.BALL_LARGE)
+                .withColor(Color.YELLOW, Color.ORANGE)
+                .withFade(Color.YELLOW, Color.ORANGE)
                 .build()
         )
         fm.power = 0

@@ -56,6 +56,9 @@ class TeamManager(private val game : Game) {
                 if(blueTeam.contains(uuid)) { removeFromTeam(player, uuid, Teams.BLUE) }
                 spectators.add(uuid)
                 player.sendMessage(Component.text("You are now a Spectator."))
+                if(player.isOp) {
+                    adminDisplayTeam.addPlayer(Bukkit.getOfflinePlayer(uuid))
+                }
                 game.getItemManager().givePlayerTeamBoots(player, Teams.SPECTATOR)
             }
         }

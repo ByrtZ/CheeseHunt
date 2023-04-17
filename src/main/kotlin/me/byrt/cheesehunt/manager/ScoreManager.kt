@@ -90,7 +90,7 @@ class ScoreManager(private val game : Game) {
                         .append(Component.text("x$multiplier.0 ", NamedTextColor.YELLOW, TextDecoration.BOLD))
                         .append(Component.text("for 1 minute!", NamedTextColor.GREEN, TextDecoration.BOLD))
                 )
-                player.showTitle(Title.title(Component.text("MULTIPLIER MINUTE", NamedTextColor.GOLD), Component.text("x${multiplier}.0 coins for 1 minute!").color(NamedTextColor.YELLOW), Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(3), Duration.ofSeconds(1))))
+                player.showTitle(Title.title(Component.text("MULTIPLIER MINUTE", NamedTextColor.GOLD, TextDecoration.BOLD), Component.text("x${multiplier}.0 coins for 1 minute!").color(NamedTextColor.YELLOW), Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(3), Duration.ofSeconds(1))))
                 multiplierMinuteFirework(player)
             }
         }

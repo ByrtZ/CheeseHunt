@@ -84,6 +84,14 @@ class PlayerManager(private var game : Game) {
         }
     }
 
+    fun teleportSpectatorsToArena() {
+        for(player in Bukkit.getOnlinePlayers()) {
+            if(game.getTeamManager().getPlayerTeam(player.uniqueId) == Teams.SPECTATOR) {
+                player.teleport(game.getLocationManager().getArenaCentre())
+            }
+        }
+    }
+
     fun teleportPlayersToSpawn() {
         for(player in Bukkit.getOnlinePlayers()) {
             player.teleport(Main.getGame().getLocationManager().getSpawn())

@@ -12,6 +12,7 @@ class LocationManager(private var game : Game) {
     private var blueSpawns = ArrayList<Location>()
     private var blueSpawnCounter = 0
     private val spawn = Location(Main.getPlugin().server.getWorld("Cheese"), 0.5, -52.0 ,0.5, 0.0f, 0.0f)
+    private val arenaCentre = Location(Main.getPlugin().server.getWorld("Cheese"), 1000.5, 0.0, 1000.5, 0.0f, 0.0f)
 
     fun populateSpawns() {
         redSpawns.add(Location(Main.getPlugin().server.getWorld("Cheese"), 949.5, 3.0, 999.5, -90.0f, 0.0f))
@@ -77,5 +78,9 @@ class LocationManager(private var game : Game) {
 
     fun getSpawn() : Location {
         return spawn
+    }
+
+    fun getArenaCentre() : Location {
+        return arenaCentre
     }
 }

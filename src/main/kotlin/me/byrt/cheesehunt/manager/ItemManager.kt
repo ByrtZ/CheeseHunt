@@ -89,7 +89,7 @@ class ItemManager(private val game : Game) {
             cheeseCollector.itemMeta = cheeseCollectorMeta
             player.inventory.addItem(cheeseCollector)
 
-            player.inventory.addItem(ItemStack(Material.ARROW, 4))
+            player.inventory.addItem(ItemStack(Material.ARROW, 3))
         }
     }
 

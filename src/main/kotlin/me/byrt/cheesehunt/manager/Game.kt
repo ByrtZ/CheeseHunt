@@ -137,6 +137,7 @@ class Game(private val plugin : Main) {
         playerManager.clearCheese()
         playerManager.teleportPlayersToGame()
         playerManager.setPlayersAdventure()
+        playerManager.teleportSpectatorsToArena()
         blockManager.resetAllBlocks()
         teamManager.hideDisplayTeamNames()
     }

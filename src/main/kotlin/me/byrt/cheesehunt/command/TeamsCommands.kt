@@ -1,13 +1,10 @@
 package me.byrt.cheesehunt.command
 
+import cloud.commandframework.annotations.*
+
 import me.byrt.cheesehunt.Main
 import me.byrt.cheesehunt.state.*
 import me.byrt.cheesehunt.manager.Sounds
-
-import cloud.commandframework.annotations.Argument
-import cloud.commandframework.annotations.CommandDescription
-import cloud.commandframework.annotations.CommandMethod
-import cloud.commandframework.annotations.CommandPermission
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
@@ -16,6 +13,7 @@ import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.title.Title
 
+import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 
 import java.time.Duration
@@ -25,6 +23,7 @@ import java.util.*
 class TeamsCommands : BaseCommand {
     private val shuffleStartSound: Sound = Sound.sound(Key.key(Sounds.Command.SHUFFLE_START), Sound.Source.MASTER, 1f, 1f)
     private val shuffleCompleteSound: Sound = Sound.sound(Key.key(Sounds.Command.SHUFFLE_COMPLETE), Sound.Source.MASTER, 1f, 2f)
+    private val shuffleFailSound: Sound = Sound.sound(Key.key(Sounds.Command.SHUFFLE_FAIL), Sound.Source.MASTER, 1f, 0f)
     @CommandMethod("teams set <player> <team>")
     @CommandDescription("Puts the specified player on the specified team.")
     @CommandPermission("cheesehunt.jointeam")
@@ -45,30 +44,65 @@ class TeamsCommands : BaseCommand {
     @CommandMethod("teams shuffle")
     @CommandDescription("Automatically assigns everyone online to a team.")
     @CommandPermission("cheesehunt.autoteam")
-    fun autoTeam(sender : Player) {
+    fun autoTeam(sender : Player, @Flag("ignoreAdmins") doesIgnoreAdmins: Boolean) {
         if(Main.getGame().getGameState() == GameState.IDLE) {
-            sender.showTitle(
-                Title.title(Component.text(""), Component.text("Shuffling teams...").color(NamedTextColor.RED), Title.Times.times(
-                    Duration.ofSeconds(0), Duration.ofSeconds(3), Duration.ofSeconds(1))))
-            sender.playSound(shuffleStartSound)
-            var i = 0
-            Main.getPlugin().server.onlinePlayers.shuffled().forEach {
-                Main.getGame().getTeamManager().removeFromTeam(it, it.uniqueId, Main.getGame().getTeamManager().getPlayerTeam(it.uniqueId))
-                if (i % 2 == 0) {
-                    Main.getGame().getTeamManager().addToTeam(it, it.uniqueId, Teams.RED)
-                } else {
-                    Main.getGame().getTeamManager().addToTeam(it, it.uniqueId, Teams.BLUE)
+            shuffleStartDisplay(sender)
+            if(!doesIgnoreAdmins) {
+                shuffle(Main.getPlugin().server.onlinePlayers)
+                sender.sendMessage(Component.text("Successfully split all online players into teams.").color(NamedTextColor.GREEN))
+                shuffleCompleteDisplay(sender)
+            } else {
+                try {
+                    val nonAdmins = mutableListOf<Player>()
+                    for(player in Bukkit.getOnlinePlayers()) {
+                        if(!player.isOp) {
+                            nonAdmins.add(player)
+                        }
+                    }
+                    if(nonAdmins.isEmpty()) {
+                        sender.sendMessage(Component.text("Unable to shuffle teams due to no non-admin players online.").color(NamedTextColor.RED))
+                        shuffleFailDisplay(sender)
+                    } else {
+                        shuffle(nonAdmins)
+                        sender.sendMessage(Component.text("Successfully split all online non-admin players into teams.").color(NamedTextColor.GREEN))
+                        shuffleCompleteDisplay(sender)
+                    }
+                } catch(e : Exception) {
+                    sender.sendMessage(Component.text("Unable to shuffle teams as an error occurred.").color(NamedTextColor.RED))
+                    shuffleFailDisplay(sender)
                 }
-                i++
             }
-            sender.sendMessage(Component.text("Successfully split all online players into teams.").color(NamedTextColor.GREEN))
-            sender.showTitle(
-                Title.title(Component.text(""), Component.text("Teams shuffled randomly!").color(NamedTextColor.GREEN), Title.Times.times(
-                    Duration.ofSeconds(0), Duration.ofSeconds(1), Duration.ofSeconds(1))))
-            sender.playSound(shuffleCompleteSound)
         } else {
             sender.sendMessage(Component.text("Unable to modify teams in this state.", NamedTextColor.RED))
         }
+    }
+
+    private fun shuffle(players : Collection<Player>) {
+        var i = 0
+        players.shuffled().forEach {
+            Main.getGame().getTeamManager().removeFromTeam(it, it.uniqueId, Main.getGame().getTeamManager().getPlayerTeam(it.uniqueId))
+            if (i % 2 == 0) {
+                Main.getGame().getTeamManager().addToTeam(it, it.uniqueId, Teams.RED)
+            } else {
+                Main.getGame().getTeamManager().addToTeam(it, it.uniqueId, Teams.BLUE)
+            }
+            i++
+        }
+    }
+
+    private fun shuffleStartDisplay(player : Player) {
+        player.showTitle(Title.title(Component.text(""), Component.text("Shuffling teams...").color(NamedTextColor.RED), Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(3), Duration.ofSeconds(1))))
+        player.playSound(shuffleStartSound)
+    }
+
+    private fun shuffleCompleteDisplay(player : Player) {
+        player.showTitle(Title.title(Component.text(""), Component.text("Teams shuffled randomly!").color(NamedTextColor.GREEN), Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(1), Duration.ofSeconds(1))))
+        player.playSound(shuffleCompleteSound)
+    }
+
+    private fun shuffleFailDisplay(player : Player) {
+        player.showTitle(Title.title(Component.text(""), Component.text("Team shuffling failed.").color(NamedTextColor.RED), Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(1), Duration.ofSeconds(1))))
+        player.playSound(shuffleFailSound)
     }
 
     @CommandMethod("teams list <option>")

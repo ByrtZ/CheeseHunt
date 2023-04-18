@@ -52,6 +52,7 @@ class Sounds(private val game : Game) {
     object Command {
         const val SHUFFLE_START = "block.note_block.flute"
         const val SHUFFLE_COMPLETE = "block.note_block.flute"
+        const val SHUFFLE_FAIL = "block.note_block.didgeridoo"
         const val PING = "entity.experience_orb.pickup"
         const val BUILDMODE_SUCCESS = "entity.mooshroom.convert"
         const val BUILDMODE_FAIL = "entity.enderman.teleport"

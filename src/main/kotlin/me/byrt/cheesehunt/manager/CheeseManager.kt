@@ -102,7 +102,7 @@ class CheeseManager(private val game : Game) {
                 allPlayers.sendMessage(Component.text("[")
                     .append(Component.text("▶").color(NamedTextColor.YELLOW))
                     .append(Component.text("] "))
-                    .append(Component.text(player.name, game.getTeamManager().getTeamColour(player)))
+                    .append(Component.text(player.name, game.getTeamManager().getTeamNamedTextColor(player)))
                     .append(Component.text(" picked up a piece of cheese."))
                 )
             } else {
@@ -121,7 +121,7 @@ class CheeseManager(private val game : Game) {
                 allPlayers.sendMessage(Component.text("[")
                     .append(Component.text("▶").color(NamedTextColor.YELLOW))
                     .append(Component.text("] "))
-                    .append(Component.text(player.name, game.getTeamManager().getTeamColour(player)))
+                    .append(Component.text(player.name, game.getTeamManager().getTeamNamedTextColor(player)))
                     .append(Component.text(" lost a piece of cheese."))
                 )
             } else {

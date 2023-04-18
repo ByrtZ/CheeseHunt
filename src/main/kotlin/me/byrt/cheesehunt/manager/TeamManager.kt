@@ -9,6 +9,7 @@ import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.title.Title
 
 import org.bukkit.Bukkit
+import org.bukkit.Color
 import org.bukkit.entity.Player
 import org.bukkit.scoreboard.Team
 
@@ -22,7 +23,6 @@ class TeamManager(private val game : Game) {
     private var spectators = ArrayList<UUID>()
     private var redDisplayTeam: Team = Bukkit.getScoreboardManager().mainScoreboard.registerNewTeam("redDisplay")
     private var blueDisplayTeam: Team = Bukkit.getScoreboardManager().mainScoreboard.registerNewTeam("blueDisplay")
-    private var uncollectedCheeseDisplayTeam: Team = Bukkit.getScoreboardManager().mainScoreboard.registerNewTeam("uncollectedCheeseDisplay")
     private var adminDisplayTeam: Team = Bukkit.getScoreboardManager().mainScoreboard.registerNewTeam("admin")
 
     fun addToTeam(player : Player, uuid : UUID, team : Teams) {
@@ -108,11 +108,6 @@ class TeamManager(private val game : Game) {
         blueDisplayTeam.displayName(Component.text("Blue").color(NamedTextColor.BLUE))
         blueDisplayTeam.setAllowFriendlyFire(false)
 
-        uncollectedCheeseDisplayTeam.color(NamedTextColor.GOLD)
-        uncollectedCheeseDisplayTeam.prefix(Component.text("").color(NamedTextColor.GOLD))
-        uncollectedCheeseDisplayTeam.suffix(Component.text("").color(NamedTextColor.WHITE))
-        uncollectedCheeseDisplayTeam.displayName(Component.text("Cheese").color(NamedTextColor.GOLD))
-
         adminDisplayTeam.color(NamedTextColor.WHITE)
         adminDisplayTeam.prefix(Component.text("⛏ ").color(NamedTextColor.RED)
             .append(Component.text("[").color(NamedTextColor.WHITE))
@@ -136,7 +131,6 @@ class TeamManager(private val game : Game) {
     fun destroyDisplayTeams() {
         redDisplayTeam.unregister()
         blueDisplayTeam.unregister()
-        uncollectedCheeseDisplayTeam.unregister()
         adminDisplayTeam.unregister()
     }
 
@@ -243,14 +237,24 @@ class TeamManager(private val game : Game) {
         }
     }
 
-    fun getTeamColour(player : Player) : NamedTextColor {
+    fun getTeamNamedTextColor(player : Player) : NamedTextColor {
         if(isInRedTeam(player.uniqueId)) {
             return NamedTextColor.RED
         }
         if(isInBlueTeam(player.uniqueId)) {
             return NamedTextColor.BLUE
         }
-        return NamedTextColor.BLACK
+        return NamedTextColor.GRAY
+    }
+
+    fun getTeamColor(player : Player) : Color {
+        if(isInRedTeam(player.uniqueId)) {
+            return Color.RED
+        }
+        if(isInBlueTeam(player.uniqueId)) {
+            return Color.BLUE
+        }
+        return Color.GRAY
     }
 
     fun isInRedTeam(uuid : UUID): Boolean {
@@ -283,9 +287,5 @@ class TeamManager(private val game : Game) {
 
     fun getBlueDisplayTeam(): Team {
         return this.blueDisplayTeam
-    }
-
-    fun getUncollectedCheeseDisplayTeam(): Team {
-        return this.uncollectedCheeseDisplayTeam
     }
 }

@@ -1,6 +1,7 @@
 package me.byrt.cheesehunt.event
 
 import io.papermc.paper.event.block.BlockBreakBlockEvent
+
 import me.byrt.cheesehunt.Main
 import me.byrt.cheesehunt.state.GameState
 
@@ -39,7 +40,7 @@ class BlockBreakDropEvent : Listener {
 
     @EventHandler
     private fun onAbortBlockBreak(e : BlockDamageAbortEvent) {
-        if(Main.getGame().getGameState() == GameState.IN_GAME && e.block.type == Material.SPONGE && e.itemInHand.type == Material.WOODEN_PICKAXE) {
+        if(Main.getGame().getGameState() != GameState.IDLE && e.block.type == Material.SPONGE && e.itemInHand.type == Material.WOODEN_PICKAXE) {
             e.player.removePotionEffect(PotionEffectType.SLOW_DIGGING)
         }
     }

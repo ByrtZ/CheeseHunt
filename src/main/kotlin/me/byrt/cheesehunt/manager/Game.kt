@@ -24,6 +24,8 @@ class Game(private val plugin : Main) {
     private val scoreManager = ScoreManager(this)
     private val statsManager = StatisticsManager(this)
     private val musicTask = MusicTask(this)
+    private val configManager = ConfigManager(this)
+    private val whitelistManager = WhitelistManager(this)
 
     fun setGameState(newState : GameState) {
         this.gameState = newState
@@ -136,6 +138,14 @@ class Game(private val plugin : Main) {
         return this.musicTask
     }
 
+    fun getConfigManager(): ConfigManager {
+        return this.configManager
+    }
+
+    fun getWhitelistManager() : WhitelistManager {
+        return this.whitelistManager
+    }
+
     private fun roundStarting() {
         playerManager.setSpectatorsGameMode()
         playerManager.setPlayersNotFlying()
@@ -163,5 +173,6 @@ class Game(private val plugin : Main) {
     fun cleanUp() {
         teamManager.destroyDisplayTeams()
         infoBoardManager.destroyScoreboard()
+        configManager.saveWhitelistConfig()
     }
 }

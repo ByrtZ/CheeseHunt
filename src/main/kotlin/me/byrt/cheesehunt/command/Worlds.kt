@@ -20,7 +20,7 @@ class Worlds : BaseCommand {
     @CommandMethod("world <option> <world>")
     @CommandDescription("Puts the specified player on the specified team.")
     @CommandPermission("cheesehunt.worlds")
-    fun setTeam(sender : Player, @Argument("option") option : WorldOptions, @Argument("world") world : WorldsList) {
+    private fun world(sender : Player, @Argument("option") option : WorldOptions, @Argument("world") world : WorldsList) {
         when(option) {
             WorldOptions.OPEN -> {
                 when(world) {

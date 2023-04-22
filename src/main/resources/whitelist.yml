@@ -1,0 +1,9 @@
+group:
+  admin:
+    - x
+  bot_testing:
+    - y
+  lisa:
+    - z
+  guoco:
+    - w

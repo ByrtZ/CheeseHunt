@@ -3,6 +3,7 @@ package me.byrt.cheesehunt.command
 import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
+import cloud.commandframework.annotations.Confirmation
 
 import me.byrt.cheesehunt.Main
 import me.byrt.cheesehunt.manager.Sounds
@@ -30,6 +31,7 @@ class GameCommands : BaseCommand {
     @CommandMethod("game start")
     @CommandDescription("Starts a game of Cheese Hunt.")
     @CommandPermission("cheesehunt.startgame")
+    @Confirmation
     fun start(sender : Player) {
         if(Main.getGame().getGameState() == GameState.IDLE) {
             if(Main.getGame().getTeamManager().getRedTeam().size >= 1 && Main.getGame().getTeamManager().getBlueTeam().size >= 1) {
@@ -56,6 +58,7 @@ class GameCommands : BaseCommand {
     @CommandMethod("game reload")
     @CommandDescription("Allows the executing player to reset the game.")
     @CommandPermission("cheesehunt.reloadgame")
+    @Confirmation
     fun reloadGame(sender : Player) {
         if(Main.getGame().getGameState() == GameState.GAME_END && Main.getGame().getTimerState() == TimerState.INACTIVE) {
             sender.showTitle(Title.title(Component.text(""), Component.text("Reloading...", NamedTextColor.RED), Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(3), Duration.ofSeconds(1))))

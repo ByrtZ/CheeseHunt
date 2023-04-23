@@ -254,7 +254,7 @@ class GameCountdownTask(private var game: Game) {
                     }
                     if(timeLeft == 31) {
                         for(player in Bukkit.getOnlinePlayers()) {
-                            player.playSound(player.location, Sounds.Music.OVERTIME_INTRO_MUSIC, 1f, 1f)
+                            player.playSound(player.location, Sounds.Music.OVERTIME_INTRO_MUSIC, SoundCategory.VOICE, 1f, 1f)
                         }
                     }
                     if(timeLeft in 11..30 || timeLeft % 60 == 0) {

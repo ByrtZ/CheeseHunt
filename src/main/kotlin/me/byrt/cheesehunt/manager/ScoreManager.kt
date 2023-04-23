@@ -98,11 +98,11 @@ class ScoreManager(private val game : Game) {
                     Component.text("[")
                         .append(Component.text("▶").color(NamedTextColor.GOLD))
                         .append(Component.text("] "))
-                        .append(Component.text("Coin multiplier is now ", NamedTextColor.GREEN, TextDecoration.BOLD))
-                        .append(Component.text("x$multiplier.0 ", NamedTextColor.YELLOW, TextDecoration.BOLD))
-                        .append(Component.text("for 1 minute!", NamedTextColor.GREEN, TextDecoration.BOLD))
+                        .append(Component.text("Coin multiplier is now ", NamedTextColor.YELLOW, TextDecoration.BOLD))
+                        .append(Component.text("x$multiplier.0 ", NamedTextColor.GOLD, TextDecoration.BOLD))
+                        .append(Component.text("for 1 minute!", NamedTextColor.YELLOW, TextDecoration.BOLD))
                 )
-                player.showTitle(Title.title(Component.text("MULTIPLIER MINUTE", NamedTextColor.GOLD, TextDecoration.BOLD), Component.text("x${multiplier}.0 coins for 1 minute").color(NamedTextColor.YELLOW), Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(3), Duration.ofSeconds(1))))
+                player.showTitle(Title.title(Component.text("MULTIPLIER MINUTE", NamedTextColor.GOLD, TextDecoration.BOLD), Component.text("x${multiplier}.0 coins for 1 minute").color(NamedTextColor.YELLOW), Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(5), Duration.ofSeconds(1))))
                 multiplierMinuteFirework(player)
             }
         }

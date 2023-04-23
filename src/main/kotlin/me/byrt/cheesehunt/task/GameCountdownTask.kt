@@ -15,6 +15,7 @@ import org.bukkit.scheduler.BukkitRunnable
 
 import java.time.Duration
 
+@Suppress("unused")
 class GameCountdownTask(private var game: Game) {
     private var gameRunnableList = mutableMapOf<Int, BukkitRunnable>()
     private var currentGameTaskId = 0
@@ -23,6 +24,7 @@ class GameCountdownTask(private var game: Game) {
     private var displayTime: String = "00:00"
     private var previousDisplayTime: String = "00:00"
     private var setTimerTimeLeft: String? = null
+    private var gameSubtitle = ""
 
     fun gameLoop() {
         val gameRunnable = object : BukkitRunnable() {
@@ -42,13 +44,13 @@ class GameCountdownTask(private var game: Game) {
                             for(player in Bukkit.getOnlinePlayers()) {
                                 player.showTitle(Title.title(
                                     Component.text("Cheese Hunt").color(NamedTextColor.YELLOW),
-                                    Component.text(""),
+                                    Component.text(gameSubtitle).color(NamedTextColor.GOLD),
                                     Title.Times.times(
                                         Duration.ofSeconds(1),
                                         Duration.ofSeconds(4),
                                         Duration.ofSeconds(1)
+                                        )
                                     )
-                                )
                                 )
                             }
                         }
@@ -72,9 +74,9 @@ class GameCountdownTask(private var game: Game) {
                                 player.playSound(player.location, Sounds.Tutorial.TUTORIAL_POP, 1f, 1f)
                                 player.sendMessage(Component.text("-----------------------------------------------------").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
                                     .append(Component.text(" Game:\n").color(NamedTextColor.WHITE).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.STRIKETHROUGH, false)
-                                        .append(Component.text(" • Cheese Hunt is a game of all time.\n").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, false)
-                                            .append(Component.text(" • This is unfinished.\n").color(NamedTextColor.WHITE)
-                                                .append(Component.text(" • Cheese is placed in the center every 2 minutes.\n").color(NamedTextColor.WHITE)
+                                        .append(Component.text(" • Cheese Hunt is a team based, PvP and collection game.\n").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, false)
+                                            .append(Component.text(" • Your goal is to collect and steal Cheese.\n").color(NamedTextColor.WHITE)
+                                                .append(Component.text(" • Cheese drops are placed in the center every 2 minutes.\n").color(NamedTextColor.WHITE)
                                                     .append(Component.text(" • Cheese is counted in team bases every 3 minutes.\n\n\n\n").color(NamedTextColor.WHITE)
                                                         .append(Component.text("-----------------------------------------------------").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
                                                         )
@@ -90,11 +92,13 @@ class GameCountdownTask(private var game: Game) {
                             for(player in Bukkit.getOnlinePlayers()) {
                                 player.playSound(player.location, Sounds.Tutorial.TUTORIAL_POP, 1f, 1f)
                                 player.sendMessage(Component.text("-----------------------------------------------------").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
-                                    .append(Component.text(" Items:\n").color(NamedTextColor.WHITE).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.STRIKETHROUGH, false)
-                                        .append(Component.text(" • Weapons are for murder.\n").color(NamedTextColor.WHITE).decoration(TextDecoration.BOLD, false)
-                                            .append(Component.text(" • Pickaxe is for cheese grabbing.\n").color(NamedTextColor.WHITE)
-                                                .append(Component.text("\n\n\n\n\n")
-                                                    .append(Component.text("-----------------------------------------------------").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
+                                    .append(Component.text(" Combat & Items:\n").color(NamedTextColor.WHITE).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.STRIKETHROUGH, false)
+                                        .append(Component.text(" • Players are armed with melee and ranged weaponry.\n").color(NamedTextColor.WHITE).decoration(TextDecoration.BOLD, false)
+                                            .append(Component.text(" • A pickaxe is also given specifically for cheese grabbing.\n").color(NamedTextColor.WHITE)
+                                                .append(Component.text(" • Arrows can be picked up.\n").color(NamedTextColor.WHITE)
+                                                    .append(Component.text("\n\n\n")
+                                                        .append(Component.text("-----------------------------------------------------").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
+                                                        )
                                                     )
                                                 )
                                             )
@@ -107,10 +111,10 @@ class GameCountdownTask(private var game: Game) {
                             for(player in Bukkit.getOnlinePlayers()) {
                                 player.playSound(player.location, Sounds.Tutorial.TUTORIAL_POP, 1f, 1f)
                                 player.sendMessage(Component.text("-----------------------------------------------------").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
-                                    .append(Component.text(" Win Criteria:\n").color(NamedTextColor.WHITE).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.STRIKETHROUGH, false)
-                                        .append(Component.text(" • More coins = Better person.\n\n").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, false)
-                                            .append(Component.text(" • lmao.").color(NamedTextColor.RED)
-                                                .append(Component.text("\n\n\n\n")
+                                    .append(Component.text(" Win Criteria & Misc:\n").color(NamedTextColor.WHITE).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.STRIKETHROUGH, false)
+                                        .append(Component.text(" • The team with the most coins at the end of the timer will win the game.\n\n").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, false)
+                                            .append(Component.text(" • A multiplier minute occurs for one minute randomly during the game.\n\n").color(NamedTextColor.YELLOW)
+                                                .append(Component.text(" • Game Music is on the Voice/Speech slider.\n").color(NamedTextColor.LIGHT_PURPLE)
                                                     .append(Component.text("-----------------------------------------------------").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
                                                     )
                                                 )
@@ -124,12 +128,10 @@ class GameCountdownTask(private var game: Game) {
                             for(player in Bukkit.getOnlinePlayers()) {
                                 player.playSound(player.location, Sounds.Tutorial.TUTORIAL_POP, 1f, 1f)
                                 player.sendMessage(Component.text("-----------------------------------------------------").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
-                                    .append(Component.text(" Starting soon:\n\n").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.STRIKETHROUGH, false)
-                                        .append(Component.text("        Standby for the game to begin...\n\n").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true)
-                                            .append(Component.text(" • May the best Cheese hiders and Cheese hunters win.").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, false)
-                                                .append(Component.text("\n\n\n\n")
-                                                    .append(Component.text("-----------------------------------------------------").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
-                                                    )
+                                    .append(Component.text(" Starting soon:\n\n").color(NamedTextColor.WHITE).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.STRIKETHROUGH, false)
+                                        .append(Component.text("      Standby for the game to begin...\n\n").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, false).decoration(TextDecoration.ITALIC, true)
+                                            .append(Component.text("\n\n\n")
+                                                .append(Component.text("-----------------------------------------------------").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true).decoration(TextDecoration.ITALIC, false)
                                                 )
                                             )
                                         )
@@ -408,11 +410,20 @@ class GameCountdownTask(private var game: Game) {
         return timeLeft
     }
 
+    fun getGameSubtitle() : String {
+        return gameSubtitle
+    }
+
+    fun setGameSubtitle(newSubtitle : String) {
+        gameSubtitle = newSubtitle
+    }
+
     fun resetVars() {
         timeLeft = 0
         previousTimeLeft = 0
         displayTime = "00:00"
         previousDisplayTime = "00:00"
         setTimerTimeLeft = null
+        gameSubtitle = ""
     }
 }

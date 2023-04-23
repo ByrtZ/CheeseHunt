@@ -54,6 +54,9 @@ class PlayerDeathEvent : Listener {
             Main.getGame().getCheeseManager().teamFireworks(player, Teams.BLUE)
             Main.getGame().getRespawnTask().startRespawnLoop(player, Main.getPlugin(), Teams.BLUE)
         }
+        if(player.location.y <= -6.0) {
+            player.teleport(Location(Main.getGame().getLocationManager().getArenaCentre().clone().world, Main.getGame().getLocationManager().getArenaCentre().clone().x, Main.getGame().getLocationManager().getArenaCentre().clone().y + 20.0, Main.getGame().getLocationManager().getArenaCentre().clone().z + 35.0, Main.getGame().getLocationManager().getArenaCentre().clone().pitch - 180, Main.getGame().getLocationManager().getArenaCentre().yaw + 30))
+        }
     }
 
     private fun eliminationDisplay(player : Player, playerKilled : Player) {

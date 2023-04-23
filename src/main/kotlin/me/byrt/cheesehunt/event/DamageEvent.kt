@@ -8,7 +8,7 @@ import org.bukkit.event.entity.EntityDamageEvent
 class DamageEvent : Listener {
     @EventHandler
     private fun onDamage(e : EntityDamageEvent) {
-        if(e.cause == EntityDamageEvent.DamageCause.SUFFOCATION) {
+        if(e.cause == EntityDamageEvent.DamageCause.SUFFOCATION || e.cause == EntityDamageEvent.DamageCause.VOID) {
             e.isCancelled = true
         }
     }

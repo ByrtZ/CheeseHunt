@@ -4,6 +4,12 @@ Cheese Hunt minigame for Minecraft written in Kotlin.
 ## How did Cheese Hunt become a thing?
 Cheese Hunt is a lighthearted minigame idea that was created by MC Championship Testers, and ultimately became a meme within the MC Championship community whenever a new game for the event was teased. I have decided to bring this to life in the form of a Minecraft server plugin written in Kotlin.
 
+
+#Cheese Hunt: Reforged
+The Cheese Hunt revamp documentation is a work in progress, check back soon!
+
+
+#Original Cheese Hunt
 ## How does Cheese Hunt work?
 The game consists of two teams, both of which must hide cheese and hunt cheese. 
 

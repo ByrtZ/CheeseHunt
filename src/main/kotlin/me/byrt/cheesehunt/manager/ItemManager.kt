@@ -93,6 +93,17 @@ class ItemManager(private val game : Game) {
         }
     }
 
+    fun givePlayerPickaxe(player : Player) {
+        val cheeseCollector = ItemStack(Material.WOODEN_PICKAXE, 1)
+        val cheeseCollectorMeta: ItemMeta = cheeseCollector.itemMeta
+        cheeseCollectorMeta.displayName(Component.text("Cheese Collector").color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false))
+        cheeseCollectorMeta.isUnbreakable = true
+        cheeseCollectorMeta.setDestroyableKeys(Collections.singletonList(Material.SPONGE.key) as Collection<Namespaced>)
+        cheeseCollectorMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_DESTROYS)
+        cheeseCollector.itemMeta = cheeseCollectorMeta
+        player.inventory.addItem(cheeseCollector)
+    }
+
     fun getCheeseItem(team : Teams) : ItemStack {
         val cheese = ItemStack(Material.SPONGE, 1)
         val cheeseMeta: ItemMeta = cheese.itemMeta

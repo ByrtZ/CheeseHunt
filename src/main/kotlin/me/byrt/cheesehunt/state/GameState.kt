@@ -5,5 +5,6 @@ enum class GameState {
     STARTING,
     IN_GAME,
     ROUND_END,
-    GAME_END
+    GAME_END,
+    OVERTIME
 }

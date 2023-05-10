@@ -2,7 +2,7 @@ package me.byrt.cheesehunt.task
 
 import me.byrt.cheesehunt.Main
 import me.byrt.cheesehunt.manager.Game
-import me.byrt.cheesehunt.manager.Sounds
+import me.byrt.cheesehunt.state.Sounds
 import me.byrt.cheesehunt.state.Teams
 import me.byrt.cheesehunt.state.GameState
 
@@ -28,7 +28,7 @@ class RespawnTask(private val game: Game) {
             var respawnTimer = 6
             override fun run() {
                 respawnTimer--
-                if(game.getGameState() == GameState.IN_GAME) {
+                if(game.getGameState() == GameState.IN_GAME || game.getGameState() == GameState.OVERTIME) {
                     if(respawnTimer > 0) {
                         player.playSound(player.location, Sounds.Respawn.RESPAWN_TIMER, 1f, 2f)
                     } else {
@@ -65,8 +65,12 @@ class RespawnTask(private val game: Game) {
 
     fun stopRespawnLoop(player : Player) {
         respawnLoopMap.remove(player.uniqueId)?.cancel()
-        game.getItemManager().givePlayerKit(player)
         game.getItemManager().givePlayerTeamBoots(player, Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId))
+        if(game.getGameState() == GameState.OVERTIME) {
+            game.getItemManager().givePlayerPickaxe(player)
+        } else {
+            game.getItemManager().givePlayerKit(player)
+        }
         player.gameMode = GameMode.ADVENTURE
         player.resetTitle()
     }

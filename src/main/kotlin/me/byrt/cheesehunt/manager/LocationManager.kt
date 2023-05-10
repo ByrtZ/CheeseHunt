@@ -6,13 +6,15 @@ import me.byrt.cheesehunt.state.Teams
 import org.bukkit.Location
 
 @Suppress("unused")
-class LocationManager(private var game : Game) {
+class LocationManager(private val game : Game) {
+    // TODO: HUGE OVERHAUL FOR MAP SYSTEM USING CONFIG VALUES
     private var redSpawns = ArrayList<Location>()
     private var redSpawnCounter = 0
     private var blueSpawns = ArrayList<Location>()
     private var blueSpawnCounter = 0
     private val spawn = Location(Main.getPlugin().server.getWorld("Cheese"), 0.5, -52.0 ,0.5, 0.0f, 0.0f)
     private val arenaCentre = Location(Main.getPlugin().server.getWorld("Cheese"), 1000.5, 0.0, 1000.5, 0.0f, 0.0f)
+    private val blankLoc = Location(Main.getPlugin().server.getWorld("Cheese"), 0.5, 256.0, 0.5, 0.0f, 0.0f)
 
     fun populateSpawns() {
         redSpawns.add(Location(Main.getPlugin().server.getWorld("Cheese"), 949.5, 3.0, 999.5, -90.0f, 0.0f))
@@ -82,5 +84,9 @@ class LocationManager(private var game : Game) {
 
     fun getArenaCentre() : Location {
         return arenaCentre
+    }
+
+    fun getBlankLoc() : Location {
+        return blankLoc
     }
 }

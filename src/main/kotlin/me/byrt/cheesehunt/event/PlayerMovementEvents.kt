@@ -16,9 +16,10 @@ import org.bukkit.potion.PotionEffectType
 class PlayerMovementEvents : Listener {
     @EventHandler
     private fun onLeaveMap(e : PlayerMoveEvent) {
-        if(Main.getGame().getGameState() == GameState.IN_GAME) {
+        if(Main.getGame().getGameState() == GameState.IN_GAME || Main.getGame().getGameState() == GameState.OVERTIME) {
             if(e.player.location.block.type == Material.STRUCTURE_VOID && e.player.gameMode != GameMode.SPECTATOR && Main.getGame().getTeamManager().getPlayerTeam(e.player.uniqueId) != Teams.SPECTATOR) {
-                e.player.damage(20.0)
+                e.player.damage(0.1)
+                e.player.health = 0.0
             }
             if(Main.getGame().getCheeseManager().playerHasCheese(e.player)) {
                 e.player.addPotionEffect(PotionEffect(PotionEffectType.SLOW, 20, 3, false, false))

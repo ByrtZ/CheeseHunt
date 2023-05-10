@@ -6,7 +6,7 @@ import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.Confirmation
 
 import me.byrt.cheesehunt.Main
-import me.byrt.cheesehunt.manager.Sounds
+import me.byrt.cheesehunt.state.Sounds
 import me.byrt.cheesehunt.state.*
 
 import net.kyori.adventure.key.Key
@@ -85,6 +85,26 @@ class GameCommands : BaseCommand {
             sender.playSound(reloadCompleteSound)
         } else {
             sender.sendMessage(Component.text("Unable to reload game.", NamedTextColor.RED))
+        }
+    }
+
+    @CommandMethod("game toggle overtime")
+    @CommandDescription("Toggles whether overtime should occur or not.")
+    @CommandPermission("cheesehunt.overtime")
+    fun overtime(sender : Player) {
+        if(Main.getGame().getGameState() == GameState.IDLE) {
+            if(Main.getGame().getOvertime()) {
+                Main.getGame().setOvertime(false)
+                sender.sendMessage(Component.text("Overtime phase is now off for the next game.", NamedTextColor.RED))
+                sender.playSound(reloadStartSound)
+            } else {
+                Main.getGame().setOvertime(true)
+                sender.sendMessage(Component.text("Overtime phase is now on for the next game.", NamedTextColor.GREEN))
+                sender.playSound(reloadCompleteSound)
+            }
+        } else {
+            sender.sendMessage(Component.text("Unable to change overtime toggle in this state.").color(NamedTextColor.RED))
+            sender.playSound(startGameFailSound)
         }
     }
 }

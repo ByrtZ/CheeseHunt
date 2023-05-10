@@ -1,7 +1,7 @@
 package me.byrt.cheesehunt.task
 
 import me.byrt.cheesehunt.manager.Game
-import me.byrt.cheesehunt.manager.Sounds
+import me.byrt.cheesehunt.state.Sounds
 
 import org.bukkit.SoundCategory
 import org.bukkit.entity.Player

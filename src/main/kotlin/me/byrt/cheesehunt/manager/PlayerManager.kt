@@ -46,6 +46,17 @@ class PlayerManager(private var game : Game) {
         player.inventory.remove(Material.SPONGE)
     }
 
+    fun clearNonCheeseItems() {
+        Bukkit.getOnlinePlayers().stream().filter { player: Player -> player.gameMode == GameMode.ADVENTURE }
+            .forEach { player: Player -> clearWeaponry(player) }
+    }
+
+    private fun clearWeaponry(player : Player) {
+        player.inventory.remove(Material.STONE_SWORD)
+        player.inventory.remove(Material.BOW)
+        player.inventory.remove(Material.ARROW)
+    }
+
     fun clearAllItems() {
         for(player in Bukkit.getOnlinePlayers()) {
             player.inventory.clear()

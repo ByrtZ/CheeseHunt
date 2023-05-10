@@ -9,6 +9,7 @@ class Game(private val plugin : Main) {
     private var gameState : GameState = GameState.IDLE
     private var roundState : RoundState = RoundState.ROUND_ONE
     private var timerState : TimerState = TimerState.INACTIVE
+    private var overtime = true
     private var buildMode = false
     private val playerManager = PlayerManager(this)
     private val teamManager = TeamManager(this)
@@ -26,6 +27,7 @@ class Game(private val plugin : Main) {
     private val musicTask = MusicTask(this)
     private val configManager = ConfigManager(this)
     private val whitelistManager = WhitelistManager(this)
+    private val mapManager = MapManager(this)
 
     fun setGameState(newState : GameState) {
         this.gameState = newState
@@ -49,6 +51,10 @@ class Game(private val plugin : Main) {
                 setTimerState(TimerState.ACTIVE)
                 gameCountdownTask.setTimeLeft(720)
                 startRound()
+            }
+            GameState.OVERTIME -> {
+                setTimerState(TimerState.ACTIVE)
+                gameCountdownTask.setTimeLeft(30)
             }
             GameState.ROUND_END -> {
                 setTimerState(TimerState.ACTIVE)
@@ -130,7 +136,7 @@ class Game(private val plugin : Main) {
         return this.scoreManager
     }
 
-    fun getStatsManager() : StatisticsManager {
+    fun getStatsManager(): StatisticsManager {
         return this.statsManager
     }
 
@@ -142,8 +148,12 @@ class Game(private val plugin : Main) {
         return this.configManager
     }
 
-    fun getWhitelistManager() : WhitelistManager {
+    fun getWhitelistManager(): WhitelistManager {
         return this.whitelistManager
+    }
+
+    fun getMapManager(): MapManager {
+        return this.mapManager
     }
 
     private fun roundStarting() {
@@ -162,6 +172,14 @@ class Game(private val plugin : Main) {
         blockManager.removeBarriers()
     }
 
+    fun setOvertime(isActive : Boolean) {
+        this.overtime = isActive
+    }
+
+    fun getOvertime() : Boolean {
+        return this.overtime
+    }
+
     fun setBuildMode(mode : Boolean) {
         this.buildMode = mode
     }
@@ -174,5 +192,6 @@ class Game(private val plugin : Main) {
         teamManager.destroyDisplayTeams()
         infoBoardManager.destroyScoreboard()
         configManager.saveWhitelistConfig()
+        configManager.saveMapConfig()
     }
 }

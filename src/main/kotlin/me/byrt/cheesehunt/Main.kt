@@ -3,6 +3,7 @@ package me.byrt.cheesehunt
 import me.byrt.cheesehunt.command.BaseCommand
 import me.byrt.cheesehunt.manager.Game
 import me.byrt.cheesehunt.manager.WhitelistGroup
+import me.byrt.cheesehunt.manager.Maps
 
 import cloud.commandframework.annotations.AnnotationParser
 import cloud.commandframework.execution.CommandExecutionCoordinator
@@ -135,6 +136,7 @@ class Main : JavaPlugin() {
     private fun setupConfigs() {
         game.getConfigManager().setup()
         game.getWhitelistManager().setWhitelist(WhitelistGroup.ADMIN)
+        game.getMapManager().setCurrentMap(null, Maps.REFORGED)
     }
 
     companion object {

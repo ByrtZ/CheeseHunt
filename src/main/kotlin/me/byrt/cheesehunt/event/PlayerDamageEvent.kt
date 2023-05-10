@@ -3,6 +3,9 @@ package me.byrt.cheesehunt.event
 import me.byrt.cheesehunt.Main
 import me.byrt.cheesehunt.state.GameState
 
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+
 import org.bukkit.entity.Arrow
 import org.bukkit.entity.Firework
 import org.bukkit.entity.Player
@@ -33,6 +36,11 @@ class PlayerDamageEvent : Listener {
                      || Main.getGame().getTeamManager().isInBlueTeam(player.uniqueId) && Main.getGame().getTeamManager().isInBlueTeam(damager.uniqueId))
             }
         } else {
+            if(Main.getGame().getGameState() == GameState.OVERTIME) {
+                if(e.damager is Player) {
+                    e.damager.sendMessage(Component.text("Cannot hurt players during overtime, go get the Cheese!", NamedTextColor.RED))
+                }
+            }
             e.isCancelled = true
         }
     }

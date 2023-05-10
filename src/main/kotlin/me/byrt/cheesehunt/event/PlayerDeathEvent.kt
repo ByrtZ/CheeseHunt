@@ -3,7 +3,7 @@ package me.byrt.cheesehunt.event
 import me.byrt.cheesehunt.Main
 import me.byrt.cheesehunt.manager.ScoreMode
 import me.byrt.cheesehunt.state.GameState
-import me.byrt.cheesehunt.manager.Sounds
+import me.byrt.cheesehunt.state.Sounds
 import me.byrt.cheesehunt.manager.Statistic
 import me.byrt.cheesehunt.state.Teams
 
@@ -23,7 +23,7 @@ import java.time.Duration
 class PlayerDeathEvent : Listener {
     @EventHandler
     private fun onDeath(e : PlayerDeathEvent) {
-        if(Main.getGame().getGameState() != GameState.IN_GAME) {
+        if(Main.getGame().getGameState() == GameState.IDLE || Main.getGame().getGameState() == GameState.STARTING || Main.getGame().getGameState() == GameState.ROUND_END || Main.getGame().getGameState() == GameState.GAME_END) {
             e.isCancelled = true
         } else {
             val playerDied = e.player
@@ -53,9 +53,6 @@ class PlayerDeathEvent : Listener {
         } else if(Main.getGame().getTeamManager().isInBlueTeam(player.uniqueId)) {
             Main.getGame().getCheeseManager().teamFireworks(player, Teams.BLUE)
             Main.getGame().getRespawnTask().startRespawnLoop(player, Main.getPlugin(), Teams.BLUE)
-        }
-        if(player.location.y <= -6.0) {
-            player.teleport(Location(Main.getGame().getLocationManager().getArenaCentre().clone().world, Main.getGame().getLocationManager().getArenaCentre().clone().x, Main.getGame().getLocationManager().getArenaCentre().clone().y + 20.0, Main.getGame().getLocationManager().getArenaCentre().clone().z + 35.0, Main.getGame().getLocationManager().getArenaCentre().clone().pitch - 180, Main.getGame().getLocationManager().getArenaCentre().yaw + 30))
         }
     }
 

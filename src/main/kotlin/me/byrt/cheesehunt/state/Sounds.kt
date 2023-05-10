@@ -1,4 +1,6 @@
-package me.byrt.cheesehunt.manager
+package me.byrt.cheesehunt.state
+
+import me.byrt.cheesehunt.manager.Game
 
 @Suppress("unused")
 class Sounds(private val game : Game) {
@@ -45,6 +47,7 @@ class Sounds(private val game : Game) {
     object Alert {
         const val GENERAL_ALERT = "block.note_block.bit"
         const val BLAST_DOORS_OPEN = "block.end_portal.spawn"
+        const val OVERTIME_ALERT = "block.portal.travel"
     }
     object Tutorial {
         const val TUTORIAL_POP = "entity.item.pickup"

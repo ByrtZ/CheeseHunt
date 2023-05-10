@@ -23,15 +23,17 @@ class BlockBreakDropEvent : Listener {
         if(e.player.inventory.itemInMainHand.type == Material.DEBUG_STICK) {
             e.isCancelled = true
         } else {
-            if(Main.getGame().getGameState() != GameState.IN_GAME) {
+            if(Main.getGame().getGameState() != GameState.IN_GAME || Main.getGame().getGameState() != GameState.OVERTIME) {
                 e.isCancelled = !(Main.getGame().getBuildMode() && e.player.isOp)
             }
-            if(Main.getGame().getGameState() == GameState.IN_GAME) {
+            if(Main.getGame().getGameState() == GameState.IN_GAME || Main.getGame().getGameState() == GameState.OVERTIME) {
                 if(e.block.type == Material.SPONGE && !Main.getGame().getCheeseManager().playerHasCheese(e.player)) {
                     Main.getGame().getCheeseManager().playerPickupCheese(e.player, e.block.location)
                     e.isCancelled = false
                 } else {
-                    e.player.sendMessage(Component.text("You already have a piece of cheese, don't be greedy!", NamedTextColor.RED))
+                    if(e.block.type == Material.SPONGE) {
+                        e.player.sendMessage(Component.text("You already have a piece of cheese, don't be greedy!", NamedTextColor.RED))
+                    }
                     e.isCancelled = true
                 }
             }

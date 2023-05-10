@@ -1,6 +1,7 @@
 package me.byrt.cheesehunt.manager
 
 import me.byrt.cheesehunt.Main
+import me.byrt.cheesehunt.state.Sounds
 import me.byrt.cheesehunt.state.Teams
 
 import net.kyori.adventure.text.Component

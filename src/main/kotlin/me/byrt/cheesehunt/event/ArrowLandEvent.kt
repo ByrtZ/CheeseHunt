@@ -10,7 +10,7 @@ import org.bukkit.event.entity.ProjectileHitEvent
 @Suppress("unused")
 class ArrowLandEvent : Listener {
     private fun onArrowLand(e : ProjectileHitEvent) {
-        if(Main.getGame().getGameState() == GameState.IN_GAME) {
+        if(Main.getGame().getGameState() == GameState.IN_GAME || Main.getGame().getGameState() == GameState.OVERTIME) {
             if(e.entity is Arrow && e.hitBlock != null) {
                 e.entity.remove()
             }

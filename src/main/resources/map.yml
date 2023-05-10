@@ -1,0 +1,57 @@
+map:
+  reforged:
+    spawn:
+      world: "Cheese"
+      x: 0.5
+      y: -52.0
+      z: 0.5
+      yaw: 0.0
+      pitch: 0.0
+    center:
+      world: "Cheese"
+      x: 1000.5
+      y: 0.0
+      z: 1000.5
+      yaw: 0.0
+      pitch: 0.0
+    red:
+      world: "Cheese"
+      x:
+      y:
+      z:
+      yaw:
+      pitch:
+    blue:
+      world: "Cheese"
+      x:
+      y:
+      z:
+      yaw:
+      pitch:
+    cheese_drop:
+      world: "Cheese"
+      x:
+      y:
+      z:
+    blast_door_1:
+      corner_1:
+        world: "Cheese"
+        x:
+        y:
+        z:
+      corner_2:
+        world: "Cheese"
+        x:
+        y:
+        z:
+    blast_door_2:
+      corner_1:
+        world: "Cheese"
+        x:
+        y:
+        z:
+      corner_2:
+        world: "Cheese"
+        x:
+        y:
+        z:

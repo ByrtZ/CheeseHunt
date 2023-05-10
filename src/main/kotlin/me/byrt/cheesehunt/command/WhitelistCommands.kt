@@ -3,7 +3,7 @@ package me.byrt.cheesehunt.command
 import cloud.commandframework.annotations.*
 
 import me.byrt.cheesehunt.Main
-import me.byrt.cheesehunt.manager.Sounds
+import me.byrt.cheesehunt.state.Sounds
 import me.byrt.cheesehunt.manager.WhitelistGroup
 
 import net.kyori.adventure.key.Key

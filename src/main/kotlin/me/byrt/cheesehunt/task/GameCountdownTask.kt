@@ -249,7 +249,7 @@ class GameCountdownTask(private var game: Game) {
                                     .append(Component.text("] "))
                                     .append(Component.text("Doors to the center are now open, 2 minutes remain.", NamedTextColor.RED, TextDecoration.BOLD)
                                     )
-                            )
+                                )
                         }
                     }
                     if(timeLeft == 31) {
@@ -281,8 +281,75 @@ class GameCountdownTask(private var game: Game) {
                     }
                 }
 
+                // Overtime
+                if(timeLeft <= 0 && game.getGameState() == GameState.IN_GAME && game.getTimerState() == TimerState.ACTIVE && game.getOvertime()) {
+                    game.getPlayerManager().clearNonCheeseItems()
+                    game.getBlockManager().placeFullCheeseSquare()
+                    game.getPlayerManager().removeAllArrows()
+                    for(player in Bukkit.getOnlinePlayers()) {
+                        player.playSound(player.location, Sounds.Alert.GENERAL_ALERT, 1f, 1f)
+                        player.sendMessage(
+                            Component.text("[")
+                                .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                                .append(Component.text("] "))
+                                .append(Component.text("A cheese payload has been dropped in the center.", NamedTextColor.AQUA, TextDecoration.BOLD)
+                            )
+                        )
+                    }
+                    for(player in Bukkit.getOnlinePlayers()) {
+                        player.playSound(player.location, Sounds.Alert.OVERTIME_ALERT, 0.75f, 1.25f)
+                        player.showTitle(Title.title(
+                            Component.text("OVERTIME!", NamedTextColor.RED, TextDecoration.BOLD),
+                            Component.text("Hunt all the Cheese!"),
+                            Title.Times.times(
+                                Duration.ofSeconds(0),
+                                Duration.ofSeconds(3),
+                                Duration.ofSeconds(1)
+                                )
+                            )
+                        )
+                        player.sendMessage(
+                            Component.text("\n[")
+                                .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                                .append(Component.text("] "))
+                                .append(Component.text("OVERTIME: ", NamedTextColor.RED, TextDecoration.BOLD))
+                                .append(Component.text("You can now ", NamedTextColor.WHITE))
+                                .append(Component.text("ONLY", NamedTextColor.WHITE, TextDecoration.BOLD))
+                                .append(Component.text(" gather Cheese, 30 seconds remain!\n")
+                            )
+                        )
+                    }
+                    game.setGameState(GameState.OVERTIME)
+                }
+
+                if(game.getGameState() == GameState.OVERTIME && game.getTimerState() == TimerState.ACTIVE) {
+                    if(timeLeft in 11..30 || timeLeft % 60 == 0) {
+                        for (player in Bukkit.getOnlinePlayers()) {
+                            player.playSound(player.location, Sounds.Timer.CLOCK_TICK, 0.75f, 1f)
+                        }
+                    }
+                    if(timeLeft in 0..10) {
+                        for (player in Bukkit.getOnlinePlayers()) {
+                            player.playSound(player.location, Sounds.Timer.CLOCK_TICK_HIGH, 0.75f, 2f)
+                        }
+                    }
+                    if(timeLeft <= 0) {
+                        game.getCheeseManager().countCheeseInBases()
+                        for (player in Bukkit.getOnlinePlayers()) {
+                            player.playSound(player.location, Sounds.Alert.GENERAL_ALERT, 1f, 1f)
+                            player.sendMessage(
+                                Component.text("[")
+                                    .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                                    .append(Component.text("] "))
+                                    .append(Component.text("Cheese in team bases has been counted!", NamedTextColor.AQUA, TextDecoration.BOLD)
+                                )
+                            )
+                        }
+                    }
+                }
+
                 // Round ending front end
-                if (timeLeft <= 0 && game.getGameState() == GameState.IN_GAME && game.getTimerState() == TimerState.ACTIVE) {
+                if (timeLeft <= 0 && game.getGameState() == GameState.IN_GAME && game.getTimerState() == TimerState.ACTIVE && !game.getOvertime() || timeLeft <= 0 && game.getGameState() == GameState.OVERTIME && game.getTimerState() == TimerState.ACTIVE) {
                     if (game.getRoundState() == RoundState.ROUND_ONE) {
                         for (player in Bukkit.getOnlinePlayers()) {
                             player.playSound(player.location, Sounds.GameOver.GAME_OVER_PLING, 1f, 1f)

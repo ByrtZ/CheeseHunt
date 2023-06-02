@@ -33,24 +33,61 @@ class GameCommands : BaseCommand {
     @CommandPermission("cheesehunt.startgame")
     @Confirmation
     fun start(sender : Player) {
-        if(Main.getGame().getGameState() == GameState.IDLE) {
-            if(Main.getGame().getTeamManager().getRedTeam().size >= 1 && Main.getGame().getTeamManager().getBlueTeam().size >= 1) {
-                sender.sendMessage(Component.text("Starting Cheese Hunt game!").color(NamedTextColor.GREEN))
-                Main.getGame().setGameState(GameState.STARTING)
+        if(Main.getGame().gameManager.getGameState() == GameState.IDLE) {
+            if(Main.getGame().teamManager.getRedTeam().size >= 1 && Main.getGame().teamManager.getBlueTeam().size >= 1) {
+                Main.getGame().dev.parseDevMessage("${sender.name} started a Cheese Hunt game!", DevStatus.INFO_SUCCESS)
+                Main.getGame().startGame()
                 for(player in Bukkit.getOnlinePlayers()) {
                     player.sendMessage(Component.text("\nA Cheese Hunt game is starting!\n").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
                     player.playSound(startGameSuccessSound)
                 }
-                Main.getGame().getScoreManager().setNewRandomMultiplierMinute()
+                Main.getGame().scoreManager.setNewRandomMultiplierMinute()
             } else {
                 sender.sendMessage(Component.text("There are not enough players on teams to start a Cheese Hunt game.").color(NamedTextColor.RED))
                 sender.playSound(startGameFailSound)
             }
-        } else if(Main.getGame().getGameState() == GameState.GAME_END) {
+        } else if(Main.getGame().gameManager.getGameState() == GameState.GAME_END) {
             sender.sendMessage(Component.text("A restart is required for a new Cheese Hunt game.").color(NamedTextColor.RED))
             sender.playSound(startGameFailSound)
         } else {
             sender.sendMessage(Component.text("There is already a Cheese Hunt game running, you numpty!").color(NamedTextColor.RED))
+            sender.playSound(startGameFailSound)
+        }
+    }
+
+    @CommandMethod("game force start")
+    @CommandDescription("Force starts the game, may have unintended consequences.")
+    @CommandPermission("cheesehunt.force.start")
+    @Confirmation
+    fun forceStartGame(sender : Player) {
+        if(Main.getGame().gameManager.getGameState() == GameState.IDLE) {
+            Main.getGame().dev.parseDevMessage("${sender.name} forcefully started a Cheese Hunt game!", DevStatus.INFO_SUCCESS)
+            Main.getGame().startGame()
+            for(player in Bukkit.getOnlinePlayers()) {
+                player.sendMessage(Component.text("\nA Cheese Hunt game is starting!\n").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
+                player.playSound(startGameSuccessSound)
+            }
+            Main.getGame().scoreManager.setNewRandomMultiplierMinute()
+        } else {
+            sender.sendMessage(Component.text("Game already running or restart required.").color(NamedTextColor.RED))
+            sender.playSound(startGameFailSound)
+        }
+    }
+
+    @CommandMethod("game force stop")
+    @CommandDescription("Force stops the game, may have unintended consequences.")
+    @CommandPermission("cheesehunt.force.stop")
+    @Confirmation
+    fun forceStopGame(sender : Player) {
+        if(Main.getGame().gameManager.getGameState() != GameState.IDLE) {
+            if(Main.getGame().gameManager.getGameState() != GameState.GAME_END) {
+                Main.getGame().dev.parseDevMessage("${sender.name} force stopped the current Cheese Hunt game.", DevStatus.INFO_SUCCESS)
+                Main.getGame().stopGame()
+            } else {
+                sender.sendMessage(Component.text("Game currently ending.").color(NamedTextColor.RED))
+            }
+        } else {
+            sender.sendMessage(Component.text("Game not running or restart required.").color(NamedTextColor.RED))
             sender.playSound(startGameFailSound)
         }
     }
@@ -60,29 +97,13 @@ class GameCommands : BaseCommand {
     @CommandPermission("cheesehunt.reloadgame")
     @Confirmation
     fun reloadGame(sender : Player) {
-        if(Main.getGame().getGameState() == GameState.GAME_END && Main.getGame().getTimerState() == TimerState.INACTIVE) {
+        if(Main.getGame().gameManager.getGameState() == GameState.GAME_END && Main.getGame().timerManager.getTimerState() == TimerState.INACTIVE) {
             sender.showTitle(Title.title(Component.text(""), Component.text("Reloading...", NamedTextColor.RED), Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(3), Duration.ofSeconds(1))))
             sender.playSound(reloadStartSound)
-            Main.getGame().setGameState(GameState.IDLE)
-            Main.getGame().setRoundState(RoundState.ROUND_ONE)
-            Main.getGame().setTimerState(TimerState.INACTIVE)
-            Main.getGame().getCheeseManager().resetVars()
-            Main.getGame().getGameCountdownTask().resetVars()
-            Main.getGame().getBlockManager().resetAllBlocks()
-            Main.getGame().getInfoBoardManager().destroyScoreboard()
-            Main.getGame().getInfoBoardManager().buildScoreboard()
-            Main.getGame().getPlayerManager().resetPlayers()
-            Main.getGame().getLocationManager().resetSpawnCounters()
-            Main.getGame().getScoreManager().resetScores()
-            Main.getGame().getStatsManager().resetStats()
-            for(player in Bukkit.getOnlinePlayers()) {
-                Main.getGame().getTeamManager().addToTeam(player, player.uniqueId, Teams.SPECTATOR)
-                if(player.isOp) {
-                    Main.getGame().getTeamManager().addToAdminDisplay(player.uniqueId)
-                }
-            }
+            Main.getGame().reload()
             sender.showTitle(Title.title(Component.text(""), Component.text("Game reloaded!", NamedTextColor.GREEN), Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(1), Duration.ofSeconds(1))))
             sender.playSound(reloadCompleteSound)
+            Main.getGame().dev.parseDevMessage("${sender.name} reloaded the game.", DevStatus.INFO)
         } else {
             sender.sendMessage(Component.text("Unable to reload game.", NamedTextColor.RED))
         }
@@ -92,14 +113,14 @@ class GameCommands : BaseCommand {
     @CommandDescription("Toggles whether overtime should occur or not.")
     @CommandPermission("cheesehunt.overtime")
     fun overtime(sender : Player) {
-        if(Main.getGame().getGameState() == GameState.IDLE) {
-            if(Main.getGame().getOvertime()) {
-                Main.getGame().setOvertime(false)
-                sender.sendMessage(Component.text("Overtime phase is now off for the next game.", NamedTextColor.RED))
+        if(Main.getGame().gameManager.getGameState() == GameState.IDLE) {
+            if(Main.getGame().gameManager.isOvertimeActive()) {
+                Main.getGame().gameManager.setOvertimeState(false)
+                Main.getGame().dev.parseDevMessage("Overtime disabled for next game by ${sender.name}.", DevStatus.INFO_FAIL)
                 sender.playSound(reloadStartSound)
             } else {
-                Main.getGame().setOvertime(true)
-                sender.sendMessage(Component.text("Overtime phase is now on for the next game.", NamedTextColor.GREEN))
+                Main.getGame().gameManager.setOvertimeState(true)
+                Main.getGame().dev.parseDevMessage("Overtime enabled for next game by ${sender.name}.", DevStatus.INFO_SUCCESS)
                 sender.playSound(reloadCompleteSound)
             }
         } else {

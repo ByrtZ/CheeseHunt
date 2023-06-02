@@ -58,13 +58,13 @@ class StatisticsManager(private val game : Game) {
                 playerCheesePickedUp.toList().sortedBy { (_, int) -> int }.reversed().toMap()
             }
             Statistic.CHEESE_DROPPED -> {
-                playerCheeseDropped.toList().sortedBy { (_, int) -> int }.reversed().toMap()
+                playerCheeseDropped.toList().sortedBy { (_, int) -> int }.toMap()
             }
             Statistic.ELIMINATIONS -> {
                 playerEliminations.toList().sortedBy { (_, int) -> int }.reversed().toMap()
             }
             Statistic.DEATHS -> {
-                playerDeaths.toList().sortedBy { (_, int) -> int }.reversed().toMap()
+                playerDeaths.toList().sortedBy { (_, int) -> int }.toMap()
             }
         }
     }
@@ -76,12 +76,12 @@ class StatisticsManager(private val game : Game) {
             Statistic.CHEESE_PICKED_UP -> {
                 sortedMap.forEach { (uuid, cheesePickedUp) ->
                     for(player in Bukkit.getOnlinePlayers()) {
-                        if(game.getTeamManager().isInRedTeam(uuid)) {
+                        if(game.teamManager.isInRedTeam(uuid)) {
                             player.sendMessage(Component.text("$i. ")
                                 .append(Component.text("${Bukkit.getPlayer(uuid)?.player?.name}", NamedTextColor.RED)
                                 .append(Component.text(" collected $cheesePickedUp cheese.", NamedTextColor.WHITE))))
                         }
-                        if(game.getTeamManager().isInBlueTeam(uuid)) {
+                        if(game.teamManager.isInBlueTeam(uuid)) {
                             player.sendMessage(Component.text("$i. ")
                                  .append(Component.text("${Bukkit.getPlayer(uuid)?.player?.name}", NamedTextColor.BLUE)
                                  .append(Component.text(" collected $cheesePickedUp cheese.", NamedTextColor.WHITE))))
@@ -93,12 +93,12 @@ class StatisticsManager(private val game : Game) {
             Statistic.CHEESE_DROPPED -> {
                 sortedMap.forEach { (uuid, cheeseDropped) ->
                     for(player in Bukkit.getOnlinePlayers()) {
-                        if(game.getTeamManager().isInRedTeam(uuid)) {
+                        if(game.teamManager.isInRedTeam(uuid)) {
                             player.sendMessage(Component.text("$i. ")
                                  .append(Component.text("${Bukkit.getPlayer(uuid)?.player?.name}", NamedTextColor.RED)
                                  .append(Component.text(" dropped $cheeseDropped cheese.", NamedTextColor.WHITE))))
                         }
-                        if(game.getTeamManager().isInBlueTeam(uuid)) {
+                        if(game.teamManager.isInBlueTeam(uuid)) {
                             player.sendMessage(Component.text("$i. ")
                                  .append(Component.text("${Bukkit.getPlayer(uuid)?.player?.name}", NamedTextColor.BLUE)
                                  .append(Component.text(" dropped $cheeseDropped cheese.", NamedTextColor.WHITE))))
@@ -110,12 +110,12 @@ class StatisticsManager(private val game : Game) {
             Statistic.ELIMINATIONS -> {
                 sortedMap.forEach { (uuid, eliminations) ->
                     for(player in Bukkit.getOnlinePlayers()) {
-                        if(game.getTeamManager().isInRedTeam(uuid)) {
+                        if(game.teamManager.isInRedTeam(uuid)) {
                             player.sendMessage(Component.text("$i. ")
                                 .append(Component.text("${Bukkit.getPlayer(uuid)?.player?.name}", NamedTextColor.RED)
                                 .append(Component.text(" eliminated players $eliminations times.", NamedTextColor.WHITE))))
                         }
-                        if(game.getTeamManager().isInBlueTeam(uuid)) {
+                        if(game.teamManager.isInBlueTeam(uuid)) {
                             player.sendMessage(Component.text("$i. ")
                                 .append(Component.text("${Bukkit.getPlayer(uuid)?.player?.name}", NamedTextColor.BLUE)
                                 .append(Component.text(" eliminated players $eliminations times.", NamedTextColor.WHITE))))
@@ -127,12 +127,12 @@ class StatisticsManager(private val game : Game) {
             Statistic.DEATHS -> {
                 sortedMap.forEach { (uuid, deaths) ->
                     for(player in Bukkit.getOnlinePlayers()) {
-                        if(game.getTeamManager().isInRedTeam(uuid)) {
+                        if(game.teamManager.isInRedTeam(uuid)) {
                             player.sendMessage(Component.text("$i. ")
                                 .append(Component.text("${Bukkit.getPlayer(uuid)?.player?.name}", NamedTextColor.RED)
                                 .append(Component.text(" died $deaths times.", NamedTextColor.WHITE))))
                         }
-                        if(game.getTeamManager().isInBlueTeam(uuid)) {
+                        if(game.teamManager.isInBlueTeam(uuid)) {
                             player.sendMessage(Component.text("$i. ")
                                 .append(Component.text("${Bukkit.getPlayer(uuid)?.player?.name}", NamedTextColor.BLUE)
                                 .append(Component.text(" died $deaths times.", NamedTextColor.WHITE))))

@@ -32,13 +32,15 @@ class ScoreManager(private val game : Game) {
 
     fun winCheck() {
         if(redScore > blueScore) {
-            game.getTeamManager().redWinGame()
+            game.teamManager.redWinGame()
+            game.winShowTask.startWinShowLoop(game.plugin, Teams.RED)
         }
         if(redScore < blueScore) {
-            game.getTeamManager().blueWinGame()
+            game.teamManager.blueWinGame()
+            game.winShowTask.startWinShowLoop(game.plugin, Teams.BLUE)
         }
         if(redScore == blueScore) {
-            game.getTeamManager().noWinGame()
+            game.teamManager.noWinGame()
         }
     }
 
@@ -78,7 +80,7 @@ class ScoreManager(private val game : Game) {
     }
 
     fun setMultiplier(newMultiplier : Int) {
-        game.getInfoBoardManager().updateScoreboardMultiplier(multiplier, newMultiplier)
+        game.infoBoardManager.updateScoreboardMultiplier(multiplier, newMultiplier)
         multiplier = newMultiplier
         if(newMultiplier == 1) {
             for(player in Bukkit.getOnlinePlayers()) {

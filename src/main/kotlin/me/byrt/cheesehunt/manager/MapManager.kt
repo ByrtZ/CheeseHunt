@@ -5,6 +5,7 @@ import net.kyori.adventure.text.format.NamedTextColor
 
 import org.bukkit.entity.Player
 
+@Suppress("unused")
 class MapManager(private val game : Game) {
     private var currentMap = Maps.REFORGED
 
@@ -12,7 +13,7 @@ class MapManager(private val game : Game) {
         if(map == currentMap) {
             sender?.sendMessage(Component.text("Unable to set current map to $map as it is already active.", NamedTextColor.RED))
         } else {
-            game.getInfoBoardManager().updateCurrentMap(currentMap, map)
+            game.infoBoardManager.updateCurrentMap(currentMap, map)
             when(map) {
                 Maps.REFORGED -> {
                     currentMap = map
@@ -28,9 +29,9 @@ class MapManager(private val game : Game) {
 
     fun createMap(sender : Player, newMapName : String) {
         if(Maps.valueOf(newMapName).mapName.isBlank()) {
-            game.getConfigManager().getMapConfig().set("map.$newMapName", null)
+            game.configManager.getMapConfig().set("map.$newMapName", null)
             sender.sendMessage(Component.text("Map successfully created with name $newMapName, but must be added to the plugin before it is playable.", NamedTextColor.GREEN))
-            game.getConfigManager().saveReloadMapConfig()
+            game.configManager.saveReloadMapConfig()
         } else {
             sender.sendMessage(Component.text("Map with name $newMapName already exists.", NamedTextColor.RED))
         }

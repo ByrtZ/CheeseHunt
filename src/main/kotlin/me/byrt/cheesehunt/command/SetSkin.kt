@@ -1,5 +1,8 @@
 package me.byrt.cheesehunt.command
 
+import me.byrt.cheesehunt.Main
+import me.byrt.cheesehunt.state.DevStatus
+
 import cloud.commandframework.annotations.Argument
 import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
@@ -18,6 +21,7 @@ import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 
 import java.io.InputStreamReader
+
 import java.net.URL
 
 @Suppress("unused")
@@ -29,7 +33,7 @@ class SetSkin : BaseCommand {
         try {
             sender.sendMessage(Component.text("Attempting to change ${player.name}'s skin to ${skin}'s skin...").color(NamedTextColor.GRAY))
             setPlayerSkin(player, skin)
-            sender.sendMessage(Component.text("Changed ${player.name}'s skin to ${skin}'s skin.").color(NamedTextColor.GREEN))
+            Main.getGame().dev.parseDevMessage("${player.name}'s skin updated to ${skin}'s skin by ${sender.name}.", DevStatus.INFO)
         } catch(e : Exception) {
             sender.sendMessage(Component.text("An error occurred when attempting to change a player's skin.").color(NamedTextColor.RED))
             e.printStackTrace()

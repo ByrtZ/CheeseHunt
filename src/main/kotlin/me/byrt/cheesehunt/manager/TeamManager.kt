@@ -24,6 +24,7 @@ class TeamManager(private val game : Game) {
     private var spectators = ArrayList<UUID>()
     private var redDisplayTeam: Team = Bukkit.getScoreboardManager().mainScoreboard.registerNewTeam("redDisplay")
     private var blueDisplayTeam: Team = Bukkit.getScoreboardManager().mainScoreboard.registerNewTeam("blueDisplay")
+    private var spectatorDisplayTeam: Team = Bukkit.getScoreboardManager().mainScoreboard.registerNewTeam("spectator")
     private var adminDisplayTeam: Team = Bukkit.getScoreboardManager().mainScoreboard.registerNewTeam("admin")
 
     fun addToTeam(player : Player, uuid : UUID, team : Teams) {
@@ -38,7 +39,7 @@ class TeamManager(private val game : Game) {
                     .append(Component.text("Red Team")
                         .color(NamedTextColor.RED))
                         .append(Component.text(".")))
-                game.getItemManager().givePlayerTeamBoots(player, Teams.RED)
+                game.itemManager.givePlayerTeamBoots(player, Teams.RED)
             }
             Teams.BLUE -> {
                 if(redTeam.contains(uuid)) { removeFromTeam(player, uuid, Teams.RED) }
@@ -50,17 +51,19 @@ class TeamManager(private val game : Game) {
                     .append(Component.text("Blue Team")
                         .color(NamedTextColor.BLUE))
                     .append(Component.text(".")))
-                game.getItemManager().givePlayerTeamBoots(player, Teams.BLUE)
+                game.itemManager.givePlayerTeamBoots(player, Teams.BLUE)
             }
             Teams.SPECTATOR -> {
                 if(redTeam.contains(uuid)) { removeFromTeam(player, uuid, Teams.RED) }
                 if(blueTeam.contains(uuid)) { removeFromTeam(player, uuid, Teams.BLUE) }
                 spectators.add(uuid)
-                player.sendMessage(Component.text("You are now a Spectator."))
                 if(player.isOp) {
                     adminDisplayTeam.addPlayer(Bukkit.getOfflinePlayer(uuid))
+                } else {
+                    spectatorDisplayTeam.addPlayer(Bukkit.getOfflinePlayer(uuid))
                 }
-                game.getItemManager().givePlayerTeamBoots(player, Teams.SPECTATOR)
+                game.itemManager.givePlayerTeamBoots(player, Teams.SPECTATOR)
+                player.sendMessage(Component.text("You are now a Spectator."))
             }
         }
     }
@@ -87,6 +90,7 @@ class TeamManager(private val game : Game) {
             }
             Teams.SPECTATOR -> {
                 spectators.remove(uuid)
+                spectatorDisplayTeam.removePlayer(Bukkit.getOfflinePlayer(uuid))
                 player.sendMessage(Component.text("You are no longer a Spectator."))
             }
         }
@@ -98,25 +102,28 @@ class TeamManager(private val game : Game) {
 
     fun buildDisplayTeams() {
         redDisplayTeam.color(NamedTextColor.RED)
-        redDisplayTeam.prefix(Component.text("").color(NamedTextColor.RED))
+        redDisplayTeam.prefix(Component.text("\uD004 ").color(NamedTextColor.WHITE))
         redDisplayTeam.suffix(Component.text("").color(NamedTextColor.WHITE))
         redDisplayTeam.displayName(Component.text("Red").color(NamedTextColor.RED))
         redDisplayTeam.setAllowFriendlyFire(false)
 
         blueDisplayTeam.color(NamedTextColor.BLUE)
-        blueDisplayTeam.prefix(Component.text("").color(NamedTextColor.BLUE))
+        blueDisplayTeam.prefix(Component.text("\uD005 ").color(NamedTextColor.WHITE))
         blueDisplayTeam.suffix(Component.text("").color(NamedTextColor.WHITE))
         blueDisplayTeam.displayName(Component.text("Blue").color(NamedTextColor.BLUE))
         blueDisplayTeam.setAllowFriendlyFire(false)
 
-        adminDisplayTeam.color(NamedTextColor.WHITE)
-        adminDisplayTeam.prefix(Component.text("⛏ ").color(NamedTextColor.RED)
-            .append(Component.text("[").color(NamedTextColor.WHITE))
-            .append(Component.text("Admin").color(NamedTextColor.RED))
-            .append(Component.text("] ").color(NamedTextColor.WHITE)))
+        adminDisplayTeam.color(NamedTextColor.DARK_RED)
+        adminDisplayTeam.prefix(Component.text("\uD002 ").color(NamedTextColor.WHITE))
         adminDisplayTeam.suffix(Component.text("").color(NamedTextColor.WHITE))
-        adminDisplayTeam.displayName(Component.text("Admin").color(NamedTextColor.RED))
+        adminDisplayTeam.displayName(Component.text("Admin").color(NamedTextColor.DARK_RED))
         adminDisplayTeam.setAllowFriendlyFire(false)
+
+        spectatorDisplayTeam.color(NamedTextColor.GRAY)
+        spectatorDisplayTeam.prefix(Component.text("\uD003 ").color(NamedTextColor.WHITE))
+        spectatorDisplayTeam.suffix(Component.text("").color(NamedTextColor.WHITE))
+        spectatorDisplayTeam.displayName(Component.text("Spectator").color(NamedTextColor.GRAY))
+        spectatorDisplayTeam.setAllowFriendlyFire(false)
     }
 
     fun showDisplayTeamNames() {
@@ -133,6 +140,7 @@ class TeamManager(private val game : Game) {
         redDisplayTeam.unregister()
         blueDisplayTeam.unregister()
         adminDisplayTeam.unregister()
+        spectatorDisplayTeam.unregister()
     }
 
     fun getPlayerTeam(uuid : UUID): Teams {
@@ -147,9 +155,9 @@ class TeamManager(private val game : Game) {
 
     fun redWinGame() {
         for(player in Bukkit.getOnlinePlayers()) {
-            if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED) {
+            if(Main.getGame().teamManager.getPlayerTeam(player.uniqueId) == Teams.RED) {
                 player.playSound(player.location, Sounds.Round.WIN_ROUND, 1f, 1f)
-                game.getCheeseManager().teamFireworks(player, Teams.RED)
+                game.cheeseManager.teamFireworks(player, Teams.RED)
                 player.sendMessage(Component.text("\nYour team won the game!\n").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true))
                 player.showTitle(
                     Title.title(
@@ -163,7 +171,7 @@ class TeamManager(private val game : Game) {
                     )
                 )
             }
-            if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE) {
+            if(Main.getGame().teamManager.getPlayerTeam(player.uniqueId) == Teams.BLUE) {
                 player.playSound(player.location, Sounds.Round.LOSE_ROUND, 1f, 1f)
                 player.sendMessage(Component.text("\nYour team lost the game!\n").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true))
                 player.showTitle(
@@ -183,9 +191,9 @@ class TeamManager(private val game : Game) {
 
     fun blueWinGame() {
         for(player in Bukkit.getOnlinePlayers()) {
-            if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE) {
+            if(Main.getGame().teamManager.getPlayerTeam(player.uniqueId) == Teams.BLUE) {
                 player.playSound(player.location, Sounds.Round.WIN_ROUND, 1f, 1f)
-                game.getCheeseManager().teamFireworks(player, Teams.BLUE)
+                game.cheeseManager.teamFireworks(player, Teams.BLUE)
                 player.sendMessage(Component.text("\nYour team won the game!\n").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true))
                 player.showTitle(
                     Title.title(
@@ -199,7 +207,7 @@ class TeamManager(private val game : Game) {
                     )
                 )
             }
-            if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED) {
+            if(Main.getGame().teamManager.getPlayerTeam(player.uniqueId) == Teams.RED) {
                 player.playSound(player.location, Sounds.Round.LOSE_ROUND, 1f, 1f)
                 player.sendMessage(Component.text("\nYour team lost the game!\n").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true))
                 player.showTitle(
@@ -219,7 +227,7 @@ class TeamManager(private val game : Game) {
 
     fun noWinGame() {
         for(player in Bukkit.getOnlinePlayers()) {
-            if(Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.RED || Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId) == Teams.BLUE) {
+            if(Main.getGame().teamManager.getPlayerTeam(player.uniqueId) == Teams.RED || Main.getGame().teamManager.getPlayerTeam(player.uniqueId) == Teams.BLUE) {
                 player.playSound(player.location, Sounds.Round.DRAW_ROUND, 1f, 2f)
                 player.sendMessage(Component.text("\nNo team won!\n").color(NamedTextColor.YELLOW).decoration(
                     TextDecoration.BOLD, true))

@@ -5,6 +5,7 @@ import cloud.commandframework.annotations.*
 import me.byrt.cheesehunt.Main
 import me.byrt.cheesehunt.state.Sounds
 import me.byrt.cheesehunt.manager.WhitelistGroup
+import me.byrt.cheesehunt.state.DevStatus
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
@@ -31,7 +32,7 @@ class WhitelistCommands : BaseCommand {
     fun whitelistGroup(sender : Player, @Argument("group") group : WhitelistGroup) {
         whitelistStartDisplay(sender, group)
         try {
-            Main.getGame().getWhitelistManager().setWhitelist(group)
+            Main.getGame().whitelistManager.setWhitelist(group)
             whitelistCompleteDisplay(sender, group)
         } catch (e : Exception) {
             whitelistFailDisplay(sender, group)
@@ -46,6 +47,8 @@ class WhitelistCommands : BaseCommand {
     private fun whitelistCompleteDisplay(player : Player, group : WhitelistGroup) {
         player.showTitle(Title.title(Component.text(""), Component.text("Successfully whitelisted $group group!").color(NamedTextColor.GREEN), Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(1), Duration.ofSeconds(1))))
         player.playSound(whitelistCompleteSound)
+
+        Main.getGame().dev.parseDevMessage("Whitelist group set to $group by ${player.name}.", DevStatus.INFO_SUCCESS)
     }
 
     private fun whitelistFailDisplay(player : Player, group : WhitelistGroup) {
@@ -66,11 +69,11 @@ class WhitelistCommands : BaseCommand {
                 WhitelistGroup.CLEAR -> {
                     sender.sendMessage(Component.text("Unable to modify this group as it is not used to store players.", NamedTextColor.RED))
                 } else -> {
-                    val whitelist: ArrayList<String> = Main.getGame().getConfigManager().getWhitelistConfig().getStringList("group.${group.toString().lowercase()}") as ArrayList<String>
+                    val whitelist: ArrayList<String> = Main.getGame().configManager.getWhitelistConfig().getStringList("group.${group.toString().lowercase()}") as ArrayList<String>
                     whitelist.add(player)
-                    Main.getGame().getConfigManager().getWhitelistConfig().set("group.${group.toString().lowercase()}", whitelist)
-                    Main.getGame().getConfigManager().saveWhitelistConfig()
-                    sender.sendMessage(Component.text("Successfully added $player to $group group.", NamedTextColor.GREEN))
+                    Main.getGame().configManager.getWhitelistConfig().set("group.${group.toString().lowercase()}", whitelist)
+                    Main.getGame().configManager.saveWhitelistConfig()
+                    Main.getGame().dev.parseDevMessage("$player successfully added to $group whitelist group by ${sender.name}.", DevStatus.INFO_SUCCESS)
                 }
             }
 
@@ -92,12 +95,12 @@ class WhitelistCommands : BaseCommand {
                 WhitelistGroup.CLEAR -> {
                     sender.sendMessage(Component.text("Unable to modify this group as it is not used to store players.", NamedTextColor.RED))
                 } else -> {
-                val whitelist: ArrayList<String> = Main.getGame().getConfigManager().getWhitelistConfig().getStringList("group.${group.toString().lowercase()}") as ArrayList<String>
-                whitelist.remove(player)
-                Main.getGame().getConfigManager().getWhitelistConfig().set("group.${group.toString().lowercase()}", whitelist)
-                Main.getGame().getConfigManager().saveWhitelistConfig()
-                sender.sendMessage(Component.text("Successfully removed $player from $group group.", NamedTextColor.GREEN))
-            }
+                    val whitelist: ArrayList<String> = Main.getGame().configManager.getWhitelistConfig().getStringList("group.${group.toString().lowercase()}") as ArrayList<String>
+                    whitelist.remove(player)
+                    Main.getGame().configManager.getWhitelistConfig().set("group.${group.toString().lowercase()}", whitelist)
+                    Main.getGame().configManager.saveWhitelistConfig()
+                    Main.getGame().dev.parseDevMessage("$player successfully removed from $group whitelist group by ${sender.name}.", DevStatus.INFO_SUCCESS)
+                }
             }
 
         } catch (e : Exception) {
@@ -112,8 +115,8 @@ class WhitelistCommands : BaseCommand {
         sender.sendMessage(Component.text("Attempting to temporarily whitelist $player...", NamedTextColor.GRAY))
         try {
             if(!Main.getPlugin().server.whitelistedPlayers.contains(Bukkit.getOfflinePlayer(player))) {
-                Main.getGame().getWhitelistManager().tempWhitelistPlayer(player)
-                sender.sendMessage(Component.text("$player added to whitelist.", NamedTextColor.GREEN))
+                Main.getGame().whitelistManager.tempWhitelistPlayer(player)
+                Main.getGame().dev.parseDevMessage("$player successfully added to temporary whitelist by ${sender.name}.", DevStatus.INFO_SUCCESS)
             } else {
                 sender.sendMessage(Component.text("$player is already on whitelist.", NamedTextColor.RED))
             }
@@ -129,8 +132,8 @@ class WhitelistCommands : BaseCommand {
         sender.sendMessage(Component.text("Attempting to temporarily unwhitelist $player...", NamedTextColor.GRAY))
         try {
             if(Main.getPlugin().server.whitelistedPlayers.contains(Bukkit.getOfflinePlayer(player))) {
-                Main.getGame().getWhitelistManager().removeTempWhitelistPlayer(player)
-                sender.sendMessage(Component.text("$player removed from whitelist.", NamedTextColor.GREEN))
+                Main.getGame().whitelistManager.removeTempWhitelistPlayer(player)
+                Main.getGame().dev.parseDevMessage("$player successfully removed from temporary whitelist by ${sender.name}.", DevStatus.INFO_SUCCESS)
             } else {
                 sender.sendMessage(Component.text("$player is not on whitelist.", NamedTextColor.RED))
             }
@@ -146,9 +149,9 @@ class WhitelistCommands : BaseCommand {
     fun whitelistReload(sender : Player) {
         sender.sendMessage(Component.text("Reloading whitelist configuration...", NamedTextColor.RED))
         try {
-            Main.getGame().getConfigManager().saveWhitelistConfig()
-            Main.getGame().getConfigManager().reloadWhitelistConfig()
-            sender.sendMessage(Component.text("Successfully reloaded whitelist configuration.", NamedTextColor.GREEN))
+            Main.getGame().configManager.saveWhitelistConfig()
+            Main.getGame().configManager.reloadWhitelistConfig()
+            Main.getGame().dev.parseDevMessage("Whitelist configuration reloaded by ${sender.name}.", DevStatus.INFO)
 
         } catch (e : Exception) {
             sender.sendMessage(Component.text("Failed to reload whitelist configuration.", NamedTextColor.RED))
@@ -160,8 +163,8 @@ class WhitelistCommands : BaseCommand {
     @CommandPermission("cheesehunt.whitelist.list")
     fun whitelistList(sender : Player) {
         try {
-            sender.sendMessage(Component.text("Current whitelisted group: ${Main.getGame().getWhitelistManager().getWhitelistedGroup()}.", NamedTextColor.GOLD))
-            sender.sendMessage(Component.text("Players: ${Main.getGame().getConfigManager().getWhitelistConfig().getStringList("group.${Main.getGame().getWhitelistManager().getWhitelistedGroup().toString().lowercase()}")}", NamedTextColor.YELLOW))
+            sender.sendMessage(Component.text("Current whitelisted group: ${Main.getGame().whitelistManager.getWhitelistedGroup()}.", NamedTextColor.GOLD)
+                .append(Component.text("Players: ${Main.getGame().configManager.getWhitelistConfig().getStringList("group.${Main.getGame().whitelistManager.getWhitelistedGroup().toString().lowercase()}")}", NamedTextColor.YELLOW)))
 
         } catch (e : Exception) {
             sender.sendMessage(Component.text("Failed to list currently whitelisted players and group.", NamedTextColor.RED))

@@ -1,12 +1,12 @@
 package me.byrt.cheesehunt.command
 
+import me.byrt.cheesehunt.Main
+import me.byrt.cheesehunt.state.DevStatus
+
 import cloud.commandframework.annotations.Argument
 import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
-
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.NamedTextColor
 
 import org.bukkit.GameMode
 import org.bukkit.entity.Player
@@ -21,25 +21,25 @@ class GameMode : BaseCommand {
             PlayerGameModes.S -> {
                 if(sender.gameMode != GameMode.SURVIVAL) {
                     sender.gameMode = GameMode.SURVIVAL
-                    sender.sendMessage(Component.text("You are now in Survival mode.", NamedTextColor.YELLOW))
+                    Main.getGame().dev.parseDevMessage("${sender.name} set own game mode to Survival mode.", DevStatus.INFO)
                 }
             }
             PlayerGameModes.C -> {
                 if(sender.gameMode != GameMode.CREATIVE) {
                     sender.gameMode = GameMode.CREATIVE
-                    sender.sendMessage(Component.text("You are now in Creative mode.", NamedTextColor.YELLOW))
+                    Main.getGame().dev.parseDevMessage("${sender.name} set own game mode to Creative mode.", DevStatus.INFO)
                 }
             }
             PlayerGameModes.A -> {
                 if(sender.gameMode != GameMode.ADVENTURE) {
                     sender.gameMode = GameMode.ADVENTURE
-                    sender.sendMessage(Component.text("You are now in Adventure mode.", NamedTextColor.YELLOW))
+                    Main.getGame().dev.parseDevMessage("${sender.name} set own game mode to Adventure mode.", DevStatus.INFO)
                 }
             }
             PlayerGameModes.SP -> {
                 if(sender.gameMode != GameMode.SPECTATOR) {
                     sender.gameMode = GameMode.SPECTATOR
-                    sender.sendMessage(Component.text("You are now in Spectator mode.", NamedTextColor.YELLOW))
+                    Main.getGame().dev.parseDevMessage("${sender.name} set own game mode to Spectator mode.", DevStatus.INFO)
                 }
             }
         }

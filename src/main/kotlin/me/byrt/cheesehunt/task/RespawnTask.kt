@@ -28,7 +28,7 @@ class RespawnTask(private val game: Game) {
             var respawnTimer = 6
             override fun run() {
                 respawnTimer--
-                if(game.getGameState() == GameState.IN_GAME || game.getGameState() == GameState.OVERTIME) {
+                if(game.gameManager.getGameState() == GameState.IN_GAME || game.gameManager.getGameState() == GameState.OVERTIME) {
                     if(respawnTimer > 0) {
                         player.playSound(player.location, Sounds.Respawn.RESPAWN_TIMER, 1f, 2f)
                     } else {
@@ -45,12 +45,12 @@ class RespawnTask(private val game: Game) {
                 if(respawnTimer == 0) {
                     when(team) {
                         Teams.RED -> {
-                            player.teleport(game.getLocationManager().getRedSpawns()[game.getLocationManager().getRedSpawnCounter()])
-                            game.getLocationManager().incrementSpawnCounter(Teams.RED)
+                            player.teleport(game.locationManager.getRedSpawns()[game.locationManager.getRedSpawnCounter()])
+                            game.locationManager.incrementSpawnCounter(Teams.RED)
                         }
                         Teams.BLUE -> {
-                            player.teleport(game.getLocationManager().getBlueSpawns()[game.getLocationManager().getBlueSpawnCounter()])
-                            game.getLocationManager().incrementSpawnCounter(Teams.BLUE)
+                            player.teleport(game.locationManager.getBlueSpawns()[game.locationManager.getBlueSpawnCounter()])
+                            game.locationManager.incrementSpawnCounter(Teams.BLUE)
                         } else -> {
                             //no.
                         }
@@ -65,11 +65,11 @@ class RespawnTask(private val game: Game) {
 
     fun stopRespawnLoop(player : Player) {
         respawnLoopMap.remove(player.uniqueId)?.cancel()
-        game.getItemManager().givePlayerTeamBoots(player, Main.getGame().getTeamManager().getPlayerTeam(player.uniqueId))
-        if(game.getGameState() == GameState.OVERTIME) {
-            game.getItemManager().givePlayerPickaxe(player)
+        game.itemManager.givePlayerTeamBoots(player, Main.getGame().teamManager.getPlayerTeam(player.uniqueId))
+        if(game.gameManager.getGameState() == GameState.OVERTIME) {
+            game.itemManager.givePlayerPickaxe(player)
         } else {
-            game.getItemManager().givePlayerKit(player)
+            game.itemManager.givePlayerKit(player)
         }
         player.gameMode = GameMode.ADVENTURE
         player.resetTitle()

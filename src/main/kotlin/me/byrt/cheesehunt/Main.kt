@@ -37,10 +37,7 @@ class Main : JavaPlugin() {
         setupCommands()
         setupEventListeners()
         setupConfigs()
-        game.getInfoBoardManager().buildScoreboard()
-        game.getTeamManager().buildDisplayTeams()
-        game.getLocationManager().populateSpawns()
-        game.getTabListManager().populateCheesePuns()
+        game.setup()
     }
 
     override fun onDisable() {
@@ -134,9 +131,9 @@ class Main : JavaPlugin() {
     }
 
     private fun setupConfigs() {
-        game.getConfigManager().setup()
-        game.getWhitelistManager().setWhitelist(WhitelistGroup.ADMIN)
-        game.getMapManager().setCurrentMap(null, Maps.REFORGED)
+        game.configManager.setup()
+        game.whitelistManager.setWhitelist(WhitelistGroup.ADMIN)
+        game.mapManager.setCurrentMap(null, Maps.REFORGED)
     }
 
     companion object {

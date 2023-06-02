@@ -23,12 +23,12 @@ class BlockBreakDropEvent : Listener {
         if(e.player.inventory.itemInMainHand.type == Material.DEBUG_STICK) {
             e.isCancelled = true
         } else {
-            if(Main.getGame().getGameState() != GameState.IN_GAME || Main.getGame().getGameState() != GameState.OVERTIME) {
+            if(Main.getGame().gameManager.getGameState() != GameState.IN_GAME || Main.getGame().gameManager.getGameState() != GameState.OVERTIME) {
                 e.isCancelled = !(Main.getGame().getBuildMode() && e.player.isOp)
             }
-            if(Main.getGame().getGameState() == GameState.IN_GAME || Main.getGame().getGameState() == GameState.OVERTIME) {
-                if(e.block.type == Material.SPONGE && !Main.getGame().getCheeseManager().playerHasCheese(e.player)) {
-                    Main.getGame().getCheeseManager().playerPickupCheese(e.player, e.block.location)
+            if(Main.getGame().gameManager.getGameState()  == GameState.IN_GAME || Main.getGame().gameManager.getGameState() == GameState.OVERTIME) {
+                if(e.block.type == Material.SPONGE && !Main.getGame().cheeseManager.playerHasCheese(e.player)) {
+                    Main.getGame().cheeseManager.playerPickupCheese(e.player, e.block.location)
                     e.isCancelled = false
                 } else {
                     if(e.block.type == Material.SPONGE) {
@@ -42,7 +42,7 @@ class BlockBreakDropEvent : Listener {
 
     @EventHandler
     private fun onAbortBlockBreak(e : BlockDamageAbortEvent) {
-        if(Main.getGame().getGameState() != GameState.IDLE && e.block.type == Material.SPONGE && e.itemInHand.type == Material.WOODEN_PICKAXE) {
+        if(Main.getGame().gameManager.getGameState() != GameState.IDLE && e.block.type == Material.SPONGE && e.itemInHand.type == Material.WOODEN_PICKAXE) {
             e.player.removePotionEffect(PotionEffectType.SLOW_DIGGING)
         }
     }

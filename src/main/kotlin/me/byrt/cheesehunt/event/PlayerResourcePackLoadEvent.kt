@@ -13,12 +13,12 @@ import org.bukkit.event.player.PlayerResourcePackStatusEvent.Status
 class PlayerResourcePackLoadEvent : Listener {
     @EventHandler
     private fun onPackLoad(e : PlayerResourcePackStatusEvent) {
-        if(Main.getGame().getGameState() == GameState.IN_GAME) {
+        if(Main.getGame().gameManager.getGameState() == GameState.IN_GAME) {
             if(e.status == Status.SUCCESSFULLY_LOADED) {
-                if(Main.getGame().getGameCountdownTask().getTimeLeft() >= 29) {
-                    Main.getGame().getMusicTask().startMusicLoop(e.player, Main.getPlugin(), Music.MAIN)
+                if(Main.getGame().gameTask.getTimeLeft() >= 29) {
+                    Main.getGame().musicTask.startMusicLoop(e.player, Main.getPlugin(), Music.MAIN)
                 } else {
-                    Main.getGame().getMusicTask().startMusicLoop(e.player, Main.getPlugin(), Music.OVERTIME)
+                    Main.getGame().musicTask.startMusicLoop(e.player, Main.getPlugin(), Music.OVERTIME)
                 }
             }
         }

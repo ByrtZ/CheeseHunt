@@ -4,180 +4,86 @@ import me.byrt.cheesehunt.Main
 import me.byrt.cheesehunt.state.*
 import me.byrt.cheesehunt.task.*
 
-@Suppress("unused")
-class Game(private val plugin : Main) {
-    private var gameState : GameState = GameState.IDLE
-    private var roundState : RoundState = RoundState.ROUND_ONE
-    private var timerState : TimerState = TimerState.INACTIVE
-    private var overtime = true
-    private var buildMode = false
-    private val playerManager = PlayerManager(this)
-    private val teamManager = TeamManager(this)
-    private val itemManager = ItemManager(this)
-    private val blockManager = BlockManager(this)
-    private val cheeseManager = CheeseManager(this)
-    private val infoBoardManager = InfoBoardManager(this)
-    private val tabListManager = TabListManager(this)
-    private val soundManager = Sounds(this)
-    private val locationManager = LocationManager(this)
-    private val respawnTask = RespawnTask(this)
-    private val gameCountdownTask = GameCountdownTask(this)
-    private val scoreManager = ScoreManager(this)
-    private val statsManager = StatisticsManager(this)
-    private val musicTask = MusicTask(this)
-    private val configManager = ConfigManager(this)
-    private val whitelistManager = WhitelistManager(this)
-    private val mapManager = MapManager(this)
+import org.bukkit.Bukkit
 
-    fun setGameState(newState : GameState) {
-        this.gameState = newState
-        when(this.gameState) {
-            GameState.IDLE -> {
-                setTimerState(TimerState.INACTIVE)
-                setRoundState(RoundState.ROUND_ONE)
-            }
-            GameState.STARTING -> {
-                setTimerState(TimerState.ACTIVE)
-                when(this.roundState) {
-                    RoundState.ROUND_ONE -> {
-                        buildMode = false
-                        gameCountdownTask.setTimeLeft(80)
-                        gameCountdownTask.gameLoop()
-                    }
-                }
-                roundStarting()
-            }
-            GameState.IN_GAME -> {
-                setTimerState(TimerState.ACTIVE)
-                gameCountdownTask.setTimeLeft(720)
-                startRound()
-            }
-            GameState.OVERTIME -> {
-                setTimerState(TimerState.ACTIVE)
-                gameCountdownTask.setTimeLeft(30)
-            }
-            GameState.ROUND_END -> {
-                setTimerState(TimerState.ACTIVE)
-                gameCountdownTask.setTimeLeft(20)
-            }
-            GameState.GAME_END -> {
-                setTimerState(TimerState.ACTIVE)
-                teamManager.showDisplayTeamNames()
-                gameCountdownTask.setTimeLeft(30)
-            }
+@Suppress("unused")
+class Game(val plugin : Main) {
+    val gameManager = GameManager(this)
+    val roundManager = Rounds(this)
+    val timerManager = Timer(this)
+    val playerManager = PlayerManager(this)
+    val teamManager = TeamManager(this)
+    val itemManager = ItemManager(this)
+    val blockManager = BlockManager(this)
+    val cheeseManager = CheeseManager(this)
+    val infoBoardManager = InfoBoardManager(this)
+    val tabListManager = TabListManager(this)
+    val soundManager = Sounds(this)
+    val locationManager = LocationManager(this)
+    val respawnTask = RespawnTask(this)
+    val gameTask = GameTask(this)
+    val musicTask = MusicTask(this)
+    val winShowTask = WinShowTask(this)
+    val scoreManager = ScoreManager(this)
+    val statsManager = StatisticsManager(this)
+    val configManager = ConfigManager(this)
+    val whitelistManager = WhitelistManager(this)
+    val mapManager = MapManager(this)
+    val dev = Dev(this)
+
+    private var buildMode = false
+
+    fun startGame() {
+        if(gameManager.getGameState() == GameState.IDLE) {
+            gameManager.nextState()
+        } else {
+            plugin.logger.warning("Unable to start, as game is already running.")
         }
     }
 
-    fun getGameState(): GameState {
-        return this.gameState
+    fun stopGame() {
+        if(gameManager.getGameState() == GameState.IDLE) {
+            plugin.logger.warning("Unable to stop, as no game is running.")
+        } else {
+            gameManager.setGameState(GameState.GAME_END)
+        }
     }
 
-    fun getRoundState(): RoundState {
-        return this.roundState
+    fun setup() {
+        infoBoardManager.buildScoreboard()
+        teamManager.buildDisplayTeams()
+        locationManager.populateSpawns()
+        locationManager.populateWinShowArea()
+        tabListManager.populateCheesePuns()
     }
 
-    fun setRoundState(roundState : RoundState) {
-        this.roundState = roundState
+    fun cleanUp() {
+        teamManager.destroyDisplayTeams()
+        infoBoardManager.destroyScoreboard()
+        configManager.saveWhitelistConfig()
+        configManager.saveMapConfig()
     }
 
-    fun getTimerState(): TimerState {
-        return this.timerState
-    }
-
-    fun setTimerState(timerState : TimerState) {
-        this.timerState = timerState
-    }
-
-    fun getPlayerManager() : PlayerManager {
-        return this.playerManager
-    }
-
-    fun getTeamManager() : TeamManager {
-        return this.teamManager
-    }
-
-    fun getItemManager(): ItemManager {
-        return this.itemManager
-    }
-
-    fun getBlockManager(): BlockManager {
-        return this.blockManager
-    }
-
-    fun getCheeseManager(): CheeseManager {
-        return this.cheeseManager
-    }
-
-    fun getInfoBoardManager(): InfoBoardManager {
-        return this.infoBoardManager
-    }
-
-    fun getTabListManager(): TabListManager {
-        return this.tabListManager
-    }
-
-    fun getSoundManager(): Sounds {
-        return this.soundManager
-    }
-
-    fun getLocationManager(): LocationManager {
-        return this.locationManager
-    }
-
-    fun getRespawnTask(): RespawnTask {
-        return this.respawnTask
-    }
-
-    fun getGameCountdownTask(): GameCountdownTask {
-        return this.gameCountdownTask
-    }
-
-    fun getScoreManager(): ScoreManager {
-        return this.scoreManager
-    }
-
-    fun getStatsManager(): StatisticsManager {
-        return this.statsManager
-    }
-
-    fun getMusicTask(): MusicTask {
-        return this.musicTask
-    }
-
-    fun getConfigManager(): ConfigManager {
-        return this.configManager
-    }
-
-    fun getWhitelistManager(): WhitelistManager {
-        return this.whitelistManager
-    }
-
-    fun getMapManager(): MapManager {
-        return this.mapManager
-    }
-
-    private fun roundStarting() {
-        playerManager.setSpectatorsGameMode()
-        playerManager.setPlayersNotFlying()
-        playerManager.clearCheese()
-        playerManager.teleportPlayersToGame()
-        playerManager.setPlayersAdventure()
-        playerManager.teleportSpectatorsToArena()
+    fun reload() {
+        gameManager.setGameState(GameState.IDLE)
+        roundManager.setRoundState(RoundState.ONE)
+        timerManager.setTimerState(TimerState.INACTIVE)
+        cheeseManager.resetVars()
+        gameTask.resetVars()
         blockManager.resetAllBlocks()
-        teamManager.hideDisplayTeamNames()
-    }
+        playerManager.resetPlayers()
+        locationManager.resetSpawnCounters()
+        scoreManager.resetScores()
+        statsManager.resetStats()
+        infoBoardManager.destroyScoreboard()
+        infoBoardManager.buildScoreboard()
 
-    private fun startRound() {
-        playerManager.giveItemsToPlayers()
-        blockManager.removeBarriers()
-    }
-
-    fun setOvertime(isActive : Boolean) {
-        this.overtime = isActive
-    }
-
-    fun getOvertime() : Boolean {
-        return this.overtime
+        for(player in Bukkit.getOnlinePlayers()) {
+            Main.getGame().teamManager.addToTeam(player, player.uniqueId, Teams.SPECTATOR)
+            if(player.isOp) {
+                Main.getGame().teamManager.addToAdminDisplay(player.uniqueId)
+            }
+        }
     }
 
     fun setBuildMode(mode : Boolean) {
@@ -186,12 +92,5 @@ class Game(private val plugin : Main) {
 
     fun getBuildMode() : Boolean {
         return this.buildMode
-    }
-
-    fun cleanUp() {
-        teamManager.destroyDisplayTeams()
-        infoBoardManager.destroyScoreboard()
-        configManager.saveWhitelistConfig()
-        configManager.saveMapConfig()
     }
 }

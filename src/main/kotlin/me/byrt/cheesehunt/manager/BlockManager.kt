@@ -1,26 +1,26 @@
 package me.byrt.cheesehunt.manager
 
-import me.byrt.cheesehunt.state.RoundState
-
+import me.byrt.cheesehunt.state.Sounds
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextDecoration
+import org.bukkit.Bukkit
 import org.bukkit.Bukkit.getWorld
 import org.bukkit.Material
 import org.bukkit.block.BlockFace
 import org.bukkit.block.data.Directional
 
+@Suppress("unused")
 class BlockManager(private val game : Game) {
     fun removeBarriers() {
-        when(game.getRoundState()) {
-            RoundState.ROUND_ONE -> {
-                for (z in 999..1001) { // Removing red barrier
-                    for (y in 3..5) {
-                        getWorld("Cheese")?.getBlockAt(950, y, z)?.type = Material.AIR
-                    }
-                }
-                for (z in 999..1001) { // Removing blue barrier
-                    for (y in 3..5) {
-                        getWorld("Cheese")?.getBlockAt(1050, y, z)?.type = Material.AIR
-                    }
-                }
+        for (z in 999..1001) { // Removing red barrier
+            for (y in 3..5) {
+                getWorld("Cheese")?.getBlockAt(950, y, z)?.type = Material.AIR
+            }
+        }
+        for (z in 999..1001) { // Removing blue barrier
+            for (y in 3..5) {
+                getWorld("Cheese")?.getBlockAt(1050, y, z)?.type = Material.AIR
             }
         }
     }
@@ -53,6 +53,16 @@ class BlockManager(private val game : Game) {
                     getWorld("Cheese")?.getBlockAt(x, y, z)?.type = Material.AIR
                 }
             }
+        }
+        for(player in Bukkit.getOnlinePlayers()) {
+            player.playSound(player.location, Sounds.Alert.BLAST_DOORS_OPEN, 1f, 1f)
+            player.sendMessage(
+                Component.text("[")
+                    .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                    .append(Component.text("] "))
+                    .append(Component.text("Doors to the center are now open, 2 minutes remain.", NamedTextColor.RED, TextDecoration.BOLD)
+                )
+            )
         }
     }
 
@@ -88,6 +98,17 @@ class BlockManager(private val game : Game) {
             for(z in 999..1001) {
                 getWorld("Cheese")?.getBlockAt(x, 0, z)?.type = Material.SPONGE
             }
+        }
+
+        for(player in Bukkit.getOnlinePlayers()) {
+            player.playSound(player.location, Sounds.Alert.GENERAL_ALERT, 1f, 1f)
+            player.sendMessage(
+                Component.text("[")
+                    .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                    .append(Component.text("] "))
+                    .append(Component.text("A cheese payload has been dropped in the center.", NamedTextColor.AQUA, TextDecoration.BOLD)
+                )
+            )
         }
     }
 

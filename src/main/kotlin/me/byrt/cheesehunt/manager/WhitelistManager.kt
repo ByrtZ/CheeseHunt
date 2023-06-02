@@ -23,7 +23,7 @@ class WhitelistManager(private val game : Game) {
         currentWhitelistedGroup = group
         when(group) {
             WhitelistGroup.ADMIN -> {
-                for(player in game.getConfigManager().getWhitelistConfig().getStringList("group.admin")) {
+                for(player in game.configManager.getWhitelistConfig().getStringList("group.admin")) {
                     Bukkit.getOfflinePlayer(player).isWhitelisted = true
                     Main.getPlugin().logger.info("Whitelisted $player as they are in the $group group.")
                 }
@@ -34,7 +34,7 @@ class WhitelistManager(private val game : Game) {
             WhitelistGroup.OFF -> {
                 Main.getPlugin().server.setWhitelist(false)
             } else -> {
-                for(player in game.getConfigManager().getWhitelistConfig().getStringList("group.admin").plus(game.getConfigManager().getWhitelistConfig().getStringList("group.${group.toString().lowercase()}"))) {
+                for(player in game.configManager.getWhitelistConfig().getStringList("group.admin").plus(game.configManager.getWhitelistConfig().getStringList("group.${group.toString().lowercase()}"))) {
                     Bukkit.getOfflinePlayer(player).isWhitelisted = true
                     Main.getPlugin().logger.info("Whitelisted $player as they are in the $group group or inherit it.")
                 }
@@ -60,18 +60,15 @@ class WhitelistManager(private val game : Game) {
     fun removeTempWhitelistPlayer(player : String) {
         Bukkit.getOfflinePlayer(player).isWhitelisted = false
     }
-
-    fun isInWhitelistGroup(player : String) : Boolean {
-        return game.getConfigManager().getWhitelistConfig().getStringList("group.admin").plus(game.getConfigManager().getWhitelistConfig().getStringList("group.bot_testing").plus(game.getConfigManager().getWhitelistConfig().getStringList("group.lisa")).plus(game.getConfigManager().getWhitelistConfig().getStringList("group.guoco"))).contains(player)
-    }
 }
 
 @Suppress("unused")
 enum class WhitelistGroup {
     ADMIN,
     BOT_TESTING,
-    LISA,
     GUOCO,
+    LISA,
+    NOXCREW_MODS,
     OFF,
     CLEAR
 }

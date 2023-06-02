@@ -16,7 +16,7 @@ import org.bukkit.potion.PotionEffectType
 class PlayerInteractionsEvent : Listener {
     @EventHandler
     private fun onClickCheese(e : PlayerInteractEvent) {
-        if(Main.getGame().getGameState() != GameState.IDLE) {
+        if(Main.getGame().gameManager.getGameState() != GameState.IDLE) {
             if(e.action == Action.LEFT_CLICK_BLOCK && e.clickedBlock?.type == Material.SPONGE && e.player.inventory.itemInMainHand.type == Material.WOODEN_PICKAXE) {
                 e.player.addPotionEffect(PotionEffect(PotionEffectType.SLOW_DIGGING, Int.MAX_VALUE, 0, false, false))
             }

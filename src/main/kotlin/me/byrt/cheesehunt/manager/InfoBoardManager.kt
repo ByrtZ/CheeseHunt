@@ -48,9 +48,9 @@ class InfoBoardManager(private val game : Game) {
 
     private fun constructScoreboardInfo() {
         cheeseHuntBoard = scoreboard.registerNewObjective(
-        "cheese_hunt_board",
-        Criteria.DUMMY,
-        Component.text("Cheese Hunt").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, true)
+            "cheese_hunt_board",
+            Criteria.DUMMY,
+            Component.text("Byrt's Server").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, true)
         )
 
         currentGameText = cheeseHuntBoard.getScore(ChatColor.AQUA.toString() + "" + ChatColor.BOLD + "Game: " + ChatColor.RESET + "Cheese Hunt")

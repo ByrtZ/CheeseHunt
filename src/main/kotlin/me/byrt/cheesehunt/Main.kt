@@ -34,10 +34,10 @@ class Main : JavaPlugin() {
     override fun onEnable() {
         logger.info("Starting Cheese Hunt plugin...")
         game = Game(this)
+        game.setup()
         setupCommands()
         setupEventListeners()
         setupConfigs()
-        game.setup()
     }
 
     override fun onDisable() {

@@ -2,6 +2,7 @@ package me.byrt.cheesehunt.manager
 
 import me.byrt.cheesehunt.state.Sounds
 import me.byrt.cheesehunt.state.Teams
+import me.byrt.cheesehunt.util.DevStatus
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -135,11 +136,7 @@ class ScoreManager(private val game : Game) {
 
     fun setNewRandomMultiplierMinute() {
         multiplierMinute = Random.nextInt(1, 10)
-        for(operator in Bukkit.getOnlinePlayers()) {
-            if(operator.isOp) {
-                operator.sendMessage(Component.text("Multiplier minute will occur when the timer hits $multiplierMinute.5 minute(s) remaining.", NamedTextColor.GOLD))
-            }
-        }
+        game.dev.parseDevMessage("Multiplier minute will occur at $multiplierMinute.5 minutes remaining.", DevStatus.INFO)
     }
 
     fun getMultiplierMinute() : Int {

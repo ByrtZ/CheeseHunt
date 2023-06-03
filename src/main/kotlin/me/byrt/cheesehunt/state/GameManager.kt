@@ -96,6 +96,9 @@ class GameManager(private val game : Game) {
     }
 
     private fun starting() {
+        for(player in Bukkit.getOnlinePlayers()) {
+            player.showTitle(Title.title(Component.text("\uD000"), Component.text(""), Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(3), Duration.ofSeconds(1))))
+        }
         game.playerManager.setSpectatorsGameMode()
         game.playerManager.setPlayersNotFlying()
         game.playerManager.clearCheese()
@@ -159,6 +162,7 @@ class GameManager(private val game : Game) {
             game.playerManager.setPlayersAdventure()
             game.playerManager.setPlayersFlying()
             game.playerManager.clearNonCheeseItems()
+            game.playerManager.clearEffects()
         }
     }
 

@@ -4,8 +4,14 @@ import me.byrt.cheesehunt.Main
 import me.byrt.cheesehunt.state.*
 import me.byrt.cheesehunt.task.*
 import me.byrt.cheesehunt.util.Dev
+import me.byrt.cheesehunt.util.DevStatus
+
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.title.Title
 
 import org.bukkit.Bukkit
+
+import java.time.Duration
 
 @Suppress("unused")
 class Game(val plugin : Main) {
@@ -38,13 +44,13 @@ class Game(val plugin : Main) {
         if(gameManager.getGameState() == GameState.IDLE) {
             gameManager.nextState()
         } else {
-            plugin.logger.warning("Unable to start, as game is already running.")
+            dev.parseDevMessage("Unable to start, as game is already running.", DevStatus.SEVERE)
         }
     }
 
     fun stopGame() {
         if(gameManager.getGameState() == GameState.IDLE) {
-            plugin.logger.warning("Unable to stop, as no game is running.")
+            dev.parseDevMessage("Unable to stop, as no game is running.", DevStatus.SEVERE)
         } else {
             gameManager.setGameState(GameState.GAME_END)
         }
@@ -80,6 +86,7 @@ class Game(val plugin : Main) {
         infoBoardManager.buildScoreboard()
 
         for(player in Bukkit.getOnlinePlayers()) {
+            player.showTitle(Title.title(Component.text("\uD000"), Component.text(""), Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(3), Duration.ofSeconds(1))))
             Main.getGame().teamManager.addToTeam(player, player.uniqueId, Teams.SPECTATOR)
             if(player.isOp) {
                 Main.getGame().teamManager.addToAdminDisplay(player.uniqueId)

@@ -1,14 +1,14 @@
 package me.byrt.cheesehunt.command
 
-import cloud.commandframework.annotations.CommandDescription
-import cloud.commandframework.annotations.CommandMethod
-import cloud.commandframework.annotations.CommandPermission
-import cloud.commandframework.annotations.Confirmation
-
 import me.byrt.cheesehunt.Main
 import me.byrt.cheesehunt.state.Sounds
 import me.byrt.cheesehunt.state.*
 import me.byrt.cheesehunt.util.DevStatus
+
+import cloud.commandframework.annotations.CommandDescription
+import cloud.commandframework.annotations.CommandMethod
+import cloud.commandframework.annotations.CommandPermission
+import cloud.commandframework.annotations.Confirmation
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
@@ -37,12 +37,12 @@ class GameCommands : BaseCommand {
         if(Main.getGame().gameManager.getGameState() == GameState.IDLE) {
             if(Main.getGame().teamManager.getRedTeam().size >= 1 && Main.getGame().teamManager.getBlueTeam().size >= 1) {
                 Main.getGame().dev.parseDevMessage("${sender.name} started a Cheese Hunt game!", DevStatus.INFO_SUCCESS)
-                Main.getGame().startGame()
                 for(player in Bukkit.getOnlinePlayers()) {
                     player.sendMessage(Component.text("\nA Cheese Hunt game is starting!\n").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
                     player.playSound(startGameSuccessSound)
                 }
                 Main.getGame().scoreManager.setNewRandomMultiplierMinute()
+                Main.getGame().startGame()
             } else {
                 sender.sendMessage(Component.text("There are not enough players on teams to start a Cheese Hunt game.").color(NamedTextColor.RED))
                 sender.playSound(startGameFailSound)

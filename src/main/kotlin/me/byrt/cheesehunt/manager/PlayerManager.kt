@@ -82,6 +82,17 @@ class PlayerManager(private var game : Game) {
         }
     }
 
+    fun clearEffects() {
+        Bukkit.getOnlinePlayers().stream().filter { player: Player -> player.gameMode == GameMode.ADVENTURE }
+            .forEach { player: Player -> clearGamePotionEffects(player) }
+    }
+
+    private fun clearGamePotionEffects(player : Player) {
+        for(effect in player.activePotionEffects) {
+            player.removePotionEffect(effect.type)
+        }
+    }
+
     fun teleportPlayersToGame() {
         Bukkit.getOnlinePlayers().stream().filter { player: Player? -> player?.let {
             Main.getGame().teamManager.getPlayerTeam(it.uniqueId) } != Teams.SPECTATOR}

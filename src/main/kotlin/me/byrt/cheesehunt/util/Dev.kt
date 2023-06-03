@@ -1,4 +1,4 @@
-package me.byrt.cheesehunt.state
+package me.byrt.cheesehunt.util
 
 import me.byrt.cheesehunt.manager.Game
 

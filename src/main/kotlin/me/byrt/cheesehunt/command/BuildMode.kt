@@ -7,7 +7,7 @@ import me.byrt.cheesehunt.state.Sounds
 import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
-import me.byrt.cheesehunt.state.DevStatus
+import me.byrt.cheesehunt.util.DevStatus
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound

@@ -3,7 +3,7 @@ package me.byrt.cheesehunt.command
 import me.byrt.cheesehunt.Main
 import me.byrt.cheesehunt.state.GameState
 import me.byrt.cheesehunt.state.TimerState
-import me.byrt.cheesehunt.state.DevStatus
+import me.byrt.cheesehunt.util.DevStatus
 
 import cloud.commandframework.annotations.Argument
 import cloud.commandframework.annotations.CommandDescription

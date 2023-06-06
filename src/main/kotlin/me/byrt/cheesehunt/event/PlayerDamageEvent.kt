@@ -38,7 +38,7 @@ class PlayerDamageEvent : Listener {
         } else {
             if(Main.getGame().gameManager.getGameState() == GameState.OVERTIME) {
                 if(e.damager is Player) {
-                    e.damager.sendMessage(Component.text("Cannot hurt players during overtime, go get the Cheese!", NamedTextColor.RED))
+                    e.damager.sendMessage(Component.text("You cannot hurt players during overtime, go get the Cheese!", NamedTextColor.RED))
                 }
             }
             e.isCancelled = true

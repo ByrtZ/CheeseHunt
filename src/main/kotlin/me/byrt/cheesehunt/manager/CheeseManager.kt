@@ -108,7 +108,7 @@ class CheeseManager(private val game : Game) {
         incrementCheeseCollected(player)
         playerHasCheese.add(player.uniqueId)
         for(allPlayers in Bukkit.getOnlinePlayers()) {
-            if(allPlayers != player) {
+            if(allPlayers != player && game.teamManager.getPlayerTeam(player.uniqueId) == game.teamManager.getPlayerTeam(allPlayers.uniqueId)) {
                 allPlayers.sendMessage(Component.text("[")
                     .append(Component.text("▶").color(NamedTextColor.YELLOW))
                     .append(Component.text("] "))
@@ -127,7 +127,7 @@ class CheeseManager(private val game : Game) {
         player.addPotionEffect(PotionEffect(PotionEffectType.SLOW, 30, 1, false, false))
         player.addPotionEffect(PotionEffect(PotionEffectType.DARKNESS, 40, 255, false, false))
         for(allPlayers in Bukkit.getOnlinePlayers()) {
-            if(allPlayers != player) {
+            if(allPlayers != player && game.teamManager.getPlayerTeam(player.uniqueId) == game.teamManager.getPlayerTeam(allPlayers.uniqueId)) {
                 allPlayers.sendMessage(Component.text("[")
                     .append(Component.text("▶").color(NamedTextColor.YELLOW))
                     .append(Component.text("] "))

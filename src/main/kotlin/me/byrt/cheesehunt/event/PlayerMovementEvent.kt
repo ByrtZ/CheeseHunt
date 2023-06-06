@@ -13,7 +13,7 @@ import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 
 @Suppress("unused")
-class PlayerMovementEvents : Listener {
+class PlayerMovementEvent : Listener {
     @EventHandler
     private fun onLeaveMap(e : PlayerMoveEvent) {
         if(Main.getGame().gameManager.getGameState() == GameState.IN_GAME || Main.getGame().gameManager.getGameState() == GameState.OVERTIME) {

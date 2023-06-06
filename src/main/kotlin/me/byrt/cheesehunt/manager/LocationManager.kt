@@ -9,15 +9,21 @@ import kotlin.random.Random
 
 @Suppress("unused")
 class LocationManager(private val game : Game) {
-    // TODO: HUGE OVERHAUL FOR MAP SYSTEM USING CONFIG VALUES
     private var redSpawns = ArrayList<Location>()
     private var redSpawnCounter = 0
     private var blueSpawns = ArrayList<Location>()
     private var blueSpawnCounter = 0
+
     private var winShowArea = ArrayList<Location>()
+
     private val spawn = Location(Main.getPlugin().server.getWorld("Cheese"), 0.5, -52.0 ,0.5, 0.0f, 0.0f)
     private val arenaCentre = Location(Main.getPlugin().server.getWorld("Cheese"), 1000.5, 0.0, 1000.5, 0.0f, 0.0f)
-    private val blankLoc = Location(Main.getPlugin().server.getWorld("Cheese"), 0.5, 256.0, 0.5, 0.0f, 0.0f)
+
+    private val redResurrectLoc = Location(Main.getPlugin().server.getWorld("Cheese"), 961.5, 7.0, 1000.5, -90.0f, 0.0f)
+    private val blueResurrectLoc = Location(Main.getPlugin().server.getWorld("Cheese"), 1039.5, 7.0, 1000.5, 90.0f, 0.0f)
+
+    private val itemSpawnLeftRed = Location(Main.getPlugin().server.getWorld("Cheese"), 1000.5, 1.0, 968.5, 90.0f, 0.0f)
+    private val itemSpawnLeftBlue = Location(Main.getPlugin().server.getWorld("Cheese"), 1000.5, 1.0, 1032.5, 90.0f, 0.0f)
 
     fun populateSpawns() {
         redSpawns.add(Location(Main.getPlugin().server.getWorld("Cheese"), 949.5, 3.0, 999.5, -90.0f, 0.0f))
@@ -46,14 +52,14 @@ class LocationManager(private val game : Game) {
     fun incrementSpawnCounter(team : Teams) {
         when(team) {
             Teams.RED -> {
-                if(redSpawnCounter >= 3) {
+                if(redSpawnCounter >= redSpawnCounter - 1) {
                     redSpawnCounter = 0
                 } else {
                     redSpawnCounter++
                 }
             }
             Teams.BLUE -> {
-                if(blueSpawnCounter >= 3) {
+                if(blueSpawnCounter >= blueSpawnCounter - 1) {
                     blueSpawnCounter = 0
                 } else {
                     blueSpawnCounter++
@@ -110,7 +116,19 @@ class LocationManager(private val game : Game) {
         return arenaCentre
     }
 
-    fun getBlankLoc() : Location {
-        return blankLoc
+    fun getRedResurrectLoc() : Location {
+        return redResurrectLoc
+    }
+
+    fun getBlueResurrectLoc() : Location {
+        return blueResurrectLoc
+    }
+
+    fun getRedItemSpawn() : Location {
+        return itemSpawnLeftRed
+    }
+
+    fun getBlueItemSpawn() : Location {
+        return itemSpawnLeftBlue
     }
 }

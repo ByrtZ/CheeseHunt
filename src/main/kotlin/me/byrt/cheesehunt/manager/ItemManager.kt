@@ -1,6 +1,7 @@
 package me.byrt.cheesehunt.manager
 
 import me.byrt.cheesehunt.state.Teams
+import me.byrt.cheesehunt.state.Sounds
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -8,18 +9,56 @@ import net.kyori.adventure.text.format.TextDecoration
 
 import com.destroystokyo.paper.Namespaced
 
+import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.Material
+import org.bukkit.Particle
+import org.bukkit.entity.Item
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.LeatherArmorMeta
+import org.bukkit.util.Vector
 
 import java.util.*
 
 @Suppress("unused")
 class ItemManager(private val game : Game) {
+    fun spawnSideItems(sideItem : SideItem) {
+        clearFloorItems()
+
+        val item = ItemStack(sideItem.material, sideItem.amount)
+        val itemMeta = item.itemMeta
+        itemMeta.displayName(sideItem.displayName)
+        item.itemMeta = itemMeta
+
+        val dropItemRed = game.locationManager.getRedItemSpawn().world.dropItem(game.locationManager.getRedItemSpawn(), item)
+        dropItemRed.velocity = Vector(0.0, 0.25, 0.0)
+        dropItemRed.location.world.spawnParticle(Particle.END_ROD, dropItemRed.location, 25, 0.0, 0.0, 0.0, 0.05)
+        dropItemRed.customName(sideItem.displayName)
+        dropItemRed.isCustomNameVisible = true
+        dropItemRed.isGlowing = true
+
+        val dropItemBlue = game.locationManager.getBlueItemSpawn().world.dropItem(game.locationManager.getBlueItemSpawn(), item)
+        dropItemBlue.velocity = Vector(0.0, 0.25, 0.0)
+        dropItemBlue.location.world.spawnParticle(Particle.END_ROD, dropItemBlue.location, 25, 0.0, 0.0, 0.0, 0.05)
+        dropItemBlue.customName(sideItem.displayName)
+        dropItemBlue.isCustomNameVisible = true
+        dropItemBlue.isGlowing = true
+
+        for(player in Bukkit.getOnlinePlayers()) {
+            player.playSound(player.location, Sounds.Alert.GENERAL_ALERT, 1f, 1f)
+            player.sendMessage(
+                Component.text("[")
+                    .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                    .append(Component.text("] "))
+                    .append(Component.text("Power-ups have spawned on each side of the map.", NamedTextColor.AQUA, TextDecoration.BOLD)
+                )
+            )
+        }
+    }
+
     fun givePlayerTeamBoots(player : Player, team : Teams) {
         when(team) {
             Teams.RED -> {
@@ -123,4 +162,22 @@ class ItemManager(private val game : Game) {
         cheese.itemMeta = cheeseMeta
         return cheese
     }
+
+    fun clearFloorItems() {
+        for(item in game.locationManager.getSpawn().world.getEntitiesByClass(Item::class.java)) {
+            item.remove()
+        }
+    }
+
+    fun getRandomItem() : SideItem {
+        val random = Random()
+        return SideItem.values()[random.nextInt(SideItem.values().size)]
+    }
+}
+
+@Suppress("unused")
+enum class SideItem(val material : Material, val amount : Int, val displayName : Component) {
+    RESURRECTION_CHARM(Material.TOTEM_OF_UNDYING, 1, Component.text("Charm of Resurrection", NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false)),
+    THROWABLE_TNT(Material.TNT, 2, Component.text("Throwing TNT", NamedTextColor.RED).decoration(TextDecoration.ITALIC, false)),
+    INVISIBILITY_CLOAK(Material.GRAY_DYE, 1, Component.text("Invisibili-brie Charm", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
 }

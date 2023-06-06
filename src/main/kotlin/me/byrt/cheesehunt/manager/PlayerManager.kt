@@ -62,6 +62,10 @@ class PlayerManager(private var game : Game) {
         player.inventory.remove(Material.STONE_SWORD)
         player.inventory.remove(Material.BOW)
         player.inventory.remove(Material.ARROW)
+        player.inventory.remove(Material.TOTEM_OF_UNDYING)
+        player.inventory.remove(Material.TNT)
+        player.inventory.remove(Material.GRAY_DYE)
+        player.inventory.setItemInOffHand(null)
     }
 
     fun clearNonCheeseItems() {
@@ -74,6 +78,10 @@ class PlayerManager(private var game : Game) {
         player.inventory.remove(Material.BOW)
         player.inventory.remove(Material.ARROW)
         player.inventory.remove(Material.WOODEN_PICKAXE)
+        player.inventory.remove(Material.TOTEM_OF_UNDYING)
+        player.inventory.remove(Material.TNT)
+        player.inventory.remove(Material.GRAY_DYE)
+        player.inventory.setItemInOffHand(null)
     }
 
     private fun clearAllItems() {
@@ -82,12 +90,12 @@ class PlayerManager(private var game : Game) {
         }
     }
 
-    fun clearEffects() {
+    fun clearAllPlayersEffects() {
         Bukkit.getOnlinePlayers().stream().filter { player: Player -> player.gameMode == GameMode.ADVENTURE }
-            .forEach { player: Player -> clearGamePotionEffects(player) }
+            .forEach { player: Player -> clearPotionEffects(player) }
     }
 
-    private fun clearGamePotionEffects(player : Player) {
+    fun clearPotionEffects(player : Player) {
         for(effect in player.activePotionEffects) {
             player.removePotionEffect(effect.type)
         }

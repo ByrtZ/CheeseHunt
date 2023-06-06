@@ -107,13 +107,15 @@ class GameManager(private val game : Game) {
         game.playerManager.setPlayersAdventure()
         game.blockManager.resetAllBlocks()
         game.teamManager.hideDisplayTeamNames()
+        game.itemManager.clearFloorItems()
     }
 
     private fun startOvertime() {
         game.playerManager.clearWeapons()
         game.blockManager.placeFullCheeseSquare()
+        game.itemManager.clearFloorItems()
         for(player in Bukkit.getOnlinePlayers()) {
-            player.playSound(player.location, Sounds.Alert.OVERTIME_ALERT, 0.75f, 1.25f)
+            player.playSound(player.location, Sounds.Alert.OVERTIME_ALERT, 0.5f, 1.25f)
             player.showTitle(Title.title(
                 Component.text("OVERTIME!", NamedTextColor.RED, TextDecoration.BOLD),
                 Component.text("Hunt all the Cheese!"),
@@ -162,7 +164,8 @@ class GameManager(private val game : Game) {
             game.playerManager.setPlayersAdventure()
             game.playerManager.setPlayersFlying()
             game.playerManager.clearNonCheeseItems()
-            game.playerManager.clearEffects()
+            game.playerManager.clearAllPlayersEffects()
+            game.itemManager.clearFloorItems()
         }
     }
 
@@ -190,6 +193,7 @@ class GameManager(private val game : Game) {
         game.playerManager.setPlayersAdventure()
         game.playerManager.setPlayersFlying()
         game.playerManager.clearNonCheeseItems()
+        game.itemManager.clearFloorItems()
     }
 
     fun getGameState() : GameState {

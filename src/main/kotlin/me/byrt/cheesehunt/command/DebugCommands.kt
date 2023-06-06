@@ -4,11 +4,15 @@ import me.byrt.cheesehunt.Main
 import me.byrt.cheesehunt.state.GameState
 import me.byrt.cheesehunt.state.Teams
 import me.byrt.cheesehunt.util.DevStatus
+import me.byrt.cheesehunt.manager.SideItem
 
 import cloud.commandframework.annotations.Argument
 import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
+
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 
 import org.bukkit.entity.Player
 
@@ -63,5 +67,20 @@ class DebugCommands : BaseCommand {
         Main.getGame().dev.parseDevMessage("${sender.name} removed ${player.name}'s cheese.", DevStatus.WARNING)
         Main.getGame().cheeseManager.playerDropCheese(player)
         Main.getGame().cheeseManager.setPlayerHasCheese(player, false)
+    }
+
+    @CommandMethod("debug skull <player>")
+    @CommandDescription("Debug command to test Noxesium's player heads in UI.")
+    @CommandPermission("cheesehunt.debug")
+    fun debugTestSkulls(sender : Player, @Argument("player") player: Player) {
+        sender.sendMessage(Component.text("\uD001 ", NamedTextColor.WHITE).append(Component.text("This is ${player.name}'s head:", NamedTextColor.YELLOW).append(Component.score("%NCPH%${player.uniqueId},false,0,0,1.0", "").color(NamedTextColor.WHITE)).append(Component.text("!", NamedTextColor.YELLOW))))
+    }
+
+    @CommandMethod("debug item_spawns <item>")
+    @CommandDescription("Debug command to test item spawns.")
+    @CommandPermission("cheesehunt.debug")
+    fun debugTestSkulls(sender : Player, @Argument("item") sideItem: SideItem) {
+        Main.getGame().dev.parseDevMessage("$sideItem items spawned on map sides by ${sender.name}.", DevStatus.WARNING)
+        Main.getGame().itemManager.spawnSideItems(sideItem)
     }
 }

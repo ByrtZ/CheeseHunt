@@ -34,6 +34,7 @@ class Sounds(private val game : Game) {
     object Respawn {
         const val RESPAWN_TIMER = "ui.button.click"
         const val RESPAWN = "block.beacon.power_select"
+        const val RESURRECT = "item.totem.use"
     }
     object Score {
         const val ELIMINATION = "entity.player.levelup"
@@ -48,6 +49,10 @@ class Sounds(private val game : Game) {
         const val GENERAL_ALERT = "block.note_block.bit"
         const val BLAST_DOORS_OPEN = "block.end_portal.spawn"
         const val OVERTIME_ALERT = "block.portal.travel"
+    }
+    object Item {
+        const val USE_ITEM = "entity.ender_eye.death"
+        const val PICKUP_ITEM = "entity.item.pickup"
     }
     object Tutorial {
         const val TUTORIAL_POP = "entity.item.pickup"

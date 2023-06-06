@@ -36,6 +36,7 @@ class Game(val plugin : Main) {
     val configManager = ConfigManager(this)
     val whitelistManager = WhitelistManager(this)
     val mapManager = MapManager(this)
+    val cooldownManager = CooldownManager(this)
     val dev = Dev(this)
 
     private var buildMode = false

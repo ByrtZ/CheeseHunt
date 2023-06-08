@@ -217,7 +217,7 @@ class GameTask(private var game: Game) {
                             game.cheeseManager.countCheeseInBases()
                         }
                     }
-                    if(timeLeft % 80 == 0) {
+                    if(timeLeft % 25 == 0) {
                         if(timeLeft != 0) {
                             if(timeLeft != 720) {
                                 game.itemManager.spawnSideItems(game.itemManager.getRandomItem())

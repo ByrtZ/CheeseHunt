@@ -9,41 +9,42 @@ import net.kyori.adventure.text.format.TextDecoration
 
 import com.destroystokyo.paper.Namespaced
 
-import org.bukkit.Bukkit
-import org.bukkit.Color
-import org.bukkit.Material
-import org.bukkit.Particle
+import org.bukkit.*
+import org.bukkit.entity.Firework
 import org.bukkit.entity.Item
 import org.bukkit.entity.Player
+import org.bukkit.entity.TNTPrimed
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.LeatherArmorMeta
+import org.bukkit.potion.PotionEffect
+import org.bukkit.potion.PotionEffectType
 import org.bukkit.util.Vector
 
 import java.util.*
 
 @Suppress("unused")
 class ItemManager(private val game : Game) {
-    fun spawnSideItems(sideItem : SideItem) {
+    fun spawnSideItems(powerUpItem : PowerUpItem) {
         clearFloorItems()
 
-        val item = ItemStack(sideItem.material, sideItem.amount)
+        val item = ItemStack(powerUpItem.material, powerUpItem.amount)
         val itemMeta = item.itemMeta
-        itemMeta.displayName(sideItem.displayName)
+        itemMeta.displayName(powerUpItem.displayName)
         item.itemMeta = itemMeta
 
         val dropItemRed = game.locationManager.getRedItemSpawn().world.dropItem(game.locationManager.getRedItemSpawn(), item)
         dropItemRed.velocity = Vector(0.0, 0.25, 0.0)
         dropItemRed.location.world.spawnParticle(Particle.END_ROD, dropItemRed.location, 25, 0.0, 0.0, 0.0, 0.05)
-        dropItemRed.customName(sideItem.displayName)
+        dropItemRed.customName(powerUpItem.displayName)
         dropItemRed.isCustomNameVisible = true
         dropItemRed.isGlowing = true
 
         val dropItemBlue = game.locationManager.getBlueItemSpawn().world.dropItem(game.locationManager.getBlueItemSpawn(), item)
         dropItemBlue.velocity = Vector(0.0, 0.25, 0.0)
         dropItemBlue.location.world.spawnParticle(Particle.END_ROD, dropItemBlue.location, 25, 0.0, 0.0, 0.0, 0.05)
-        dropItemBlue.customName(sideItem.displayName)
+        dropItemBlue.customName(powerUpItem.displayName)
         dropItemBlue.isCustomNameVisible = true
         dropItemBlue.isGlowing = true
 
@@ -107,7 +108,7 @@ class ItemManager(private val game : Game) {
     fun givePlayerKit(player : Player) {
         val mainWeapon = ItemStack(Material.STONE_SWORD, 1)
         val mainWeaponMeta: ItemMeta = mainWeapon.itemMeta
-        mainWeaponMeta.displayName(Component.text("Combat Sword").color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
+        mainWeaponMeta.displayName(Component.text("Swiss Sword").color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
         mainWeaponMeta.isUnbreakable = true
         mainWeaponMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES)
         mainWeapon.itemMeta = mainWeaponMeta
@@ -115,7 +116,7 @@ class ItemManager(private val game : Game) {
 
         val subWeapon = ItemStack(Material.BOW, 1)
         val subWeaponMeta: ItemMeta = subWeapon.itemMeta
-        subWeaponMeta.displayName(Component.text("Combat Bow").color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
+        subWeaponMeta.displayName(Component.text("Stilton Sniper").color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
         subWeaponMeta.isUnbreakable = true
         subWeaponMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES)
         subWeapon.itemMeta = subWeaponMeta
@@ -123,7 +124,7 @@ class ItemManager(private val game : Game) {
 
         val cheeseCollector = ItemStack(Material.WOODEN_PICKAXE, 1)
         val cheeseCollectorMeta: ItemMeta = cheeseCollector.itemMeta
-        cheeseCollectorMeta.displayName(Component.text("Cheese Collector").color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false))
+        cheeseCollectorMeta.displayName(Component.text("Gouda Gatherer").color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false))
         cheeseCollectorMeta.isUnbreakable = true
         cheeseCollectorMeta.setDestroyableKeys(Collections.singletonList(Material.SPONGE.key) as Collection<Namespaced>)
         cheeseCollectorMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_DESTROYS)
@@ -169,15 +170,107 @@ class ItemManager(private val game : Game) {
         }
     }
 
-    fun getRandomItem() : SideItem {
+    fun useItem(item : PowerUpItem, player : Player) {
+        if(item != PowerUpItem.THROWABLE_TNT) {
+            decrementItemInHand(player, item)
+            player.playSound(player.location, Sounds.Item.USE_ITEM, 1.0f, 1.0f)
+            player.sendMessage(item.consumeMessage)
+        }
+
+        when(item) {
+            PowerUpItem.RESURRECTION_CHARM -> {
+                player.playEffect(EntityEffect.TOTEM_RESURRECT)
+                player.health = 8.0
+                player.addPotionEffect(PotionEffect(PotionEffectType.REGENERATION, 60, 2,false, false))
+                resurrectFirework(player)
+                escapeToTeamBase(player)
+                player.playSound(player.location, Sounds.Respawn.RESPAWN, 1.0f, 1.0f)
+            }
+            PowerUpItem.THROWABLE_TNT -> {
+                if(game.cooldownManager.attemptUseTNT(player)) {
+                    decrementItemInHand(player, item)
+                    player.playSound(player.location, Sounds.Item.USE_ITEM, 1.0f, 1.0f)
+                    player.sendMessage(item.consumeMessage)
+                    val tnt = player.world.spawn(player.location, TNTPrimed::class.java)
+                    tnt.source = player
+                    val tntVelocity = player.location.direction.multiply(1.4)
+                    tnt.velocity = tntVelocity
+                }
+            }
+            PowerUpItem.INVISIBILITY_CHARM -> {
+                player.addPotionEffect(PotionEffect(PotionEffectType.INVISIBILITY, 200, 0, false, false))
+            }
+            PowerUpItem.SPEED_CHARM -> {
+                player.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 80, 2, false, false))
+            }
+            PowerUpItem.ESCAPE_CHARM -> {
+                escapeToTeamBase(player)
+                player.playSound(player.location, Sounds.Item.ESCAPE, 1.0f, 1.0f)
+            }
+            PowerUpItem.HASTE_CHARM -> {
+                player.addPotionEffect(PotionEffect(PotionEffectType.FAST_DIGGING, 160, 4, false, false))
+            }
+        }
+    }
+
+    private fun escapeToTeamBase(player : Player) {
+        when(game.teamManager.getPlayerTeam(player.uniqueId)) {
+            Teams.RED -> {
+                player.teleport(game.locationManager.getRedEscapeLoc())
+                val velocity = Vector(1.1, 1.45, 0.0)
+                player.velocity = velocity
+            }
+            Teams.BLUE -> {
+                player.teleport(game.locationManager.getBlueEscapeLoc())
+                val velocity = Vector(-1.1, 1.45, 0.0)
+                player.velocity = velocity
+            }
+            Teams.SPECTATOR -> {
+                player.teleport(game.locationManager.getArenaCentre())
+            }
+        }
+    }
+
+    private fun resurrectFirework(player : Player) {
+        val playerLoc = Location(player.world, player.location.x, player.location.y + 1.0, player.location.z)
+        val f: Firework = player.world.spawn(playerLoc, Firework::class.java)
+        val fm = f.fireworkMeta
+        fm.addEffect(
+            FireworkEffect.builder()
+                .flicker(false)
+                .trail(false)
+                .with(FireworkEffect.Type.BALL)
+                .withColor(Color.fromRGB(255, 85, 255))
+                .build()
+        )
+        fm.power = 0
+        f.fireworkMeta = fm
+        f.ticksToDetonate = 1
+    }
+
+    private fun decrementItemInHand(player : Player, item : PowerUpItem) {
+        if(item == PowerUpItem.RESURRECTION_CHARM) {
+            player.inventory.setItemInOffHand(null)
+        } else {
+            if(player.inventory.itemInMainHand.amount > 1) {
+                player.inventory.itemInMainHand.amount--
+            } else {
+                player.inventory.setItemInMainHand(null)
+            }
+        }
+    }
+
+    fun getRandomItem() : PowerUpItem {
         val random = Random()
-        return SideItem.values()[random.nextInt(SideItem.values().size)]
+        return PowerUpItem.values()[random.nextInt(PowerUpItem.values().size)]
     }
 }
 
-@Suppress("unused")
-enum class SideItem(val material : Material, val amount : Int, val displayName : Component) {
-    RESURRECTION_CHARM(Material.TOTEM_OF_UNDYING, 1, Component.text("Charm of Resurrection", NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false)),
-    THROWABLE_TNT(Material.TNT, 2, Component.text("Throwing TNT", NamedTextColor.RED).decoration(TextDecoration.ITALIC, false)),
-    INVISIBILITY_CLOAK(Material.GRAY_DYE, 1, Component.text("Invisibili-brie Charm", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
+enum class PowerUpItem(val material : Material, val amount : Int, val displayName : Component, val consumeMessage : Component) {
+    RESURRECTION_CHARM(Material.TOTEM_OF_UNDYING, 1, Component.text("Resurrection Charm", NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false), Component.text("[").append(Component.text("▶", NamedTextColor.YELLOW)).append(Component.text("] ")).append(Component.text("Your Resurrection charm saved you from death!", NamedTextColor.LIGHT_PURPLE))),
+    THROWABLE_TNT(Material.TNT, 2, Component.text("Throwing TNT", NamedTextColor.RED).decoration(TextDecoration.ITALIC, false), Component.text("[").append(Component.text("▶", NamedTextColor.YELLOW)).append(Component.text("] ")).append(Component.text("You used a Throwing TNT!", NamedTextColor.GREEN))),
+    INVISIBILITY_CHARM(Material.GRAY_DYE, 1, Component.text("Invisibili-brie Charm", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false), Component.text("[").append(Component.text("▶", NamedTextColor.YELLOW)).append(Component.text("] ")).append(Component.text("Your Invisibili-brie charm granted you invisibility for 10 seconds!", NamedTextColor.GREEN))),
+    SPEED_CHARM(Material.LIGHT_BLUE_DYE, 1, Component.text("Parma-zoom Charm", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false), Component.text("[").append(Component.text("▶", NamedTextColor.YELLOW)).append(Component.text("] ")).append(Component.text("Your Parma-zoom charm granted you speed for 4 seconds!", NamedTextColor.GREEN))),
+    ESCAPE_CHARM(Material.FEATHER, 1, Component.text("Escape Charm", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false), Component.text("[").append(Component.text("▶", NamedTextColor.YELLOW)).append(Component.text("] ")).append(Component.text("Your Escape charm sent you back to your base!", NamedTextColor.GREEN))),
+    HASTE_CHARM(Material.ORANGE_DYE, 1, Component.text("Hallou-mine Charm", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false), Component.text("[").append(Component.text("▶", NamedTextColor.YELLOW)).append(Component.text("] ")).append(Component.text("Your Hallou-mine charm granted you haste for 8 seconds!", NamedTextColor.GREEN)))
 }

@@ -4,7 +4,7 @@ import me.byrt.cheesehunt.Main
 import me.byrt.cheesehunt.state.GameState
 import me.byrt.cheesehunt.state.Teams
 import me.byrt.cheesehunt.util.DevStatus
-import me.byrt.cheesehunt.manager.SideItem
+import me.byrt.cheesehunt.manager.PowerUpItem
 
 import cloud.commandframework.annotations.Argument
 import cloud.commandframework.annotations.CommandDescription
@@ -14,6 +14,7 @@ import cloud.commandframework.annotations.CommandPermission
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 
+import org.bukkit.Location
 import org.bukkit.entity.Player
 
 @Suppress("unused")
@@ -30,7 +31,7 @@ class DebugCommands : BaseCommand {
     @CommandDescription("Debug command to force set game state.")
     @CommandPermission("cheesehunt.debug")
     fun debugForceState(sender : Player, @Argument("state") state : GameState) {
-        Main.getGame().dev.parseDevMessage("Game state updated to $state by ${sender.name}.", DevStatus.WARNING)
+        Main.getGame().dev.parseDevMessage("Game state updated to $state by ${sender.name}.", DevStatus.SEVERE)
         Main.getGame().gameManager.forceState(state)
     }
 
@@ -38,7 +39,7 @@ class DebugCommands : BaseCommand {
     @CommandDescription("Debug command to force stop respawn loops.")
     @CommandPermission("cheesehunt.debug")
     fun debugStopRespawn(sender : Player, @Argument("player") player : Player) {
-        Main.getGame().dev.parseDevMessage("${player.name}'s respawn loop force stopped by ${sender.name}.", DevStatus.WARNING)
+        Main.getGame().dev.parseDevMessage("${player.name}'s respawn loop force stopped by ${sender.name}.", DevStatus.SEVERE)
         Main.getGame().respawnTask.stopRespawnLoop(player)
     }
 
@@ -47,6 +48,7 @@ class DebugCommands : BaseCommand {
     @CommandPermission("cheesehunt.debug")
     fun debugWinShow(sender : Player, @Argument("team") team : Teams) {
         Main.getGame().dev.parseDevMessage("Win show ran for $team team by ${sender.name}.", DevStatus.INFO)
+        Main.getGame().winShowTask.stopWinShowLoop()
         Main.getGame().winShowTask.startWinShowLoop(Main.getPlugin(), team)
     }
 
@@ -55,9 +57,7 @@ class DebugCommands : BaseCommand {
     @CommandPermission("cheesehunt.debug")
     fun debugGiveCheese(sender : Player, @Argument("player") player: Player) {
         Main.getGame().dev.parseDevMessage("${sender.name} gave ${player.name} cheese.", DevStatus.WARNING)
-        Main.getGame().cheeseManager.setPlayerHasCheese(player, true)
-        Main.getGame().cheeseManager.startHasCheeseLoop(player)
-        player.inventory.addItem(Main.getGame().itemManager.getCheeseItem(Main.getGame().teamManager.getPlayerTeam(player.uniqueId)))
+        Main.getGame().cheeseManager.playerPickupCheese(player, Location(player.world, 1000.0, 319.0, 1000.0))
     }
 
     @CommandMethod("debug cheese remove <player>")
@@ -66,7 +66,6 @@ class DebugCommands : BaseCommand {
     fun debugRemoveCheese(sender : Player, @Argument("player") player: Player) {
         Main.getGame().dev.parseDevMessage("${sender.name} removed ${player.name}'s cheese.", DevStatus.WARNING)
         Main.getGame().cheeseManager.playerDropCheese(player)
-        Main.getGame().cheeseManager.setPlayerHasCheese(player, false)
     }
 
     @CommandMethod("debug skull <player>")
@@ -76,11 +75,11 @@ class DebugCommands : BaseCommand {
         sender.sendMessage(Component.text("\uD001 ", NamedTextColor.WHITE).append(Component.text("This is ${player.name}'s head:", NamedTextColor.YELLOW).append(Component.score("%NCPH%${player.uniqueId},false,0,0,1.0", "").color(NamedTextColor.WHITE)).append(Component.text("!", NamedTextColor.YELLOW))))
     }
 
-    @CommandMethod("debug item_spawns <item>")
+    @CommandMethod("debug spawn_item <item>")
     @CommandDescription("Debug command to test item spawns.")
     @CommandPermission("cheesehunt.debug")
-    fun debugTestSkulls(sender : Player, @Argument("item") sideItem: SideItem) {
-        Main.getGame().dev.parseDevMessage("$sideItem items spawned on map sides by ${sender.name}.", DevStatus.WARNING)
-        Main.getGame().itemManager.spawnSideItems(sideItem)
+    fun debugTestSkulls(sender : Player, @Argument("item") powerUpItem: PowerUpItem) {
+        Main.getGame().dev.parseDevMessage("$powerUpItem items spawned on map sides by ${sender.name}.", DevStatus.WARNING)
+        Main.getGame().itemManager.spawnSideItems(powerUpItem)
     }
 }

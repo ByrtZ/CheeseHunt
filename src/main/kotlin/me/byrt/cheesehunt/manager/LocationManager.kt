@@ -19,8 +19,8 @@ class LocationManager(private val game : Game) {
     private val spawn = Location(Main.getPlugin().server.getWorld("Cheese"), 0.5, -52.0 ,0.5, 0.0f, 0.0f)
     private val arenaCentre = Location(Main.getPlugin().server.getWorld("Cheese"), 1000.5, 0.0, 1000.5, 0.0f, 0.0f)
 
-    private val redResurrectLoc = Location(Main.getPlugin().server.getWorld("Cheese"), 961.5, 7.0, 1000.5, -90.0f, 0.0f)
-    private val blueResurrectLoc = Location(Main.getPlugin().server.getWorld("Cheese"), 1039.5, 7.0, 1000.5, 90.0f, 0.0f)
+    private val redEscapeLoc = Location(Main.getPlugin().server.getWorld("Cheese"), 961.5, 7.0, 1000.5, -90.0f, 0.0f)
+    private val blueEscapeLoc = Location(Main.getPlugin().server.getWorld("Cheese"), 1039.5, 7.0, 1000.5, 90.0f, 0.0f)
 
     private val itemSpawnLeftRed = Location(Main.getPlugin().server.getWorld("Cheese"), 1000.5, 1.0, 968.5, 90.0f, 0.0f)
     private val itemSpawnLeftBlue = Location(Main.getPlugin().server.getWorld("Cheese"), 1000.5, 1.0, 1032.5, 90.0f, 0.0f)
@@ -116,12 +116,12 @@ class LocationManager(private val game : Game) {
         return arenaCentre
     }
 
-    fun getRedResurrectLoc() : Location {
-        return redResurrectLoc
+    fun getRedEscapeLoc() : Location {
+        return redEscapeLoc
     }
 
-    fun getBlueResurrectLoc() : Location {
-        return blueResurrectLoc
+    fun getBlueEscapeLoc() : Location {
+        return blueEscapeLoc
     }
 
     fun getRedItemSpawn() : Location {

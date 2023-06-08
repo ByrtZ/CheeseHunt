@@ -113,12 +113,12 @@ class StatisticsManager(private val game : Game) {
                         if(game.teamManager.isInRedTeam(uuid)) {
                             player.sendMessage(Component.text("$i. ")
                                 .append(Component.text("${Bukkit.getPlayer(uuid)?.player?.name}", NamedTextColor.RED)
-                                .append(Component.text(" eliminated players $eliminations times.", NamedTextColor.WHITE))))
+                                .append(Component.text(" eliminated players $eliminations time${if(eliminations > 1) "s" else ""}.", NamedTextColor.WHITE))))
                         }
                         if(game.teamManager.isInBlueTeam(uuid)) {
                             player.sendMessage(Component.text("$i. ")
                                 .append(Component.text("${Bukkit.getPlayer(uuid)?.player?.name}", NamedTextColor.BLUE)
-                                .append(Component.text(" eliminated players $eliminations times.", NamedTextColor.WHITE))))
+                                .append(Component.text(" eliminated players $eliminations time${if(eliminations > 1) "s" else ""}.", NamedTextColor.WHITE))))
                         }
                     }
                     i++
@@ -130,12 +130,12 @@ class StatisticsManager(private val game : Game) {
                         if(game.teamManager.isInRedTeam(uuid)) {
                             player.sendMessage(Component.text("$i. ")
                                 .append(Component.text("${Bukkit.getPlayer(uuid)?.player?.name}", NamedTextColor.RED)
-                                .append(Component.text(" died $deaths times.", NamedTextColor.WHITE))))
+                                .append(Component.text(" died $deaths time${if(deaths > 1) "s" else ""}.", NamedTextColor.WHITE))))
                         }
                         if(game.teamManager.isInBlueTeam(uuid)) {
                             player.sendMessage(Component.text("$i. ")
                                 .append(Component.text("${Bukkit.getPlayer(uuid)?.player?.name}", NamedTextColor.BLUE)
-                                .append(Component.text(" died $deaths times.", NamedTextColor.WHITE))))
+                                .append(Component.text(" died $deaths time${if(deaths > 1) "s" else ""}.", NamedTextColor.WHITE))))
                         }
                     }
                     i++

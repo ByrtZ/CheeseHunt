@@ -62,10 +62,10 @@ class PlayerManager(private var game : Game) {
         player.inventory.remove(Material.STONE_SWORD)
         player.inventory.remove(Material.BOW)
         player.inventory.remove(Material.ARROW)
-        player.inventory.remove(Material.TOTEM_OF_UNDYING)
-        player.inventory.remove(Material.TNT)
-        player.inventory.remove(Material.GRAY_DYE)
         player.inventory.setItemInOffHand(null)
+        for(item in PowerUpItem.values()) {
+            player.inventory.remove(item.material)
+        }
     }
 
     fun clearNonCheeseItems() {
@@ -78,10 +78,10 @@ class PlayerManager(private var game : Game) {
         player.inventory.remove(Material.BOW)
         player.inventory.remove(Material.ARROW)
         player.inventory.remove(Material.WOODEN_PICKAXE)
-        player.inventory.remove(Material.TOTEM_OF_UNDYING)
-        player.inventory.remove(Material.TNT)
-        player.inventory.remove(Material.GRAY_DYE)
         player.inventory.setItemInOffHand(null)
+        for(item in PowerUpItem.values()) {
+            player.inventory.remove(item.material)
+        }
     }
 
     private fun clearAllItems() {

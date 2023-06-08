@@ -53,6 +53,7 @@ class Sounds(private val game : Game) {
     object Item {
         const val USE_ITEM = "entity.ender_eye.death"
         const val PICKUP_ITEM = "entity.item.pickup"
+        const val ESCAPE = "entity.bat.takeoff"
     }
     object Tutorial {
         const val TUTORIAL_POP = "entity.item.pickup"

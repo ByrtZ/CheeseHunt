@@ -2,8 +2,9 @@ package me.byrt.cheesehunt
 
 import me.byrt.cheesehunt.command.BaseCommand
 import me.byrt.cheesehunt.manager.Game
-import me.byrt.cheesehunt.manager.WhitelistGroup
 import me.byrt.cheesehunt.manager.Maps
+import me.byrt.cheesehunt.manager.WhitelistGroup
+import me.byrt.cheesehunt.plugin.PluginMessenger
 
 import cloud.commandframework.annotations.AnnotationParser
 import cloud.commandframework.execution.CommandExecutionCoordinator
@@ -20,6 +21,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.event.Listener
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.plugin.messaging.Messenger
 
 import org.reflections.Reflections
 
@@ -28,6 +30,7 @@ import java.util.concurrent.TimeUnit
 import java.util.function.Consumer
 
 private lateinit var game : Game
+private lateinit var messenger : Messenger
 
 @Suppress("unused")
 class Main : JavaPlugin() {
@@ -38,6 +41,7 @@ class Main : JavaPlugin() {
         setupCommands()
         setupEventListeners()
         setupConfigs()
+        setupPluginMessageListener()
     }
 
     override fun onDisable() {
@@ -130,6 +134,11 @@ class Main : JavaPlugin() {
         )
     }
 
+    private fun setupPluginMessageListener() {
+        messenger = Bukkit.getMessenger()
+        messenger.registerIncomingPluginChannel(this, "minecraft:brand", PluginMessenger())
+    }
+
     private fun setupConfigs() {
         game.configManager.setup()
         game.whitelistManager.setWhitelist(WhitelistGroup.ADMIN)
@@ -139,5 +148,6 @@ class Main : JavaPlugin() {
     companion object {
         fun getPlugin(): Plugin { return Bukkit.getPluginManager().getPlugin("CheeseHunt") as Plugin }
         fun getGame(): Game { return game }
+        fun getMessenger(): Messenger { return messenger }
     }
 }

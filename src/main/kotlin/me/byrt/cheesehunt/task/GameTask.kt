@@ -40,7 +40,7 @@ class GameTask(private var game: Game) {
                 game.infoBoardManager.updateScoreboardTimer(displayTime, previousDisplayTime, game.gameManager.getGameState())
 
                 // Game/round starting front end
-                if (game.gameManager.getGameState() == GameState.STARTING && game.timerManager.getTimerState() == TimerState.ACTIVE) {
+                if(game.gameManager.getGameState() == GameState.STARTING && game.timerManager.getTimerState() == TimerState.ACTIVE) {
                     if(game.roundManager.getRoundState() == RoundState.ONE) { // Game tutorial
                         if(timeLeft == 75) {
                             for(player in Bukkit.getOnlinePlayers()) {
@@ -143,8 +143,8 @@ class GameTask(private var game: Game) {
                                 )
                             }
                         }
-                        if (timeLeft in 4..10) {
-                            for (player in Bukkit.getOnlinePlayers()) {
+                        if(timeLeft in 4..10) {
+                            for(player in Bukkit.getOnlinePlayers()) {
                                 player.showTitle(Title.title(
                                     Component.text("Starting in").color(NamedTextColor.AQUA),
                                     Component.text("►$timeLeft◄").decoration(TextDecoration.BOLD, true),
@@ -158,10 +158,10 @@ class GameTask(private var game: Game) {
                                 player.playSound(player.location, Sounds.Timer.STARTING_TICK, 0.75f, 1f)
                             }
                         }
-                        if (timeLeft == 3 || timeLeft == 2 || timeLeft == 1) {
-                            for (player in Bukkit.getOnlinePlayers()) {
+                        if(timeLeft == 3 || timeLeft == 2 || timeLeft == 1) {
+                            for(player in Bukkit.getOnlinePlayers()) {
                                 player.playSound(player.location, Sounds.Timer.STARTING_TICK_FINAL, 1f, 1f)
-                                if (timeLeft == 3) {
+                                if(timeLeft == 3) {
                                     player.showTitle(Title.title(
                                         Component.text("Starting in").color(NamedTextColor.AQUA),
                                         Component.text("►$timeLeft◄").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true),
@@ -173,7 +173,7 @@ class GameTask(private var game: Game) {
                                     )
                                     )
                                 }
-                                if (timeLeft == 2) {
+                                if(timeLeft == 2) {
                                     player.showTitle(Title.title(
                                         Component.text("Starting in").color(NamedTextColor.AQUA),
                                         Component.text("►$timeLeft◄").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, true),
@@ -185,7 +185,7 @@ class GameTask(private var game: Game) {
                                     )
                                     )
                                 }
-                                if (timeLeft == 1) {
+                                if(timeLeft == 1) {
                                     player.showTitle(Title.title(
                                         Component.text("Starting in").color(NamedTextColor.AQUA),
                                         Component.text("►$timeLeft◄").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true),
@@ -200,7 +200,7 @@ class GameTask(private var game: Game) {
                             }
                         }
                     }
-                    if (timeLeft <= 0) {
+                    if(timeLeft <= 0) {
                         game.gameManager.nextState()
                     }
                 }
@@ -233,18 +233,18 @@ class GameTask(private var game: Game) {
                         }
                     }
                     if(timeLeft in 11..30 || timeLeft % 60 == 0) {
-                        for (player in Bukkit.getOnlinePlayers()) {
+                        for(player in Bukkit.getOnlinePlayers()) {
                             player.playSound(player.location, Sounds.Timer.CLOCK_TICK, 0.75f, 1f)
                         }
                         if(timeLeft == 28) {
-                            for (player in Bukkit.getOnlinePlayers()) {
+                            for(player in Bukkit.getOnlinePlayers()) {
                                 Main.getGame().musicTask.stopMusicLoop(player, Music.MAIN)
                                 Main.getGame().musicTask.startMusicLoop(player, Main.getPlugin(), Music.OVERTIME)
                             }
                         }
                     }
                     if(timeLeft in 0..10) {
-                        for (player in Bukkit.getOnlinePlayers()) {
+                        for(player in Bukkit.getOnlinePlayers()) {
                             player.playSound(player.location, Sounds.Timer.CLOCK_TICK_HIGH, 0.75f, 2f)
                         }
                     }
@@ -263,12 +263,12 @@ class GameTask(private var game: Game) {
 
                 if(game.gameManager.getGameState() == GameState.OVERTIME && game.timerManager.getTimerState() == TimerState.ACTIVE) {
                     if(timeLeft in 11..30 || timeLeft % 60 == 0) {
-                        for (player in Bukkit.getOnlinePlayers()) {
+                        for(player in Bukkit.getOnlinePlayers()) {
                             player.playSound(player.location, Sounds.Timer.CLOCK_TICK, 0.75f, 1f)
                         }
                     }
                     if(timeLeft in 0..10) {
-                        for (player in Bukkit.getOnlinePlayers()) {
+                        for(player in Bukkit.getOnlinePlayers()) {
                             player.playSound(player.location, Sounds.Timer.CLOCK_TICK_HIGH, 0.75f, 2f)
                         }
                     }
@@ -278,29 +278,19 @@ class GameTask(private var game: Game) {
                 }
 
                 // Round ending front end
-                if (timeLeft <= 0 && game.gameManager.getGameState() == GameState.IN_GAME && game.timerManager.getTimerState() == TimerState.ACTIVE && !game.gameManager.isOvertimeActive() || timeLeft <= 0 && game.gameManager.getGameState() == GameState.OVERTIME && game.timerManager.getTimerState() == TimerState.ACTIVE) {
+                if(timeLeft <= 0 && game.gameManager.getGameState() == GameState.IN_GAME && game.timerManager.getTimerState() == TimerState.ACTIVE && !game.gameManager.isOvertimeActive() || timeLeft <= 0 && game.gameManager.getGameState() == GameState.OVERTIME && game.timerManager.getTimerState() == TimerState.ACTIVE) {
                     game.gameManager.nextState()
                 }
 
                 // Game end cycle
-                if (game.gameManager.getGameState() == GameState.GAME_END && game.timerManager.getTimerState() == TimerState.ACTIVE) {
+                if(game.gameManager.getGameState() == GameState.GAME_END && game.timerManager.getTimerState() == TimerState.ACTIVE) {
                     if(timeLeft == 25) {
                         for(player in Bukkit.getOnlinePlayers()) {
                             player.sendMessage(Component.text("\nTeam Placements:", NamedTextColor.WHITE, TextDecoration.BOLD))
                         }
                     }
                     if(timeLeft == 23) {
-                        for(player in Bukkit.getOnlinePlayers()) {
-                            player.sendMessage(Component.text("Red Team", NamedTextColor.RED)
-                                .append(Component.text(": ${game.scoreManager.getRedScore()} ", NamedTextColor.WHITE))
-                                .append(Component.text("coins", NamedTextColor.GOLD))
-                                .append(Component.text(".", NamedTextColor.WHITE)))
-                            player.sendMessage(Component.text("Blue Team", NamedTextColor.BLUE)
-                                .append(Component.text(": ${game.scoreManager.getBlueScore()} ", NamedTextColor.WHITE))
-                                .append(Component.text("coins", NamedTextColor.GOLD))
-                                .append(Component.text(".", NamedTextColor.WHITE)))
-                        }
-                        game.scoreManager.winCheck()
+                        game.scoreManager.teamPlacements()
                     }
                     if(timeLeft == 20) {
                         for(player in Bukkit.getOnlinePlayers()) {
@@ -334,13 +324,13 @@ class GameTask(private var game: Game) {
                     if(timeLeft == 3) {
                         game.statsManager.statsBreakdown(Statistic.DEATHS)
                     }
-                    if (timeLeft <= 0) {
+                    if(timeLeft <= 0) {
                         game.gameManager.nextState()
                         cancelGameTask()
                     }
                 }
                 // Decrement timer by 1 if timer is active
-                if (game.timerManager.getTimerState() == TimerState.ACTIVE) {
+                if(game.timerManager.getTimerState() == TimerState.ACTIVE) {
                     timeLeft--
                 }
             }

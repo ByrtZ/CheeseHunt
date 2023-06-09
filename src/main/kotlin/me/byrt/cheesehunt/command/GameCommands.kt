@@ -41,7 +41,6 @@ class GameCommands : BaseCommand {
                     player.sendMessage(Component.text("\nA Cheese Hunt game is starting!\n").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
                     player.playSound(startGameSuccessSound)
                 }
-                Main.getGame().scoreManager.setNewRandomMultiplierMinute()
                 Main.getGame().startGame()
             } else {
                 sender.sendMessage(Component.text("There are not enough players on teams to start a Cheese Hunt game.").color(NamedTextColor.RED))
@@ -62,13 +61,12 @@ class GameCommands : BaseCommand {
     @Confirmation
     fun forceStartGame(sender : Player) {
         if(Main.getGame().gameManager.getGameState() == GameState.IDLE) {
-            Main.getGame().dev.parseDevMessage("${sender.name} forcefully started a Cheese Hunt game!", DevStatus.INFO_SUCCESS)
+            Main.getGame().dev.parseDevMessage("${sender.name} forcefully started a Cheese Hunt game!", DevStatus.WARNING)
             Main.getGame().startGame()
             for(player in Bukkit.getOnlinePlayers()) {
                 player.sendMessage(Component.text("\nA Cheese Hunt game is starting!\n").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
                 player.playSound(startGameSuccessSound)
             }
-            Main.getGame().scoreManager.setNewRandomMultiplierMinute()
         } else {
             sender.sendMessage(Component.text("Game already running or restart required.").color(NamedTextColor.RED))
             sender.playSound(startGameFailSound)
@@ -82,7 +80,7 @@ class GameCommands : BaseCommand {
     fun forceStopGame(sender : Player) {
         if(Main.getGame().gameManager.getGameState() != GameState.IDLE) {
             if(Main.getGame().gameManager.getGameState() != GameState.GAME_END) {
-                Main.getGame().dev.parseDevMessage("${sender.name} force stopped the current Cheese Hunt game.", DevStatus.INFO_SUCCESS)
+                Main.getGame().dev.parseDevMessage("${sender.name} force stopped the current Cheese Hunt game.", DevStatus.WARNING)
                 Main.getGame().stopGame()
             } else {
                 sender.sendMessage(Component.text("Game currently ending.").color(NamedTextColor.RED))

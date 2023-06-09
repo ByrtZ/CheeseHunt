@@ -31,7 +31,21 @@ class ScoreManager(private val game : Game) {
     private var multiplier = 1
     private var multiplierMinute = 0
 
-    fun winCheck() {
+    fun teamPlacements() {
+        for(player in Bukkit.getOnlinePlayers()) {
+            player.sendMessage(Component.text("Red Team", NamedTextColor.RED, TextDecoration.BOLD)
+                .append(Component.text(": $redScore ", NamedTextColor.WHITE).decoration(TextDecoration.BOLD, false))
+                .append(Component.text("coins", NamedTextColor.GOLD))
+                .append(Component.text(".", NamedTextColor.WHITE)))
+            player.sendMessage(Component.text("Blue Team", NamedTextColor.BLUE, TextDecoration.BOLD)
+                .append(Component.text(": $blueScore ", NamedTextColor.WHITE).decoration(TextDecoration.BOLD, false))
+                .append(Component.text("coins", NamedTextColor.GOLD))
+                .append(Component.text(".", NamedTextColor.WHITE)))
+        }
+        winCheck()
+    }
+
+    private fun winCheck() {
         if(redScore > blueScore) {
             game.teamManager.redWinGame()
             game.winShowTask.startWinShowLoop(game.plugin, Teams.RED)

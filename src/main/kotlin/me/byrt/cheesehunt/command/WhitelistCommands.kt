@@ -163,7 +163,7 @@ class WhitelistCommands : BaseCommand {
     @CommandPermission("cheesehunt.whitelist.list")
     fun whitelistList(sender : Player) {
         try {
-            sender.sendMessage(Component.text("Current whitelisted group: ${Main.getGame().whitelistManager.getWhitelistedGroup()}.", NamedTextColor.GOLD)
+            sender.sendMessage(Component.text("Current whitelisted group: ${Main.getGame().whitelistManager.getWhitelistedGroup()}\n", NamedTextColor.GOLD)
                 .append(Component.text("Players: ${Main.getGame().configManager.getWhitelistConfig().getStringList("group.${Main.getGame().whitelistManager.getWhitelistedGroup().toString().lowercase()}")}", NamedTextColor.YELLOW)))
 
         } catch (e : Exception) {

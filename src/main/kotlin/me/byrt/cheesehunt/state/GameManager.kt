@@ -108,6 +108,7 @@ class GameManager(private val game : Game) {
         game.blockManager.resetAllBlocks()
         game.teamManager.hideDisplayTeamNames()
         game.itemManager.clearFloorItems()
+        game.scoreManager.setNewRandomMultiplierMinute()
     }
 
     private fun startOvertime() {

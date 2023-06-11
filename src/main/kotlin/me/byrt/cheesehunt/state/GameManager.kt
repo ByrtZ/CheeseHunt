@@ -77,7 +77,7 @@ class GameManager(private val game : Game) {
             }
             GameState.OVERTIME -> {
                 game.timerManager.setTimerState(TimerState.ACTIVE)
-                game.gameTask.setTimeLeft(30, null)
+                game.gameTask.setTimeLeft(60, null)
                 startOvertime()
             }
         }
@@ -113,7 +113,7 @@ class GameManager(private val game : Game) {
 
     private fun startOvertime() {
         game.playerManager.clearWeapons()
-        game.blockManager.placeFullCheeseSquare()
+        game.blockManager.placeCheeseCube()
         game.itemManager.clearFloorItems()
         for(player in Bukkit.getOnlinePlayers()) {
             player.playSound(player.location, Sounds.Alert.OVERTIME_ALERT, 0.5f, 1.25f)
@@ -134,7 +134,7 @@ class GameManager(private val game : Game) {
                     .append(Component.text("OVERTIME: ", NamedTextColor.RED, TextDecoration.BOLD))
                     .append(Component.text("You can now ", NamedTextColor.WHITE))
                     .append(Component.text("ONLY", NamedTextColor.WHITE, TextDecoration.BOLD))
-                    .append(Component.text(" gather Cheese, 30 seconds remain!\n")
+                    .append(Component.text(" gather Cheese, 1 minute remains!\n")
                 )
             )
         }

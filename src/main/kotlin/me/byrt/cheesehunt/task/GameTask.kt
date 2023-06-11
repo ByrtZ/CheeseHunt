@@ -61,7 +61,7 @@ class GameTask(private var game: Game) {
                                 player.playSound(player.location, Sounds.Tutorial.TUTORIAL_POP, 1f, 1f)
                                 player.sendMessage(Component.text("-----------------------------------------------------\n\n").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
                                     .append(Component.text("  Welcome to Cheese Hunt!\n\n").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.STRIKETHROUGH, false)
-                                        .append(Component.text("      Here's how to play...").color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, true).decoration(TextDecoration.BOLD, false)
+                                        .append(Component.text("        Here's how to play...").color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, true).decoration(TextDecoration.BOLD, false)
                                             .append(Component.text("\n\n\n\n\n")
                                                 .append(Component.text("-----------------------------------------------------").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
                                                 )
@@ -77,9 +77,9 @@ class GameTask(private var game: Game) {
                                 player.sendMessage(Component.text("-----------------------------------------------------").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
                                     .append(Component.text(" Game:\n").color(NamedTextColor.WHITE).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.STRIKETHROUGH, false)
                                         .append(Component.text(" • Cheese Hunt is a team based, PvP and collection game.\n").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, false)
-                                            .append(Component.text(" • Your goal is to hunt and collect Cheese.\n").color(NamedTextColor.WHITE)
+                                            .append(Component.text(" • Your goal is to collect Cheese and place it in your team's base.\n").color(NamedTextColor.WHITE)
                                                 .append(Component.text(" • Cheese drops are placed in the centre every 2 minutes.\n").color(NamedTextColor.WHITE)
-                                                    .append(Component.text(" • Cheese is counted in team bases every 3 minutes.\n\n\n\n").color(NamedTextColor.WHITE)
+                                                    .append(Component.text(" • Cheese is counted in team bases every 3 minutes.\n\n\n").color(NamedTextColor.WHITE)
                                                         .append(Component.text("-----------------------------------------------------").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
                                                         )
                                                     )
@@ -97,9 +97,11 @@ class GameTask(private var game: Game) {
                                     .append(Component.text(" Combat & Items:\n").color(NamedTextColor.WHITE).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.STRIKETHROUGH, false)
                                         .append(Component.text(" • Players are armed with melee and ranged weaponry.\n").color(NamedTextColor.WHITE).decoration(TextDecoration.BOLD, false)
                                             .append(Component.text(" • A pickaxe is also given specifically for cheese grabbing.\n").color(NamedTextColor.WHITE)
-                                                .append(Component.text(" • Arrows cannot be picked up.\n").color(NamedTextColor.RED)
-                                                    .append(Component.text("\n\n\n")
-                                                        .append(Component.text("-----------------------------------------------------").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
+                                                .append(Component.text(" • Arrows do not regenerate and are only granted on respawn.\n").color(NamedTextColor.RED)
+                                                    .append(Component.text(" • Special Items spawn on each side of the map periodically.\n").color(NamedTextColor.YELLOW)
+                                                        .append(Component.text(" • These items include throwable TNT and various effect granting charms.\n", NamedTextColor.LIGHT_PURPLE)
+                                                            .append(Component.text("-----------------------------------------------------").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
+                                                            )
                                                         )
                                                     )
                                                 )
@@ -114,9 +116,9 @@ class GameTask(private var game: Game) {
                                 player.playSound(player.location, Sounds.Tutorial.TUTORIAL_POP, 1f, 1f)
                                 player.sendMessage(Component.text("-----------------------------------------------------").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
                                     .append(Component.text(" Win Criteria & Extra Information:\n").color(NamedTextColor.WHITE).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.STRIKETHROUGH, false)
-                                        .append(Component.text(" • The team with the most coins at the end of the game will win.\n\n").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, false)
+                                        .append(Component.text(" • The team with the most coins at the end of the game will win.\n").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, false)
                                             .append(Component.text(" • A multiplier minute occurs for one minute randomly during the game.\n").color(NamedTextColor.YELLOW)
-                                                .append(Component.text(" • Overtime, is a final rush for Cheese at the end.\n").color(NamedTextColor.RED)
+                                                .append(Component.text(" • Overtime occurs at the end of the game where a final Cheese Drop is put into play and PvP is disabled.\n").color(NamedTextColor.RED)
                                                     .append(Component.text(" • Game Music is on the Voice/Speech slider.\n").color(NamedTextColor.LIGHT_PURPLE)
                                                         .append(Component.text("-----------------------------------------------------").color(NamedTextColor.GREEN).decoration(TextDecoration.STRIKETHROUGH, true)
                                                         )
@@ -209,12 +211,12 @@ class GameTask(private var game: Game) {
                 if(game.gameManager.getGameState() == GameState.IN_GAME && game.timerManager.getTimerState() == TimerState.ACTIVE) {
                     if(timeLeft % 120 == 0) {
                         if(timeLeft != 0) {
-                            game.blockManager.placeFullCheeseSquare()
+                            game.blockManager.placeCheeseSquare()
                         }
                     }
                     if(timeLeft % 180 == 0) {
                         if(timeLeft != 720) {
-                            game.cheeseManager.countCheeseInBases()
+                            game.cheeseManager.countCheeseInBases(false)
                         }
                     }
                     if(timeLeft % 25 == 0) {
@@ -273,7 +275,7 @@ class GameTask(private var game: Game) {
                         }
                     }
                     if(timeLeft <= 0) {
-                        game.cheeseManager.countCheeseInBases()
+                        game.cheeseManager.countCheeseInBases(false)
                     }
                 }
 

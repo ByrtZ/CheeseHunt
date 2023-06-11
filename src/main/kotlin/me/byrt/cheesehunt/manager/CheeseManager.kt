@@ -46,11 +46,12 @@ class CheeseManager(private val game : Game) {
         }
     }
 
-    fun countCheeseInBases() {
+    fun countCheeseInBases(isSilent : Boolean) {
         tempRedCheeseEarned = 0
         tempBlueCheeseEarned = 0
-        for (x in 952..956) {
-            for (z in 998..1002) {
+
+        for(x in 952..956) {
+            for(z in 998..1002) {
                 if(Bukkit.getWorld("Cheese")?.getBlockAt(x, 0, z)?.type == Material.SPONGE) {
                     redCheeseEarned++
                     tempRedCheeseEarned++
@@ -59,8 +60,8 @@ class CheeseManager(private val game : Game) {
                 }
             }
         }
-        for (x in 1044..1048) {
-            for (z in 998..1002) {
+        for(x in 1044..1048) {
+            for(z in 998..1002) {
                 if(Bukkit.getWorld("Cheese")?.getBlockAt(x, 0, z)?.type == Material.SPONGE) {
                     blueCheeseEarned++
                     tempBlueCheeseEarned++
@@ -69,9 +70,24 @@ class CheeseManager(private val game : Game) {
                 }
             }
         }
-        game.scoreManager.modifyScore(tempRedCheeseEarned * 15 * game.scoreManager.getMultiplier(), ScoreMode.ADD, Teams.RED)
-        game.scoreManager.modifyScore(tempBlueCheeseEarned * 15 * game.scoreManager.getMultiplier(), ScoreMode.ADD, Teams.BLUE)
+
+        if(tempRedCheeseEarned > 0) {
+            game.scoreManager.modifyScore(
+                tempRedCheeseEarned * 15 * game.scoreManager.getMultiplier(),
+                ScoreMode.ADD,
+                Teams.RED
+            )
+        }
+        if(tempBlueCheeseEarned > 0) {
+            game.scoreManager.modifyScore(
+                tempBlueCheeseEarned * 15 * game.scoreManager.getMultiplier(),
+                ScoreMode.ADD,
+                Teams.BLUE
+            )
+        }
+
         Main.getGame().infoBoardManager.updateScoreboardScores()
+
         for(player in Bukkit.getOnlinePlayers()) {
             if(tempRedCheeseEarned > 0) {
                 if(Main.getGame().teamManager.isInRedTeam(player.uniqueId)) {
@@ -87,14 +103,17 @@ class CheeseManager(private val game : Game) {
                     teamFireworks(player, Teams.BLUE)
                 }
             }
-            player.playSound(player.location, Sounds.Alert.GENERAL_ALERT, 1f, 1f)
-            player.sendMessage(
-                Component.text("[")
-                    .append(Component.text("▶").color(NamedTextColor.YELLOW))
-                    .append(Component.text("] "))
-                    .append(Component.text("Cheese in team bases have been counted!", NamedTextColor.AQUA, TextDecoration.BOLD)
+
+            if(!isSilent) {
+                player.playSound(player.location, Sounds.Alert.GENERAL_ALERT, 1f, 1f)
+                player.sendMessage(
+                    Component.text("[")
+                        .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                        .append(Component.text("] "))
+                        .append(Component.text("Cheese in team bases have been counted!", NamedTextColor.AQUA, TextDecoration.BOLD)
+                    )
                 )
-            )
+            }
         }
     }
 

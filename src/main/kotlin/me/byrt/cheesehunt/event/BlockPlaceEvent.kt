@@ -21,6 +21,10 @@ class BlockPlaceEvent : Listener {
             Main.getGame().cheeseManager.setPlayerHasCheese(e.player, false)
             e.player.sendMessage(Component.text("You placed a piece of cheese in your base!", NamedTextColor.GREEN))
             e.player.inventory.remove(Material.SPONGE)
+
+            if(Main.getGame().gameManager.getGameState() == GameState.OVERTIME) {
+                Main.getGame().cheeseManager.countCheeseInBases(true)
+            }
             e.isCancelled = false
         }
     }

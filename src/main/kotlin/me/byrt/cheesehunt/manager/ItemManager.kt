@@ -198,6 +198,7 @@ class ItemManager(private val game : Game) {
                 }
             }
             PowerUpItem.INVISIBILITY_CHARM -> {
+                player.inventory.boots = null
                 player.addPotionEffect(PotionEffect(PotionEffectType.INVISIBILITY, 200, 0, false, false))
             }
             PowerUpItem.SPEED_CHARM -> {

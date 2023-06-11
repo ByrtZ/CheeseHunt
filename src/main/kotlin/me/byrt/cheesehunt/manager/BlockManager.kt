@@ -93,7 +93,7 @@ class BlockManager(private val game : Game) {
         }
     }
 
-    fun placeFullCheeseSquare() {
+    fun placeCheeseSquare() {
         for(x in 999..1001) {
             for(z in 999..1001) {
                 getWorld("Cheese")?.getBlockAt(x, 0, z)?.type = Material.SPONGE
@@ -112,8 +112,40 @@ class BlockManager(private val game : Game) {
         }
     }
 
+    fun placeCheeseCube() {
+        for(x in 999..1001) {
+            for(y in 0..2) {
+                for(z in 999..1001) {
+                    getWorld("Cheese")?.getBlockAt(x, y, z)?.type = Material.SPONGE
+                }
+            }
+        }
+
+        for(player in Bukkit.getOnlinePlayers()) {
+            player.playSound(player.location, Sounds.Alert.GENERAL_ALERT, 1f, 1f)
+            player.sendMessage(
+                Component.text("[")
+                    .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                    .append(Component.text("] "))
+                    .append(Component.text("A large cheese payload has been dropped in the center.", NamedTextColor.AQUA, TextDecoration.BOLD)
+                )
+            )
+        }
+    }
+
+    private fun resetCheeseDrop() {
+        for(x in 999..1001) {
+            for(y in 0..2) {
+                for(z in 999..1001) {
+                    getWorld("Cheese")?.getBlockAt(x, y, z)?.type = Material.AIR
+                }
+            }
+        }
+    }
+
     fun resetAllBlocks() {
         resetBarriers()
         resetBlastDoors()
+        resetCheeseDrop()
     }
 }

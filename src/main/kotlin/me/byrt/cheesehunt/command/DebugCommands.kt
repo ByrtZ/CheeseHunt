@@ -68,6 +68,23 @@ class DebugCommands : BaseCommand {
         Main.getGame().cheeseManager.playerDropCheese(player)
     }
 
+    @CommandMethod("debug cheese place square")
+    @CommandDescription("Debug command to place a cheese square.")
+    @CommandPermission("cheesehunt.debug")
+    fun debugPlaceCheeseDrop(sender : Player) {
+        Main.getGame().dev.parseDevMessage("${sender.name} placed a cheese drop.", DevStatus.WARNING)
+        Main.getGame().blockManager.placeCheeseSquare()
+    }
+
+    @CommandMethod("debug cheese place cube")
+    @CommandDescription("Debug command to place a cheese cube.")
+    @CommandPermission("cheesehunt.debug")
+    fun debugPlaceCheeseCube(sender : Player) {
+        Main.getGame().dev.parseDevMessage("${sender.name} placed a cheese cube.", DevStatus.WARNING)
+        Main.getGame().blockManager.placeCheeseCube()
+    }
+
+
     @CommandMethod("debug skull <player>")
     @CommandDescription("Debug command to test Noxesium's player heads in UI.")
     @CommandPermission("cheesehunt.debug")

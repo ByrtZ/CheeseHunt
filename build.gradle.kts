@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "me.byrt"
-version = "1.0"
+version = "2.0"
 
 repositories {
     mavenCentral()

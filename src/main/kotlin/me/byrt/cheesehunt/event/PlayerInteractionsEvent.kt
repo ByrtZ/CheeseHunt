@@ -3,8 +3,12 @@ package me.byrt.cheesehunt.event
 import me.byrt.cheesehunt.Main
 import me.byrt.cheesehunt.manager.PowerUpItem
 import me.byrt.cheesehunt.state.GameState
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import org.bukkit.HeightMap
 
 import org.bukkit.Material
+import org.bukkit.block.BlockFace
 import org.bukkit.block.data.*
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -36,6 +40,13 @@ class PlayerInteractionsEvent : Listener {
             }
             if(Main.getGame().gameManager.getGameState() == GameState.IN_GAME && e.action.isRightClick && e.player.inventory.itemInMainHand.type == Material.ORANGE_DYE) {
                 Main.getGame().itemManager.useItem(PowerUpItem.HASTE_CHARM, e.player)
+            }
+            if(Main.getGame().gameManager.getGameState() == GameState.IN_GAME && e.action.isRightClick && e.player.inventory.itemInMainHand.type == Material.LIME_DYE) {
+                if(e.player.world.getHighestBlockAt(e.player.location, HeightMap.WORLD_SURFACE).type != Material.STRUCTURE_VOID && e.player.world.getHighestBlockAt(e.player.location, HeightMap.WORLD_SURFACE) == e.player.location.block.getRelative(BlockFace.DOWN)) {
+                    e.player.sendMessage(Component.text("[").append(Component.text("▶", NamedTextColor.YELLOW)).append(Component.text("] ")).append(Component.text("You cannot use an Ascend Charm here.", NamedTextColor.RED)))
+                } else {
+                    Main.getGame().itemManager.useItem(PowerUpItem.ASCEND_CHARM, e.player)
+                }
             }
             // Disable block interactions
             if(e.action.isRightClick

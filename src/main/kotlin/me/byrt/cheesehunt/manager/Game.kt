@@ -3,8 +3,7 @@ package me.byrt.cheesehunt.manager
 import me.byrt.cheesehunt.Main
 import me.byrt.cheesehunt.state.*
 import me.byrt.cheesehunt.task.*
-import me.byrt.cheesehunt.util.Dev
-import me.byrt.cheesehunt.util.DevStatus
+import me.byrt.cheesehunt.util.*
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
@@ -27,16 +26,19 @@ class Game(val plugin : Main) {
     val tabListManager = TabListManager(this)
     val soundManager = Sounds(this)
     val locationManager = LocationManager(this)
-    val respawnTask = RespawnTask(this)
-    val gameTask = GameTask(this)
-    val musicTask = MusicTask(this)
-    val winShowTask = WinShowTask(this)
     val scoreManager = ScoreManager(this)
     val statsManager = StatisticsManager(this)
     val configManager = ConfigManager(this)
     val whitelistManager = WhitelistManager(this)
     val mapManager = MapManager(this)
     val cooldownManager = CooldownManager(this)
+
+    val respawnTask = RespawnTask(this)
+    val gameTask = GameTask(this)
+    val musicTask = MusicTask(this)
+    val winShowTask = WinShowTask(this)
+    val itemTask = ItemTask(this)
+
     val dev = Dev(this)
 
     private var buildMode = false

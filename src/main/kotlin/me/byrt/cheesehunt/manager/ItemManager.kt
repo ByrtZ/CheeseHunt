@@ -8,12 +8,10 @@ import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 
 import com.destroystokyo.paper.Namespaced
+import me.byrt.cheesehunt.Main
 
 import org.bukkit.*
-import org.bukkit.entity.Firework
-import org.bukkit.entity.Item
-import org.bukkit.entity.Player
-import org.bukkit.entity.TNTPrimed
+import org.bukkit.entity.*
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
@@ -211,6 +209,14 @@ class ItemManager(private val game : Game) {
             PowerUpItem.HASTE_CHARM -> {
                 player.addPotionEffect(PotionEffect(PotionEffectType.FAST_DIGGING, 160, 4, false, false))
             }
+            PowerUpItem.ASCEND_CHARM -> {
+                val ascendStand = player.location.world.spawnEntity(player.location, EntityType.ARMOR_STAND) as ArmorStand
+                ascendStand.isInvulnerable = true
+                ascendStand.isSmall = true
+                ascendStand.setGravity(false)
+                ascendStand.addScoreboardTag("${player.name.lowercase()}-ascend-stand")
+                game.itemTask.startAscendTask(player, ascendStand, Main.getPlugin())
+            }
         }
     }
 
@@ -273,5 +279,6 @@ enum class PowerUpItem(val material : Material, val amount : Int, val displayNam
     INVISIBILITY_CHARM(Material.GRAY_DYE, 1, Component.text("Invisibili-brie Charm", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false), Component.text("[").append(Component.text("▶", NamedTextColor.YELLOW)).append(Component.text("] ")).append(Component.text("Your Invisibili-brie charm granted you invisibility for 10 seconds!", NamedTextColor.GREEN))),
     SPEED_CHARM(Material.LIGHT_BLUE_DYE, 1, Component.text("Parma-zoom Charm", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false), Component.text("[").append(Component.text("▶", NamedTextColor.YELLOW)).append(Component.text("] ")).append(Component.text("Your Parma-zoom charm granted you speed for 4 seconds!", NamedTextColor.GREEN))),
     ESCAPE_CHARM(Material.FEATHER, 1, Component.text("Escape Charm", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false), Component.text("[").append(Component.text("▶", NamedTextColor.YELLOW)).append(Component.text("] ")).append(Component.text("Your Escape charm sent you back to your base!", NamedTextColor.GREEN))),
-    HASTE_CHARM(Material.ORANGE_DYE, 1, Component.text("Hallou-mine Charm", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false), Component.text("[").append(Component.text("▶", NamedTextColor.YELLOW)).append(Component.text("] ")).append(Component.text("Your Hallou-mine charm granted you haste for 8 seconds!", NamedTextColor.GREEN)))
+    HASTE_CHARM(Material.ORANGE_DYE, 1, Component.text("Hallou-mine Charm", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false), Component.text("[").append(Component.text("▶", NamedTextColor.YELLOW)).append(Component.text("] ")).append(Component.text("Your Hallou-mine charm granted you haste for 8 seconds!", NamedTextColor.GREEN))),
+    ASCEND_CHARM(Material.LIME_DYE, 1, Component.text("Ascend Charm", NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false), Component.text("[").append(Component.text("▶", NamedTextColor.YELLOW)).append(Component.text("] ")).append(Component.text("Your Ascend charm pulled you through the ground!", NamedTextColor.GREEN)))
 }

@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "me.byrt"
-version = "2.0"
+version = "1.0"
 
 repositories {
     mavenCentral()
@@ -13,7 +13,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.reflections:reflections:0.10.2")
     implementation("cloud.commandframework:cloud-paper:1.8.3")

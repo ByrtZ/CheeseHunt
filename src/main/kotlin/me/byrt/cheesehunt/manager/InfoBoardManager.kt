@@ -1,6 +1,7 @@
 package me.byrt.cheesehunt.manager
 
-import me.byrt.cheesehunt.state.GameState
+import me.byrt.cheesehunt.game.Game
+import me.byrt.cheesehunt.game.GameState
 import me.byrt.cheesehunt.state.RoundState
 import me.byrt.cheesehunt.state.Teams
 

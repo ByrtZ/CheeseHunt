@@ -1,7 +1,7 @@
 package me.byrt.cheesehunt.event
 
 import me.byrt.cheesehunt.Main
-import me.byrt.cheesehunt.state.GameState
+import me.byrt.cheesehunt.game.GameState
 
 import org.bukkit.entity.Item
 import org.bukkit.entity.Player

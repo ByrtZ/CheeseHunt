@@ -1,6 +1,8 @@
-package me.byrt.cheesehunt.manager
+package me.byrt.cheesehunt.game
 
 import me.byrt.cheesehunt.Main
+import me.byrt.cheesehunt.manager.*
+import me.byrt.cheesehunt.queue.*
 import me.byrt.cheesehunt.state.*
 import me.byrt.cheesehunt.task.*
 import me.byrt.cheesehunt.util.*
@@ -32,12 +34,14 @@ class Game(val plugin : Main) {
     val whitelistManager = WhitelistManager(this)
     val mapManager = MapManager(this)
     val cooldownManager = CooldownManager(this)
+    val queue = Queue(this)
+    val queueVisuals = QueueVisuals(this)
+    val queueTask = QueueTask(this)
 
     val respawnTask = RespawnTask(this)
     val gameTask = GameTask(this)
     val musicTask = MusicTask(this)
     val winShowTask = WinShowTask(this)
-    val itemTask = ItemTask(this)
 
     val dev = Dev(this)
 

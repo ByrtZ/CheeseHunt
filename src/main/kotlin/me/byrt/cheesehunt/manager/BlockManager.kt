@@ -1,5 +1,6 @@
 package me.byrt.cheesehunt.manager
 
+import me.byrt.cheesehunt.game.Game
 import me.byrt.cheesehunt.state.Sounds
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor

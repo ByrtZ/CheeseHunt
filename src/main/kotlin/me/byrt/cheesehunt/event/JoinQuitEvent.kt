@@ -1,7 +1,7 @@
 package me.byrt.cheesehunt.event
 
 import me.byrt.cheesehunt.Main
-import me.byrt.cheesehunt.state.GameState
+import me.byrt.cheesehunt.game.GameState
 import me.byrt.cheesehunt.state.Teams
 import me.byrt.cheesehunt.task.Music
 

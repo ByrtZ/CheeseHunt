@@ -1,7 +1,7 @@
 package me.byrt.cheesehunt.command
 
 import me.byrt.cheesehunt.Main
-import me.byrt.cheesehunt.state.GameState
+import me.byrt.cheesehunt.game.GameState
 import me.byrt.cheesehunt.state.TimerState
 import me.byrt.cheesehunt.util.DevStatus
 

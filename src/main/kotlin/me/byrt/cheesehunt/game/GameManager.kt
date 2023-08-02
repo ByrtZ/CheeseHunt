@@ -1,7 +1,8 @@
-package me.byrt.cheesehunt.state
+package me.byrt.cheesehunt.game
 
 import me.byrt.cheesehunt.Main
-import me.byrt.cheesehunt.manager.Game
+import me.byrt.cheesehunt.state.Sounds
+import me.byrt.cheesehunt.state.TimerState
 import me.byrt.cheesehunt.task.Music
 import me.byrt.cheesehunt.util.DevStatus
 
@@ -116,7 +117,7 @@ class GameManager(private val game : Game) {
         game.blockManager.placeCheeseCube()
         game.itemManager.clearFloorItems()
         for(player in Bukkit.getOnlinePlayers()) {
-            player.playSound(player.location, Sounds.Alert.OVERTIME_ALERT, 0.5f, 1.25f)
+            player.playSound(player.location, Sounds.Alert.OVERTIME_ALERT, 0.35f, 1.25f)
             player.showTitle(Title.title(
                 Component.text("OVERTIME!", NamedTextColor.RED, TextDecoration.BOLD),
                 Component.text("Hunt all the Cheese!"),

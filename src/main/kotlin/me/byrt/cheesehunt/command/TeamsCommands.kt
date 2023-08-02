@@ -3,6 +3,7 @@ package me.byrt.cheesehunt.command
 import cloud.commandframework.annotations.*
 
 import me.byrt.cheesehunt.Main
+import me.byrt.cheesehunt.game.GameState
 import me.byrt.cheesehunt.state.*
 import me.byrt.cheesehunt.state.Sounds
 import me.byrt.cheesehunt.util.DevStatus

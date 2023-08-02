@@ -1,7 +1,7 @@
 package me.byrt.cheesehunt
 
 import me.byrt.cheesehunt.command.BaseCommand
-import me.byrt.cheesehunt.manager.Game
+import me.byrt.cheesehunt.game.Game
 import me.byrt.cheesehunt.manager.Maps
 import me.byrt.cheesehunt.manager.WhitelistGroup
 import me.byrt.cheesehunt.plugin.PluginMessenger

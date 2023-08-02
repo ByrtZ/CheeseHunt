@@ -1,5 +1,6 @@
 package me.byrt.cheesehunt.manager
 
+import me.byrt.cheesehunt.game.Game
 import me.byrt.cheesehunt.state.Sounds
 import me.byrt.cheesehunt.state.Teams
 import me.byrt.cheesehunt.util.DevStatus

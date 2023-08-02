@@ -2,9 +2,7 @@ package me.byrt.cheesehunt.command
 
 import cloud.commandframework.annotations.*
 
-import me.byrt.cheesehunt.Main
 import me.byrt.cheesehunt.manager.Maps
-import me.byrt.cheesehunt.state.GameState
 
 import net.kyori.adventure.text.Component
 

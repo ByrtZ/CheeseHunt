@@ -1,8 +1,9 @@
-package me.byrt.cheesehunt.task
+package me.byrt.cheesehunt.game
 
 import me.byrt.cheesehunt.Main
 import me.byrt.cheesehunt.manager.*
 import me.byrt.cheesehunt.state.*
+import me.byrt.cheesehunt.task.Music
 import me.byrt.cheesehunt.util.DevStatus
 
 import net.kyori.adventure.text.Component
@@ -296,7 +297,7 @@ class GameTask(private var game: Game) {
                     }
                     if(timeLeft == 20) {
                         for(player in Bukkit.getOnlinePlayers()) {
-                            player.sendMessage(Component.text("\nCheese Picked Up:", NamedTextColor.WHITE, TextDecoration.BOLD))
+                            player.sendMessage(Component.text("\nCheese Collected:", NamedTextColor.WHITE, TextDecoration.BOLD))
                         }
                     }
                     if(timeLeft == 18) {
@@ -304,7 +305,7 @@ class GameTask(private var game: Game) {
                     }
                     if(timeLeft == 15) {
                         for(player in Bukkit.getOnlinePlayers()) {
-                            player.sendMessage(Component.text("\nCheese Dropped:", NamedTextColor.WHITE, TextDecoration.BOLD))
+                            player.sendMessage(Component.text("\nCheese Lost:", NamedTextColor.WHITE, TextDecoration.BOLD))
                         }
                     }
                     if(timeLeft == 13) {
@@ -337,7 +338,7 @@ class GameTask(private var game: Game) {
                 }
             }
         }
-        gameRunnable.runTaskTimer(Main.getPlugin(), 0, 20)
+        gameRunnable.runTaskTimer(Main.getPlugin(), 0L, 20L)
         currentGameTaskId = gameRunnable.taskId
         gameRunnableList[gameRunnable.taskId] = gameRunnable
     }

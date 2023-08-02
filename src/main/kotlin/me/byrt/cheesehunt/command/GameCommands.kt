@@ -9,6 +9,7 @@ import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.Confirmation
+import me.byrt.cheesehunt.game.GameState
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound

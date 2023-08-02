@@ -1,7 +1,7 @@
 package me.byrt.cheesehunt.event
 
 import me.byrt.cheesehunt.Main
-import me.byrt.cheesehunt.state.GameState
+import me.byrt.cheesehunt.game.GameState
 import me.byrt.cheesehunt.state.Sounds
 
 import net.kyori.adventure.text.Component
@@ -26,6 +26,8 @@ class PlayerItemEvent : Listener {
             if(e.player.inventory.contains(e.item.itemStack.type) || e.player.inventory.itemInOffHand.type == e.item.itemStack.type) {
                 e.player.sendActionBar(Component.text("⚠ You cannot hold any more of this item. ⚠", NamedTextColor.RED))
                 e.isCancelled = true
+            } else {
+                e.player.playSound(e.player.location, Sounds.Item.PICKUP_ITEM, 1.0f, 1.0f)
             }
             if(e.player.inventory.itemInOffHand.type == Material.AIR && e.item.itemStack.type == Material.TOTEM_OF_UNDYING) {
                 e.player.playSound(e.player.location, Sounds.Item.PICKUP_ITEM, 1.0f, 1.0f)

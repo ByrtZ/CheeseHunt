@@ -1,6 +1,7 @@
 package me.byrt.cheesehunt.manager
 
 import me.byrt.cheesehunt.Main
+import me.byrt.cheesehunt.game.Game
 import me.byrt.cheesehunt.state.Teams
 
 import org.bukkit.*

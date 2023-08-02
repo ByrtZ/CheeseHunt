@@ -1,7 +1,7 @@
 package me.byrt.cheesehunt.command
 
 import me.byrt.cheesehunt.Main
-import me.byrt.cheesehunt.state.GameState
+import me.byrt.cheesehunt.game.GameState
 import me.byrt.cheesehunt.state.Teams
 import me.byrt.cheesehunt.util.DevStatus
 import me.byrt.cheesehunt.manager.PowerUpItem
@@ -15,6 +15,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 
 import org.bukkit.Location
+import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.Player
 
 @Suppress("unused")
@@ -98,5 +99,17 @@ class DebugCommands : BaseCommand {
     fun debugTestSkulls(sender : Player, @Argument("item") powerUpItem: PowerUpItem) {
         Main.getGame().dev.parseDevMessage("$powerUpItem items spawned on map sides by ${sender.name}.", DevStatus.WARNING)
         Main.getGame().itemManager.spawnSideItems(powerUpItem)
+    }
+
+    @CommandMethod("queue join")
+    @CommandDescription("Debug command to test queues.")
+    fun debugJoinQueue(sender : Player) {
+        Main.getGame().queue.joinQueue(sender)
+    }
+
+    @CommandMethod("queue leave")
+    @CommandDescription("Debug command to test queues.")
+    fun debugLeaveQueue(sender : Player) {
+        Main.getGame().queue.leaveQueue(sender)
     }
 }

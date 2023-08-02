@@ -1,6 +1,6 @@
 package me.byrt.cheesehunt.state
 
-import me.byrt.cheesehunt.manager.Game
+import me.byrt.cheesehunt.game.Game
 
 @Suppress("unused")
 class Sounds(private val game : Game) {
@@ -57,6 +57,13 @@ class Sounds(private val game : Game) {
     }
     object Tutorial {
         const val TUTORIAL_POP = "entity.item.pickup"
+    }
+    object Queue {
+        const val QUEUE_JOIN = "block.note_block.flute"
+        const val QUEUE_LEAVE = "block.note_block.didgeridoo"
+        const val QUEUE_FIND_GAME = "block.end_portal.spawn"
+        const val QUEUE_TELEPORT = "block.portal.trigger"
+        const val QUEUE_TICK = "block.note_block.pling"
     }
     object Command {
         const val SHUFFLE_START = "block.note_block.flute"

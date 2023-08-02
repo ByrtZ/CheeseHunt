@@ -1,6 +1,6 @@
 package me.byrt.cheesehunt.state
 
-import me.byrt.cheesehunt.manager.Game
+import me.byrt.cheesehunt.game.Game
 
 @Suppress("unused")
 class Timer(private val game : Game) {

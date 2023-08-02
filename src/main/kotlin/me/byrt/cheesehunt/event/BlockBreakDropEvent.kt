@@ -3,7 +3,7 @@ package me.byrt.cheesehunt.event
 import io.papermc.paper.event.block.BlockBreakBlockEvent
 
 import me.byrt.cheesehunt.Main
-import me.byrt.cheesehunt.state.GameState
+import me.byrt.cheesehunt.game.GameState
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor

@@ -1,7 +1,8 @@
 package me.byrt.cheesehunt.task
 
-import me.byrt.cheesehunt.manager.Game
+import me.byrt.cheesehunt.game.Game
 import me.byrt.cheesehunt.state.Teams
+import me.byrt.cheesehunt.util.DevStatus
 
 import org.bukkit.Color
 import org.bukkit.FireworkEffect
@@ -10,9 +11,6 @@ import org.bukkit.entity.Firework
 import org.bukkit.plugin.Plugin
 import org.bukkit.scheduler.BukkitRunnable
 
-import kotlin.math.roundToInt
-
-@Suppress("unused")
 class WinShowTask(private val game : Game) {
     private val winShowLoopMap = mutableMapOf<Int, BukkitRunnable>()
     private var taskID = 0
@@ -42,8 +40,8 @@ class WinShowTask(private val game : Game) {
             }
         }
         bukkitRunnable.runTaskTimer(plugin, 0L, 1L)
-        winShowLoopMap[bukkitRunnable.taskId] = bukkitRunnable
         taskID = bukkitRunnable.taskId
+        winShowLoopMap[bukkitRunnable.taskId] = bukkitRunnable
     }
 
     fun stopWinShowLoop() {
@@ -64,13 +62,5 @@ class WinShowTask(private val game : Game) {
         fm.power = 0
         f.fireworkMeta = fm
         f.ticksToDetonate = 1
-    }
-
-    private fun randomEffect() : FireworkEffect.Type {
-        return when(Math.random().roundToInt()) {
-            0 -> { FireworkEffect.Type.BALL }
-            1 -> { FireworkEffect.Type.BALL_LARGE }
-            else -> { FireworkEffect.Type.BURST }
-        }
     }
 }

@@ -1,6 +1,7 @@
 package me.byrt.cheesehunt.manager
 
 import me.byrt.cheesehunt.Main
+import me.byrt.cheesehunt.game.Game
 import me.byrt.cheesehunt.state.Sounds
 import me.byrt.cheesehunt.state.Teams
 
@@ -93,6 +94,19 @@ class TeamManager(private val game : Game) {
                 spectatorDisplayTeam.removePlayer(Bukkit.getOfflinePlayer(uuid))
                 player.sendMessage(Component.text("You are no longer a Spectator."))
             }
+        }
+    }
+
+    fun shuffle(players : Collection<Player>) {
+        var i = 0
+        players.shuffled().forEach {
+            Main.getGame().teamManager.removeFromTeam(it, it.uniqueId, Main.getGame().teamManager.getPlayerTeam(it.uniqueId))
+            if (i % 2 == 0) {
+                Main.getGame().teamManager.addToTeam(it, it.uniqueId, Teams.RED)
+            } else {
+                Main.getGame().teamManager.addToTeam(it, it.uniqueId, Teams.BLUE)
+            }
+            i++
         }
     }
 

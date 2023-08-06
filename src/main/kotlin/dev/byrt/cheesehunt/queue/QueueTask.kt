@@ -43,6 +43,7 @@ class QueueTask(private val game : Game) {
                     }
                     if(queueTimerSeconds in 1..3){
                         game.queueVisuals.getQueueStatus().name(Component.text("Teleporting in $queueTimerSeconds!").color(TextColor.fromHexString("#ffff00")))
+                        game.queueVisuals.removeQueueItemFromQueuers()
                     }
                     if(queueTimerSeconds == 0) {
                         game.queueVisuals.getQueueStatus().name(Component.text("Teleported!").color(TextColor.fromHexString("#ffff00")))
@@ -72,6 +73,8 @@ class QueueTask(private val game : Game) {
             game.teamManager.shuffle(game.queue.queuedPlayers())
             game.queue.deleteQueue()
             game.queue.setQueueState(QueueState.NO_GAME_AVAILABLE)
+        } else {
+            game.queueVisuals.giveQueueItemToQueuers()
         }
     }
     fun getQueueActive() : Boolean {

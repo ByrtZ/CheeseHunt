@@ -45,7 +45,7 @@ class Main : JavaPlugin() {
     }
 
     override fun onDisable() {
-        logger.info("Cleaning up...")
+        logger.info("Cleaning up Cheese Hunt plugin...")
         game.cleanUp()
     }
 

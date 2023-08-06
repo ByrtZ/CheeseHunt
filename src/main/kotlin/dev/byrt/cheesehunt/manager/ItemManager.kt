@@ -3,7 +3,6 @@ package dev.byrt.cheesehunt.manager
 import dev.byrt.cheesehunt.state.Teams
 import dev.byrt.cheesehunt.state.Sounds
 import dev.byrt.cheesehunt.game.Game
-import dev.byrt.cheesehunt.util.DevStatus
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -12,7 +11,6 @@ import net.kyori.adventure.text.format.TextDecoration
 import com.destroystokyo.paper.Namespaced
 
 import org.bukkit.*
-import org.bukkit.block.Block
 import org.bukkit.entity.*
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
@@ -24,7 +22,6 @@ import org.bukkit.util.Vector
 
 import java.util.*
 
-@Suppress("unused")
 class ItemManager(private val game : Game) {
     fun spawnSideItems(powerUpItem : PowerUpItem) {
         clearFloorItems()
@@ -164,6 +161,15 @@ class ItemManager(private val game : Game) {
         return cheese
     }
 
+    fun getQueueItem() : ItemStack {
+        val queueLeaveItem = ItemStack(Material.RED_DYE, 1)
+        val queueLeaveItemMeta: ItemMeta = queueLeaveItem.itemMeta
+        queueLeaveItemMeta.displayName(Component.text("Leave Queue").color(NamedTextColor.RED).decoration(TextDecoration.ITALIC, false))
+        queueLeaveItemMeta.lore(Collections.singletonList(Component.text("Right-Click to leave the queue.", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false)) as MutableList<out Component>)
+        queueLeaveItem.itemMeta = queueLeaveItemMeta
+        return queueLeaveItem
+    }
+
     fun clearFloorItems() {
         for(item in game.locationManager.getSpawn().world.getEntitiesByClass(Item::class.java)) {
             item.remove()
@@ -212,19 +218,6 @@ class ItemManager(private val game : Game) {
                 player.addPotionEffect(PotionEffect(PotionEffectType.FAST_DIGGING, 160, 4, false, false))
             }
         }
-    }
-
-    fun getHighestBlock(world : World, x : Int, z : Int) : Block? {
-        var y = 255
-        while(y >= -10) {
-            game.dev.parseDevMessage("Y: $y, Type: ${Location(world, x.toDouble(), y.toDouble(), z.toDouble()).block.type}", DevStatus.WARNING)
-            if(Location(world, x.toDouble(), y.toDouble(), z.toDouble()).block.type == Material.AIR || Location(world, x.toDouble(), y.toDouble(), z.toDouble()).block.type == Material.STRUCTURE_VOID) {
-                y--
-            } else {
-                return Location(world, x.toDouble(), y.toDouble(), z.toDouble()).block
-            }
-        }
-        return null
     }
 
     private fun escapeToTeamBase(player : Player) {

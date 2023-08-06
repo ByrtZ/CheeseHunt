@@ -19,7 +19,6 @@ import org.bukkit.scheduler.BukkitRunnable
 import java.time.Duration
 import java.util.*
 
-@Suppress("unused")
 class RespawnTask(private val game: Game) {
     private val respawnLoopMap = mutableMapOf<UUID, BukkitRunnable>()
 

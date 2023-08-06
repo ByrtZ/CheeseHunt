@@ -69,9 +69,11 @@ class Game(val plugin : Main) {
         locationManager.populateSpawns()
         locationManager.populateWinShowArea()
         tabListManager.populateCheesePuns()
+        queueVisuals.spawnQueueNPC()
     }
 
     fun cleanUp() {
+        queueVisuals.removeQueueNPC()
         teamManager.destroyDisplayTeams()
         infoBoardManager.destroyScoreboard()
         configManager.saveWhitelistConfig()
@@ -91,6 +93,11 @@ class Game(val plugin : Main) {
         statsManager.resetStats()
         infoBoardManager.destroyScoreboard()
         infoBoardManager.buildScoreboard()
+        queue.deleteQueue()
+        queueVisuals.removeQueueNPC()
+        queueVisuals.spawnQueueNPC()
+        queueVisuals.setAllQueueInvisible()
+        queueVisuals.updateQueueStatus()
 
         for(player in Bukkit.getOnlinePlayers()) {
             player.showTitle(Title.title(Component.text("\uD000"), Component.text(""), Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(3), Duration.ofSeconds(1))))

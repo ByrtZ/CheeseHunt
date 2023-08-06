@@ -79,10 +79,16 @@ class PlayerManager(private var game : Game) {
         player.inventory.remove(Material.BOW)
         player.inventory.remove(Material.ARROW)
         player.inventory.remove(Material.WOODEN_PICKAXE)
+        player.inventory.remove(Material.RED_DYE)
         player.inventory.setItemInOffHand(null)
         for(item in PowerUpItem.values()) {
             player.inventory.remove(item.material)
         }
+    }
+
+    fun clearQueueItem(player : Player) {
+        player.inventory.remove(Material.RED_DYE)
+        player.inventory.setItemInOffHand(null)
     }
 
     private fun clearAllItems() {

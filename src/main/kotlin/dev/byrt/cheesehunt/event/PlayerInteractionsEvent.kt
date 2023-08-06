@@ -6,8 +6,10 @@ import dev.byrt.cheesehunt.game.GameState
 
 import org.bukkit.Material
 import org.bukkit.block.data.*
+import org.bukkit.entity.EntityType
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
@@ -50,7 +52,24 @@ class PlayerInteractionsEvent : Listener {
                 e.isCancelled = true
             }
         } else {
-            e.isCancelled = !(e.player.isOp && Main.getGame().getBuildMode())
+            // Queue leave item interaction
+            if(Main.getGame().gameManager.getGameState() == GameState.IDLE && e.action.isRightClick && e.player.inventory.itemInMainHand.type == Material.RED_DYE) {
+                Main.getGame().queue.leaveQueue(e.player)
+                e.isCancelled = true
+            } else {
+                e.isCancelled = !(e.player.isOp && Main.getGame().getBuildMode())
+            }
+        }
+    }
+
+    @EventHandler
+    private fun onInteract(e : PlayerInteractEntityEvent) {
+        if(Main.getGame().gameManager.getGameState() == GameState.IDLE && e.rightClicked.type == EntityType.CHICKEN) {
+           if(Main.getGame().cooldownManager.attemptJoinQueue(e.player) && !Main.getGame().queue.getQueue().contains(e.player.uniqueId)) {
+               if(e.rightClicked.scoreboardTags.contains("cheesehunt.queue.npc") && !Main.getGame().queue.getQueue().contains(e.player.uniqueId)) {
+                   Main.getGame().queue.joinQueue(e.player)
+               }
+           }
         }
     }
 }

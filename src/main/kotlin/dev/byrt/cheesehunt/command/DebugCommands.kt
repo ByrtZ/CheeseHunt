@@ -100,15 +100,50 @@ class DebugCommands : BaseCommand {
         Main.getGame().itemManager.spawnSideItems(powerUpItem)
     }
 
+    @CommandMethod("queue data")
+    @CommandDescription("Debug command to get queue data.")
+    @CommandPermission("cheesehunt.debug")
+    fun debugQueueData(sender : Player) {
+        sender.sendMessage(
+            Component.text("Queue Data\n", NamedTextColor.GOLD).append(
+                Component.text("Queue", NamedTextColor.YELLOW).append(
+                    Component.text(": ${Main.getGame().queue.getQueue()}", NamedTextColor.WHITE).append(
+                        Component.text("State", NamedTextColor.RED).append(
+                            Component.text(": ${Main.getGame().queue.getQueueState()}", NamedTextColor.WHITE)
+                        )
+                    )
+                )
+            )
+        )
+    }
+
     @CommandMethod("queue join")
-    @CommandDescription("Debug command to test queues.")
+    @CommandDescription("Debug command for queues.")
+    @CommandPermission("cheesehunt.debug")
     fun debugJoinQueue(sender : Player) {
         Main.getGame().queue.joinQueue(sender)
     }
 
     @CommandMethod("queue leave")
-    @CommandDescription("Debug command to test queues.")
+    @CommandDescription("Debug command for queues.")
+    @CommandPermission("cheesehunt.debug")
     fun debugLeaveQueue(sender : Player) {
         Main.getGame().queue.leaveQueue(sender)
+    }
+
+    @CommandMethod("queue force join <player>")
+    @CommandDescription("Debug command for queues.")
+    @CommandPermission("cheesehunt.debug")
+    fun debugForceJoinQueue(sender : Player, @Argument("player") player : Player) {
+        Main.getGame().dev.parseDevMessage("${sender.name} pushed ${player.name} into the Queue.", DevStatus.INFO)
+        Main.getGame().queue.joinQueue(player)
+    }
+
+    @CommandMethod("queue force leave <player>")
+    @CommandDescription("Debug command for queues.")
+    @CommandPermission("cheesehunt.debug")
+    fun debugForceLeaveQueue(sender : Player, @Argument("player") player : Player) {
+        Main.getGame().dev.parseDevMessage("${sender.name} threw ${player.name} out of the Queue.", DevStatus.INFO)
+        Main.getGame().queue.leaveQueue(player)
     }
 }

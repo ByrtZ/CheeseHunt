@@ -107,7 +107,7 @@ class DebugCommands : BaseCommand {
         sender.sendMessage(
             Component.text("Queue Data\n", NamedTextColor.GOLD).append(
                 Component.text("Queue", NamedTextColor.YELLOW).append(
-                    Component.text(": ${Main.getGame().queue.getQueue()}", NamedTextColor.WHITE).append(
+                    Component.text(": ${Main.getGame().queue.getQueue()}\n", NamedTextColor.WHITE).append(
                         Component.text("State", NamedTextColor.RED).append(
                             Component.text(": ${Main.getGame().queue.getQueueState()}", NamedTextColor.WHITE)
                         )

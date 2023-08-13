@@ -41,6 +41,9 @@ class JoinQuitEvent : Listener {
         if(Main.getGame().cheeseManager.playerHasCheese(e.player)) {
             Main.getGame().cheeseManager.setPlayerHasCheese(e.player, false)
         }
+        if(Main.getGame().queue.getQueue().contains(e.player.uniqueId)) {
+            Main.getGame().queue.leaveQueue(e.player)
+        }
         e.quitMessage(Component.text("${e.player.name} left the game.").color(TextColor.fromHexString("#ffff00")))
     }
 }

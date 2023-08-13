@@ -57,28 +57,28 @@ class GameManager(private val game : Game) {
             GameState.STARTING -> {
                 game.setBuildMode(false)
                 game.timerManager.setTimerState(TimerState.ACTIVE)
-                game.gameTask.setTimeLeft(80, null)
+                game.gameTask.setTimeLeft(STARTING_TIME, null)
                 game.gameTask.gameLoop()
                 starting()
             }
             GameState.IN_GAME -> {
                 game.timerManager.setTimerState(TimerState.ACTIVE)
-                game.gameTask.setTimeLeft(720, null)
+                game.gameTask.setTimeLeft(IN_GAME_TIME, null)
                 startRound()
             }
             GameState.ROUND_END -> {
                 game.timerManager.setTimerState(TimerState.ACTIVE)
-                game.gameTask.setTimeLeft(10, null)
+                game.gameTask.setTimeLeft(ROUND_END_TIME, null)
                 roundEnd()
             }
             GameState.GAME_END -> {
                 game.timerManager.setTimerState(TimerState.ACTIVE)
-                game.gameTask.setTimeLeft(30, null)
+                game.gameTask.setTimeLeft(GAME_END_TIME, null)
                 gameEnd()
             }
             GameState.OVERTIME -> {
                 game.timerManager.setTimerState(TimerState.ACTIVE)
-                game.gameTask.setTimeLeft(60, null)
+                game.gameTask.setTimeLeft(OVERTIME_TIME, null)
                 startOvertime()
             }
         }
@@ -135,7 +135,7 @@ class GameManager(private val game : Game) {
                     .append(Component.text("OVERTIME: ", NamedTextColor.RED, TextDecoration.BOLD))
                     .append(Component.text("You can now ", NamedTextColor.WHITE))
                     .append(Component.text("ONLY", NamedTextColor.WHITE, TextDecoration.BOLD))
-                    .append(Component.text(" gather Cheese, 1 minute remains!\n")
+                    .append(Component.text(" gather Cheese, 45 seconds remain!\n")
                 )
             )
         }
@@ -213,6 +213,14 @@ class GameManager(private val game : Game) {
     // Dangerous method call, can cause unresolvable issues.
     fun forceState(forcedState : GameState) {
         setGameState(forcedState)
+    }
+
+    companion object {
+        const val STARTING_TIME = 80
+        const val IN_GAME_TIME = 720
+        const val ROUND_END_TIME = 10
+        const val GAME_END_TIME = 30
+        const val OVERTIME_TIME = 45
     }
 }
 enum class GameState {

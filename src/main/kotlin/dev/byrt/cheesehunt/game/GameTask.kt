@@ -18,15 +18,13 @@ import org.bukkit.scheduler.BukkitRunnable
 
 import java.time.Duration
 
-@Suppress("unused")
-class GameTask(private var game: Game) {
+class GameTask(private var game : Game) {
     private var gameRunnableList = mutableMapOf<Int, BukkitRunnable>()
     private var currentGameTaskId = 0
     private var timeLeft = 0
     private var previousTimeLeft = 0
     private var displayTime: String = "00:00"
     private var previousDisplayTime: String = "00:00"
-    private var setTimerTimeLeft: String? = null
     private var gameSubtitle = ""
 
     fun gameLoop() {
@@ -332,7 +330,7 @@ class GameTask(private var game: Game) {
                         cancelGameTask()
                     }
                 }
-                // Decrement timer by 1 if timer is active
+                // Decrement timer by 1 if timer is active //TODO: Possibly move to top of class?
                 if(game.timerManager.getTimerState() == TimerState.ACTIVE) {
                     timeLeft--
                 }
@@ -348,8 +346,8 @@ class GameTask(private var game: Game) {
     }
 
     fun setTimeLeft(setTimeLeft: Int, sender : Player?) {
-        setTimerTimeLeft = String.format("%02d:%02d", setTimeLeft / 60, setTimeLeft % 60)
-        game.infoBoardManager.updateScoreboardTimer(setTimerTimeLeft!!, displayTime, game.gameManager.getGameState())
+        val setTimerTimeLeft = String.format("%02d:%02d", setTimeLeft / 60, setTimeLeft % 60)
+        game.infoBoardManager.updateScoreboardTimer(setTimerTimeLeft, displayTime, game.gameManager.getGameState())
         timeLeft = setTimeLeft
         if(sender != null) {
             Main.getGame().dev.parseDevMessage("Timer updated to $timeLeft seconds by ${sender.name}.", DevStatus.INFO)
@@ -362,10 +360,6 @@ class GameTask(private var game: Game) {
         return timeLeft
     }
 
-    fun getGameSubtitle() : String {
-        return gameSubtitle
-    }
-
     fun setGameSubtitle(newSubtitle : String) {
         gameSubtitle = newSubtitle
     }
@@ -375,7 +369,6 @@ class GameTask(private var game: Game) {
         previousTimeLeft = 0
         displayTime = "00:00"
         previousDisplayTime = "00:00"
-        setTimerTimeLeft = null
         gameSubtitle = ""
     }
 }

@@ -93,9 +93,10 @@ class QueueVisuals(private val game : Game) {
                         .append(Component.text("(${game.queue.getQueue().size}/${Queue.MIN_PLAYERS})", NamedTextColor.WHITE)))
             }
             QueueState.NO_GAME_AVAILABLE -> {
-                game.startGame()
                 if(game.gameManager.getGameState() != GameState.IDLE) {
                     queueStatus.name(Component.text("Awaiting available game...").color(TextColor.fromHexString("#ffff00")))
+                } else {
+                    game.startGame()
                 }
             }
             QueueState.SENDING_PLAYERS_TO_GAME -> {

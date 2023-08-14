@@ -1,21 +1,26 @@
 package dev.byrt.cheesehunt.manager
 
 import dev.byrt.cheesehunt.game.Game
+import dev.byrt.cheesehunt.state.Sounds
+
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextColor
+import net.kyori.adventure.text.format.TextDecoration
 
 import org.bukkit.Bukkit
+import org.bukkit.entity.Player
 
 import java.util.*
 
-@Suppress("unused")
 class StatisticsManager(private val game : Game) {
     private var playerCheesePickedUp = mutableMapOf<UUID, Int>()
     private var playerCheeseDropped = mutableMapOf<UUID, Int>()
     private var playerEliminations = mutableMapOf<UUID, Int>()
     private var playerDeaths = mutableMapOf<UUID, Int>()
+    private var playerKillStreaks = mutableMapOf<UUID, Int>()
 
-    fun incrementStat(uuid : UUID, stat : Statistic) {
+    fun updateStatistic(uuid : UUID, stat : Statistic) {
         when(stat) {
             Statistic.CHEESE_PICKED_UP -> {
                 playerCheesePickedUp.putIfAbsent(uuid, 0)
@@ -33,22 +38,56 @@ class StatisticsManager(private val game : Game) {
                 playerDeaths.putIfAbsent(uuid, 0)
                 playerDeaths[uuid] = (playerDeaths[uuid]?.plus(1)) as Int
             }
+            Statistic.KILL_STREAKS -> {
+                playerKillStreaks.putIfAbsent(uuid, 0)
+
+                if(game.respawnTask.getRespawnLoopMap().containsKey(uuid)) {
+                    playerKillStreaks[uuid] = 0
+                } else {
+                    playerKillStreaks[uuid] = (playerKillStreaks[uuid]?.plus(1)) as Int
+                    killStreak(Bukkit.getPlayer(uuid)!!, uuid)
+                }
+            }
         }
     }
 
-    private fun getUnsortedMap(stat : Statistic) : MutableMap<UUID, Int> {
-        return when(stat) {
-            Statistic.CHEESE_PICKED_UP -> {
-                playerCheesePickedUp
+    private fun killStreak(player : Player, uuid : UUID) {
+        if(playerKillStreaks[uuid]!! in 2..4) {
+            for(allPlayers in Bukkit.getOnlinePlayers()) {
+                if(allPlayers == player) {
+                    player.sendMessage(Component.text("[")
+                        .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                        .append(Component.text("] "))
+                        .append(Component.text("You are on a ${playerKillStreaks[uuid]} kill streak!", TextColor.fromHexString("#ed4440"))))
+                    player.playSound(player.location, Sounds.Score.KILL_STREAK, 0.5f, 1.0f + playerKillStreaks[uuid]!! * 0.1f)
+                } else {
+                    allPlayers.sendMessage(Component.text("[")
+                        .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                        .append(Component.text("] "))
+                        .append(Component.text(player.name, game.teamManager.getTeamNamedTextColor(player)))
+                        .append(Component.text(" is on a ${playerKillStreaks[uuid]} kill streak!", TextColor.fromHexString("#ed4440"))))
+                }
             }
-            Statistic.CHEESE_DROPPED -> {
-                playerCheeseDropped
-            }
-            Statistic.ELIMINATIONS -> {
-                playerEliminations
-            }
-            Statistic.DEATHS -> {
-                playerDeaths
+        } else {
+            if(playerKillStreaks[uuid]!! >= 5) {
+                for(allPlayers in Bukkit.getOnlinePlayers()) {
+                    if(allPlayers == player) {
+                        player.sendMessage(Component.text("[")
+                            .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                            .append(Component.text("] "))
+                            .append(Component.text("You are on a", TextColor.fromHexString("#ed4440")))
+                            .append(Component.text(" RAMPAGE!", TextColor.fromHexString("#cc1100"), TextDecoration.BOLD)))
+                        player.playSound(player.location, Sounds.Score.KILL_STREAK, 0.5f, 1.5f)
+                        player.playSound(player.location, Sounds.Score.KILL_STREAK_RAMPAGE, 0.85f, 2f)
+                    } else {
+                        allPlayers.sendMessage(Component.text("[")
+                            .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                            .append(Component.text("] "))
+                            .append(Component.text(player.name, game.teamManager.getTeamNamedTextColor(player)))
+                            .append(Component.text(" is on a", TextColor.fromHexString("#ed4440")))
+                            .append(Component.text(" RAMPAGE!", TextColor.fromHexString("#cc1100"), TextDecoration.BOLD)))
+                    }
+                }
             }
         }
     }
@@ -67,10 +106,13 @@ class StatisticsManager(private val game : Game) {
             Statistic.DEATHS -> {
                 playerDeaths.toList().sortedBy { (_, int) -> int }.toMap()
             }
+            Statistic.KILL_STREAKS -> {
+                playerKillStreaks.toList().sortedBy { (_, int) -> int }.reversed().toMap()
+            }
         }
     }
 
-    fun statsBreakdown(stat : Statistic) {
+    fun statisticBreakdown(stat : Statistic) {
         val sortedMap = getSortedMap(stat)
         var i = 1
         when(stat) {
@@ -142,14 +184,18 @@ class StatisticsManager(private val game : Game) {
                     i++
                 }
             }
+            Statistic.KILL_STREAKS -> {
+                // Unfinished
+            }
         }
     }
 
-    fun resetStats() {
+    fun resetStatistics() {
         playerCheesePickedUp.clear()
         playerCheeseDropped.clear()
         playerEliminations.clear()
         playerDeaths.clear()
+        playerKillStreaks.clear()
     }
 }
 
@@ -157,5 +203,6 @@ enum class Statistic {
     CHEESE_PICKED_UP,
     CHEESE_DROPPED,
     ELIMINATIONS,
-    DEATHS
+    DEATHS,
+    KILL_STREAKS
 }

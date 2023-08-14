@@ -19,7 +19,7 @@ class PlayerResourcePackLoadEvent : Listener {
     @EventHandler
     private fun onPackLoad(e : PlayerResourcePackStatusEvent) {
         if(e.status == Status.SUCCESSFULLY_LOADED) {
-            e.player.showTitle(Title.title(Component.text("\uD000"), Component.text(""), Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(3), Duration.ofSeconds(1))))
+            e.player.showTitle(Title.title(Component.text("\uD000"), Component.text(""), Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(1), Duration.ofSeconds(1))))
 
             if(Main.getGame().gameManager.getGameState() == GameState.IN_GAME) {
                 if(Main.getGame().gameTask.getTimeLeft() >= 29) {

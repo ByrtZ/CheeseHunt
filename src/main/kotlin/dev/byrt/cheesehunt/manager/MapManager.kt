@@ -6,7 +6,6 @@ import net.kyori.adventure.text.format.NamedTextColor
 
 import org.bukkit.entity.Player
 
-@Suppress("unused")
 class MapManager(private val game : Game) {
     private var currentMap = Maps.REFORGED
 

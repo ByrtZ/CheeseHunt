@@ -10,7 +10,6 @@ import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
 import java.io.IOException
 
-@Suppress("unused")
 class ConfigManager(private val game : Game) {
     private lateinit var whitelistConfig : File
     private lateinit var whitelistFileConfig : FileConfiguration

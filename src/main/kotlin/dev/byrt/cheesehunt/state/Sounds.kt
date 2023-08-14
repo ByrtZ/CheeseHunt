@@ -2,7 +2,6 @@ package dev.byrt.cheesehunt.state
 
 import dev.byrt.cheesehunt.game.Game
 
-@Suppress("unused")
 class Sounds(private val game : Game) {
     object Music {
         const val GAME_MUSIC = "mcc.rocket_spleef"
@@ -34,7 +33,6 @@ class Sounds(private val game : Game) {
     object Respawn {
         const val RESPAWN_TIMER = "ui.button.click"
         const val RESPAWN = "block.beacon.power_select"
-        const val RESURRECT = "item.totem.use"
     }
     object Score {
         const val ELIMINATION = "entity.player.levelup"
@@ -44,6 +42,8 @@ class Sounds(private val game : Game) {
         const val CLAIM_CHEESE = "entity.player.levelup"
         const val NEW_MULTIPLIER = "block.portal.travel"
         const val MULTIPLIER_RESET = "entity.ender_eye.death"
+        const val KILL_STREAK = "entity.ender_dragon.growl"
+        const val KILL_STREAK_RAMPAGE = "entity.warden.sonic_boom"
     }
     object Alert {
         const val GENERAL_ALERT = "block.note_block.bit"

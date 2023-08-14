@@ -98,7 +98,7 @@ class GameManager(private val game : Game) {
 
     private fun starting() {
         for(player in Bukkit.getOnlinePlayers()) {
-            player.showTitle(Title.title(Component.text("\uD000"), Component.text(""), Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(3), Duration.ofSeconds(1))))
+            player.showTitle(Title.title(Component.text("\uD000"), Component.text(""), Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(2), Duration.ofSeconds(1))))
         }
         game.playerManager.setSpectatorsGameMode()
         game.playerManager.setPlayersNotFlying()
@@ -135,7 +135,7 @@ class GameManager(private val game : Game) {
                     .append(Component.text("OVERTIME: ", NamedTextColor.RED, TextDecoration.BOLD))
                     .append(Component.text("You can now ", NamedTextColor.WHITE))
                     .append(Component.text("ONLY", NamedTextColor.WHITE, TextDecoration.BOLD))
-                    .append(Component.text(" gather Cheese, 45 seconds remain!\n")
+                    .append(Component.text(" gather Cheese, $OVERTIME_TIME seconds remain!\n")
                 )
             )
         }
@@ -220,7 +220,7 @@ class GameManager(private val game : Game) {
         const val IN_GAME_TIME = 720
         const val ROUND_END_TIME = 10
         const val GAME_END_TIME = 30
-        const val OVERTIME_TIME = 45
+        const val OVERTIME_TIME = 30
     }
 }
 enum class GameState {

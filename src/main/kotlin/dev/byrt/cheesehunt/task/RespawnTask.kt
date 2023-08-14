@@ -21,7 +21,6 @@ import java.util.*
 
 class RespawnTask(private val game: Game) {
     private val respawnLoopMap = mutableMapOf<UUID, BukkitRunnable>()
-
     fun startRespawnLoop(player : Player, plugin : Plugin, team : Teams) {
         val bukkitRunnable = object: BukkitRunnable() {
             var respawnTimer = 6
@@ -30,16 +29,16 @@ class RespawnTask(private val game: Game) {
                 if(game.gameManager.getGameState() == GameState.IN_GAME || game.gameManager.getGameState() == GameState.OVERTIME) {
                     if(respawnTimer > 0) {
                         player.playSound(player.location, Sounds.Respawn.RESPAWN_TIMER, 1f, 2f)
+                        player.showTitle(Title.title(
+                                Component.text("Respawning in...", NamedTextColor.YELLOW),
+                                Component.text("►$respawnTimer◄", NamedTextColor.WHITE, TextDecoration.BOLD),
+                                Title.Times.times(Duration.ZERO, Duration.ofSeconds(2), Duration.ZERO)
+                            )
+                        )
                     } else {
                         player.playSound(player.location, Sounds.Respawn.RESPAWN, 1000f, 1f)
+                        player.resetTitle()
                     }
-                    player.showTitle(
-                        Title.title(
-                            Component.text("Respawning in...", NamedTextColor.YELLOW),
-                            Component.text("►$respawnTimer◄", NamedTextColor.WHITE, TextDecoration.BOLD),
-                            Title.Times.times(Duration.ZERO, Duration.ofSeconds(2), Duration.ZERO)
-                        )
-                    )
                 }
                 if(respawnTimer == 0) {
                     when(team) {
@@ -71,6 +70,9 @@ class RespawnTask(private val game: Game) {
             game.itemManager.givePlayerKit(player)
         }
         player.gameMode = GameMode.ADVENTURE
-        player.resetTitle()
+    }
+
+    fun getRespawnLoopMap() : Map<UUID, BukkitRunnable> {
+        return respawnLoopMap
     }
 }

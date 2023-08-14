@@ -11,7 +11,6 @@ import org.bukkit.Material
 import org.bukkit.block.BlockFace
 import org.bukkit.block.data.Directional
 
-@Suppress("unused")
 class BlockManager(private val game : Game) {
     fun removeBarriers() {
         for (z in 999..1001) { // Removing red barrier

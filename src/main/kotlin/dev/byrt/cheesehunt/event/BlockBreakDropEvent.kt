@@ -32,7 +32,10 @@ class BlockBreakDropEvent : Listener {
                     e.isCancelled = false
                 } else {
                     if(e.block.type == Material.SPONGE) {
-                        e.player.sendMessage(Component.text("You already have a piece of cheese, don't be greedy!", NamedTextColor.RED))
+                        e.player.sendMessage(Component.text("[")
+                            .append(Component.text("▶").color(NamedTextColor.YELLOW))
+                            .append(Component.text("] "))
+                            .append(Component.text("You already have a piece of cheese, don't be greedy!", NamedTextColor.RED)))
                     }
                     e.isCancelled = true
                 }

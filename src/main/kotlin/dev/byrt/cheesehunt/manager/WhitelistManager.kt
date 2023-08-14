@@ -5,7 +5,6 @@ import dev.byrt.cheesehunt.game.Game
 
 import org.bukkit.Bukkit
 
-@Suppress("unused")
 class WhitelistManager(private val game : Game) {
     private var currentWhitelistedGroup = WhitelistGroup.ADMIN
 

@@ -215,7 +215,7 @@ class ItemManager(private val game : Game) {
                 player.playSound(player.location, Sounds.Item.ESCAPE, 1.0f, 1.0f)
             }
             PowerUpItem.HASTE_CHARM -> {
-                player.addPotionEffect(PotionEffect(PotionEffectType.FAST_DIGGING, 160, 4, false, false))
+                player.addPotionEffect(PotionEffect(PotionEffectType.FAST_DIGGING, 160, 9, false, false))
             }
         }
     }

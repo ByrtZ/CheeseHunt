@@ -90,7 +90,7 @@ class Game(val plugin : Main) {
         playerManager.resetPlayers()
         locationManager.resetSpawnCounters()
         scoreManager.resetScores()
-        statsManager.resetStats()
+        statsManager.resetStatistics()
         infoBoardManager.destroyScoreboard()
         infoBoardManager.buildScoreboard()
         queue.setQueueState(QueueState.IDLE)

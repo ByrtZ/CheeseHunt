@@ -299,7 +299,7 @@ class GameTask(private var game : Game) {
                         }
                     }
                     if(timeLeft == 18) {
-                        game.statsManager.statsBreakdown(Statistic.CHEESE_PICKED_UP)
+                        game.statsManager.statisticBreakdown(Statistic.CHEESE_PICKED_UP)
                     }
                     if(timeLeft == 15) {
                         for(player in Bukkit.getOnlinePlayers()) {
@@ -307,7 +307,7 @@ class GameTask(private var game : Game) {
                         }
                     }
                     if(timeLeft == 13) {
-                        game.statsManager.statsBreakdown(Statistic.CHEESE_DROPPED)
+                        game.statsManager.statisticBreakdown(Statistic.CHEESE_DROPPED)
                     }
                     if(timeLeft == 10) {
                         for(player in Bukkit.getOnlinePlayers()) {
@@ -315,7 +315,7 @@ class GameTask(private var game : Game) {
                         }
                     }
                     if(timeLeft == 8) {
-                        game.statsManager.statsBreakdown(Statistic.ELIMINATIONS)
+                        game.statsManager.statisticBreakdown(Statistic.ELIMINATIONS)
                     }
                     if(timeLeft == 5) {
                         for(player in Bukkit.getOnlinePlayers()) {
@@ -323,7 +323,7 @@ class GameTask(private var game : Game) {
                         }
                     }
                     if(timeLeft == 3) {
-                        game.statsManager.statsBreakdown(Statistic.DEATHS)
+                        game.statsManager.statisticBreakdown(Statistic.DEATHS)
                     }
                     if(timeLeft <= 0) {
                         game.gameManager.nextState()

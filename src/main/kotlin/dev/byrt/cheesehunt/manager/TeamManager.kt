@@ -18,7 +18,6 @@ import org.bukkit.scoreboard.Team
 import java.time.Duration
 import java.util.*
 
-@Suppress("unused")
 class TeamManager(private val game : Game) {
     private var redTeam = ArrayList<UUID>()
     private var blueTeam = ArrayList<UUID>()
@@ -302,13 +301,5 @@ class TeamManager(private val game : Game) {
 
     fun getSpectators(): ArrayList<UUID> {
         return this.spectators
-    }
-
-    fun getRedDisplayTeam(): Team {
-        return this.redDisplayTeam
-    }
-
-    fun getBlueDisplayTeam(): Team {
-        return this.blueDisplayTeam
     }
 }

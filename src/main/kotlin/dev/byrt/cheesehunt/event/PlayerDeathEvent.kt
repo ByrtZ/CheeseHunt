@@ -57,13 +57,15 @@ class PlayerDeathEvent : Listener {
         player.gameMode = GameMode.SPECTATOR
         player.inventory.clear()
         Main.getGame().playerManager.clearPotionEffects(player)
-        Main.getGame().statsManager.incrementStat(player.uniqueId, Statistic.DEATHS)
+        Main.getGame().statsManager.updateStatistic(player.uniqueId, Statistic.DEATHS)
         if(Main.getGame().teamManager.isInRedTeam(player.uniqueId)) {
             Main.getGame().cheeseManager.teamFireworks(player, Teams.RED)
             Main.getGame().respawnTask.startRespawnLoop(player, Main.getPlugin(), Teams.RED)
+            Main.getGame().statsManager.updateStatistic(player.uniqueId, Statistic.KILL_STREAKS)
         } else if(Main.getGame().teamManager.isInBlueTeam(player.uniqueId)) {
             Main.getGame().cheeseManager.teamFireworks(player, Teams.BLUE)
             Main.getGame().respawnTask.startRespawnLoop(player, Main.getPlugin(), Teams.BLUE)
+            Main.getGame().statsManager.updateStatistic(player.uniqueId, Statistic.KILL_STREAKS)
         }
     }
 
@@ -77,7 +79,8 @@ class PlayerDeathEvent : Listener {
         }
         Main.getGame().scoreManager.modifyScore(5 * Main.getGame().scoreManager.getMultiplier(), ScoreMode.ADD, Main.getGame().teamManager.getPlayerTeam(player.uniqueId))
         Main.getGame().infoBoardManager.updateScoreboardScores()
-        Main.getGame().statsManager.incrementStat(player.uniqueId, Statistic.ELIMINATIONS)
+        Main.getGame().statsManager.updateStatistic(player.uniqueId, Statistic.ELIMINATIONS)
+        Main.getGame().statsManager.updateStatistic(player.uniqueId, Statistic.KILL_STREAKS)
         player.playSound(player.location, Sounds.Score.ELIMINATION, 1f, 1.25f)
         player.showTitle(Title.title(Component.text(""), Component.text("[").append(Component.text("⚔", NamedTextColor.GREEN).append(Component.text("] ", NamedTextColor.WHITE)).append(Component.text(playerKilled.name, Main.getGame().teamManager.getTeamNamedTextColor(playerKilled)))), Title.Times.times(Duration.ZERO, Duration.ofSeconds(1), Duration.ofSeconds(1))))
     }

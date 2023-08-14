@@ -53,14 +53,14 @@ class LocationManager(private val game : Game) {
     fun incrementSpawnCounter(team : Teams) {
         when(team) {
             Teams.RED -> {
-                if(redSpawnCounter >= redSpawnCounter - 1) {
+                if(redSpawnCounter >= redSpawns.size - 1) {
                     redSpawnCounter = 0
                 } else {
                     redSpawnCounter++
                 }
             }
             Teams.BLUE -> {
-                if(blueSpawnCounter >= blueSpawnCounter - 1) {
+                if(blueSpawnCounter >= blueSpawns.size - 1) {
                     blueSpawnCounter = 0
                 } else {
                     blueSpawnCounter++

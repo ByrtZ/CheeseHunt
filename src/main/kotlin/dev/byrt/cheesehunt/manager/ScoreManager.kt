@@ -21,7 +21,6 @@ import java.time.Duration
 
 import kotlin.random.Random
 
-@Suppress("unused")
 class ScoreManager(private val game : Game) {
     private var redScore = 0
     private var blueScore = 0

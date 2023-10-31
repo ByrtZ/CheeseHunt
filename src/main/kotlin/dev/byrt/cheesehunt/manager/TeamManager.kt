@@ -6,6 +6,8 @@ import dev.byrt.cheesehunt.state.Sounds
 import dev.byrt.cheesehunt.state.Teams
 
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.ComponentLike
+import net.kyori.adventure.text.JoinConfiguration
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.title.Title
@@ -17,6 +19,8 @@ import org.bukkit.scoreboard.Team
 
 import java.time.Duration
 import java.util.*
+
+import kotlin.collections.ArrayList
 
 class TeamManager(private val game : Game) {
     private var redTeam = ArrayList<UUID>()
@@ -66,6 +70,7 @@ class TeamManager(private val game : Game) {
                 player.sendMessage(Component.text("You are now a Spectator."))
             }
         }
+        game.tabListManager.updateAllTabList()
     }
 
     fun removeFromTeam(player : Player, uuid : UUID, team : Teams) {
@@ -94,6 +99,7 @@ class TeamManager(private val game : Game) {
                 player.sendMessage(Component.text("You are no longer a Spectator."))
             }
         }
+        game.tabListManager.updateAllTabList()
     }
 
     fun shuffle(players : Collection<Player>) {
@@ -301,5 +307,23 @@ class TeamManager(private val game : Game) {
 
     fun getSpectators(): ArrayList<UUID> {
         return this.spectators
+    }
+
+    fun getPlayerNames(team: Teams): Component {
+        val components = ArrayList<ComponentLike>()
+        var uuidList = ArrayList<UUID>()
+        when(team) {
+            Teams.RED -> { uuidList = redTeam }
+            Teams.BLUE -> { uuidList = blueTeam }
+            Teams.SPECTATOR -> { game.plugin.logger.warning("Attempted to access spectators but this feature is unnecessary at the moment.") }
+        }
+        for(uuid in uuidList) {
+            if(game.respawnTask.getRespawnLoopMap().containsKey(uuid)) {
+                components.add(Component.text("${Bukkit.getPlayer(uuid)?.name}     ", NamedTextColor.DARK_GRAY))
+            } else {
+                components.add(Component.text("${Bukkit.getPlayer(uuid)?.name}     ", Bukkit.getPlayer(uuid)?.let { getTeamNamedTextColor(it) }))
+            }
+        }
+        return Component.join(JoinConfiguration.noSeparators(), components)
     }
 }

@@ -2,12 +2,11 @@ package dev.byrt.cheesehunt.state
 
 import dev.byrt.cheesehunt.game.Game
 
-@Suppress("unused")
 class Timer(private val game : Game) {
     private var timerState = TimerState.INACTIVE
 
     fun setTimerState(newState : TimerState) {
-        if(newState == this.timerState) return
+        if(newState == timerState) return
         this.timerState = newState
     }
 

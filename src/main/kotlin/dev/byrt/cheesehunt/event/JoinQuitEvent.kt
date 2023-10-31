@@ -24,7 +24,7 @@ class JoinQuitEvent : Listener {
         Main.getGame().infoBoardManager.showScoreboard()
         e.player.teleport(Location(Bukkit.getWorld("Cheese"), 0.5, -52.0 ,0.5, 0.0f, 0.0f))
         e.player.inventory.clear()
-        e.player.sendPlayerListHeaderAndFooter(Main.getGame().tabListManager.getTabHeader(), Main.getGame().tabListManager.getTabFooter())
+        Main.getGame().tabListManager.sendTabList(e.player)
         Main.getGame().teamManager.addToTeam(e.player, e.player.uniqueId, Teams.SPECTATOR)
         if(Main.getGame().gameManager.getGameState() == GameState.IDLE) {
             e.player.gameMode = GameMode.ADVENTURE

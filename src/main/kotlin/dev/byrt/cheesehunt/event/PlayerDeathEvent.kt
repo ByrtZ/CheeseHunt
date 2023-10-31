@@ -29,7 +29,6 @@ class PlayerDeathEvent : Listener {
             e.isCancelled = true
         } else {
             val playerDied = e.player
-
             if(playerDied.inventory.itemInOffHand.type == Material.TOTEM_OF_UNDYING) {
                 Main.getGame().itemManager.useItem(PowerUpItem.RESURRECTION_CHARM, playerDied)
             } else {

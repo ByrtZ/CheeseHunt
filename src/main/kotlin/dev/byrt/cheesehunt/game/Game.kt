@@ -14,7 +14,6 @@ import org.bukkit.Bukkit
 
 import java.time.Duration
 
-@Suppress("unused")
 class Game(val plugin : Main) {
     val gameManager = GameManager(this)
     val roundManager = Rounds(this)
@@ -26,7 +25,6 @@ class Game(val plugin : Main) {
     val cheeseManager = CheeseManager(this)
     val infoBoardManager = InfoBoardManager(this)
     val tabListManager = TabListManager(this)
-    val soundManager = Sounds(this)
     val locationManager = LocationManager(this)
     val scoreManager = ScoreManager(this)
     val statsManager = StatisticsManager(this)
@@ -69,10 +67,12 @@ class Game(val plugin : Main) {
         locationManager.populateSpawns()
         locationManager.populateWinShowArea()
         tabListManager.populateCheesePuns()
+        tabListManager.buildBase()
         queueVisuals.spawnQueueNPC()
     }
 
     fun cleanUp() {
+        blockManager.resetAllBlocks()
         queueVisuals.removeQueueNPC()
         teamManager.destroyDisplayTeams()
         infoBoardManager.destroyScoreboard()

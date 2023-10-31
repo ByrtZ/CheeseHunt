@@ -59,6 +59,7 @@ class RespawnTask(private val game: Game) {
         }
         bukkitRunnable.runTaskTimer(plugin, 0L, 20L)
         respawnLoopMap[player.uniqueId] = bukkitRunnable
+        game.tabListManager.updateAllTabList()
     }
 
     fun stopRespawnLoop(player : Player) {
@@ -70,6 +71,7 @@ class RespawnTask(private val game: Game) {
             game.itemManager.givePlayerKit(player)
         }
         player.gameMode = GameMode.ADVENTURE
+        game.tabListManager.updateAllTabList()
     }
 
     fun getRespawnLoopMap() : Map<UUID, BukkitRunnable> {

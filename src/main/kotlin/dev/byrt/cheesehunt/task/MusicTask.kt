@@ -10,7 +10,6 @@ import org.bukkit.scheduler.BukkitRunnable
 
 import java.util.*
 
-@Suppress("unused")
 class MusicTask(private val game : Game) {
     private val musicLoopMap = mutableMapOf<UUID, BukkitRunnable>()
 

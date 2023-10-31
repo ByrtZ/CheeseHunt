@@ -32,7 +32,6 @@ import java.util.function.Consumer
 private lateinit var game : Game
 private lateinit var messenger : Messenger
 
-@Suppress("unused")
 class Main : JavaPlugin() {
     override fun onEnable() {
         logger.info("Starting Cheese Hunt plugin...")

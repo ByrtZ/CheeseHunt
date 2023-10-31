@@ -6,6 +6,7 @@ import dev.byrt.cheesehunt.state.Teams
 
 import org.bukkit.*
 import org.bukkit.entity.Player
+import org.bukkit.util.Vector
 
 class PlayerManager(private var game : Game) {
     fun setPlayersNotFlying() {
@@ -29,6 +30,7 @@ class PlayerManager(private var game : Game) {
 
     private fun enableFlightPlayers(player: Player) {
         if (player.gameMode == GameMode.ADVENTURE || player.gameMode == GameMode.SURVIVAL) {
+            player.velocity = Vector(0.0, 0.5, 0.0)
             player.allowFlight = true
             player.isFlying = true
         }

@@ -92,6 +92,7 @@ class ScoreManager(private val game : Game) {
                 if(team == Teams.BLUE) blueScore -= score
             }
         }
+        game.tabListManager.updateAllTabList()
     }
 
     fun setMultiplier(newMultiplier : Int) {

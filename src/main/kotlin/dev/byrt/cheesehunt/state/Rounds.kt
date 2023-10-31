@@ -2,7 +2,6 @@ package dev.byrt.cheesehunt.state
 
 import dev.byrt.cheesehunt.game.Game
 
-@Suppress("unused")
 class Rounds(private val game : Game) {
     private var roundState = RoundState.ONE
     private var totalRounds = 1
@@ -18,15 +17,15 @@ class Rounds(private val game : Game) {
     }
 
     fun setRoundState(newRound : RoundState) {
-        if(newRound == this.roundState) return
+        if(newRound == roundState) return
     }
 
     fun getRoundState() : RoundState {
-        return this.roundState
+        return roundState
     }
 
     fun getTotalRounds() : Int {
-        return this.totalRounds
+        return totalRounds
     }
 }
 

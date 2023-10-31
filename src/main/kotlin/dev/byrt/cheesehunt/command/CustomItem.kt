@@ -27,6 +27,9 @@ class CustomItem : BaseCommand {
             CustomItems.ASPECT_OF_THE_VOID -> {
                 createTeleportSpoon(sender)
             }
+            CustomItems.RAYGUN -> {
+                createRayGun(sender)
+            }
         }
     }
 
@@ -42,7 +45,20 @@ class CustomItem : BaseCommand {
         player.sendMessage(Component.text("Received custom item ${CustomItems.ASPECT_OF_THE_VOID}.").color(NamedTextColor.GREEN))
     }
 
+    private fun createRayGun(player : Player) {
+        val rayGun = ItemStack(Material.GOLDEN_SWORD)
+        val rayGunMeta: ItemMeta = rayGun.itemMeta
+        rayGunMeta.displayName(Component.text("Ray-Gun").color(TextColor.fromHexString("#fa6028")).decoration(TextDecoration.ITALIC, false))
+        rayGunMeta.isUnbreakable = true
+        rayGunMeta.addEnchant(Enchantment.MENDING, 1, false)
+        rayGunMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES)
+        rayGun.itemMeta = rayGunMeta
+        player.inventory.addItem(ItemStack(rayGun))
+        player.sendMessage(Component.text("Received custom item ${CustomItems.RAYGUN}.").color(NamedTextColor.GREEN))
+    }
+
     enum class CustomItems {
-       ASPECT_OF_THE_VOID
+       ASPECT_OF_THE_VOID,
+       RAYGUN
     }
 }

@@ -1,56 +1,101 @@
 package dev.byrt.cheesehunt.manager
 
 import dev.byrt.cheesehunt.game.Game
+import dev.byrt.cheesehunt.game.GameState
+import dev.byrt.cheesehunt.state.Teams
+
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 
+import org.bukkit.Bukkit
+import org.bukkit.entity.Player
+
 import kotlin.collections.ArrayList
 import kotlin.random.Random
 
-@Suppress("unused")
 class TabListManager(private var game : Game) {
-    private var cheesePuns: ArrayList<String> = arrayListOf()
-    private var header: Component = Component.text("")
-    private var footer: Component = Component.text("")
+    private var cheesePuns = ArrayList<String>()
+    private val baseHeader = Component.text("\nCheese Hunt", NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, true).append(Component.text("\n\n               An MCC Tester classic meme, brought to you by ", NamedTextColor.WHITE).decoration(TextDecoration.BOLD, false).append(Component.text("Byrt", NamedTextColor.RED)).append(Component.text(".               \n", NamedTextColor.WHITE).decoration(TextDecoration.BOLD, false)))
+    private var currentHeader = Component.text("")
+    private var blankLines = ""
+    private var footer = Component.text("")
 
-    private fun assignRandomPun() {
+    fun buildBase() {
+        for(i in 0..200) { blankLines += "\n" }
+        currentHeader = baseHeader.append(Component.text("\nNo teams available.", NamedTextColor.GRAY)).append(assignRandomPun()).append(Component.text(blankLines))
+    }
+
+    fun updateAllTabList() {
+        val red = game.teamManager.getRedTeam()
+        val blue = game.teamManager.getBlueTeam()
+        val redScore = game.scoreManager.getRedScore()
+        val blueScore = game.scoreManager.getBlueScore()
+        if(red.isEmpty() && blue.isEmpty()) {
+            currentHeader = baseHeader.append(Component.text("\nNo teams available.", NamedTextColor.GRAY).decoration(TextDecoration.BOLD, false)).append(assignRandomPun()).append(Component.text(blankLines))
+        }
+        if(red.isNotEmpty() && blue.isNotEmpty() && game.scoreManager.getRedScore() > game.scoreManager.getBlueScore()) {
+            currentHeader = baseHeader
+                .append(Component.text("\n1. ", NamedTextColor.WHITE).decoration(TextDecoration.BOLD, false).append(Component.text("Red Team\n", NamedTextColor.RED)).append(game.teamManager.getPlayerNames(Teams.RED)).append(Component.text("     ${redScore}c", NamedTextColor.WHITE))
+                .append(Component.text("\n\n2. ", NamedTextColor.WHITE).append(Component.text("Blue Team\n", NamedTextColor.BLUE)).append(game.teamManager.getPlayerNames(Teams.BLUE)).append(Component.text("     ${blueScore}c", NamedTextColor.WHITE)).append(assignRandomPun()).append(Component.text(blankLines))))
+        }
+        if(red.isNotEmpty() && blue.isNotEmpty() && game.scoreManager.getRedScore() < game.scoreManager.getBlueScore()) {
+            currentHeader = baseHeader
+                .append(Component.text("\n1. ", NamedTextColor.WHITE).decoration(TextDecoration.BOLD, false).append(Component.text("Blue Team\n", NamedTextColor.BLUE)).append(game.teamManager.getPlayerNames(Teams.BLUE)).append(Component.text("     ${blueScore}c", NamedTextColor.WHITE))
+                    .append(Component.text("\n\n2. ", NamedTextColor.WHITE).append(Component.text("Red Team\n", NamedTextColor.RED)).append(game.teamManager.getPlayerNames(Teams.RED)).append(Component.text("     ${redScore}c", NamedTextColor.WHITE)).append(assignRandomPun()).append(Component.text(blankLines))))
+        }
+        if(red.isNotEmpty() && blue.isNotEmpty() && game.scoreManager.getRedScore() == game.scoreManager.getBlueScore() && game.gameManager.getGameState() != GameState.IDLE) {
+            currentHeader = baseHeader
+                .append(Component.text("\n1. ", NamedTextColor.WHITE).decoration(TextDecoration.BOLD, false).append(Component.text("Red Team\n", NamedTextColor.RED)).append(game.teamManager.getPlayerNames(Teams.RED)).append(Component.text("     ${redScore}c", NamedTextColor.WHITE))
+                    .append(Component.text("\n\n1. ", NamedTextColor.WHITE).append(Component.text("Blue Team\n", NamedTextColor.BLUE)).append(game.teamManager.getPlayerNames(Teams.BLUE)).append(Component.text("     ${blueScore}c", NamedTextColor.WHITE)).append(assignRandomPun()).append(Component.text(blankLines))))
+        }
+        if(red.isNotEmpty() && blue.isNotEmpty() && game.gameManager.getGameState() == GameState.IDLE) {
+            currentHeader = baseHeader
+                .append(Component.text("\n1. ", NamedTextColor.WHITE).decoration(TextDecoration.BOLD, false).append(Component.text("Red Team\n", NamedTextColor.RED)).append(game.teamManager.getPlayerNames(Teams.RED)).append(Component.text("     ${redScore}c", NamedTextColor.WHITE))
+                    .append(Component.text("\n\n2. ", NamedTextColor.WHITE).append(Component.text("Blue Team\n", NamedTextColor.BLUE)).append(game.teamManager.getPlayerNames(Teams.BLUE)).append(Component.text("     ${blueScore}c", NamedTextColor.WHITE)).append(assignRandomPun()).append(Component.text(blankLines))))
+        }
+        if(red.isNotEmpty() && blue.isEmpty()) {
+            currentHeader = baseHeader
+                .append(Component.text("\n1. ", NamedTextColor.WHITE).decoration(TextDecoration.BOLD, false).append(Component.text("Red Team\n", NamedTextColor.RED)).append(game.teamManager.getPlayerNames(Teams.RED)).append(Component.text("     ${redScore}c", NamedTextColor.WHITE)).append(assignRandomPun()).append(Component.text(blankLines)))
+        }
+        if(blue.isNotEmpty() && red.isEmpty()) {
+            currentHeader = baseHeader
+                .append(Component.text("\n1. ", NamedTextColor.WHITE).decoration(TextDecoration.BOLD, false).append(Component.text("Blue Team\n", NamedTextColor.BLUE)).append(game.teamManager.getPlayerNames(Teams.BLUE)).append(Component.text("     ${blueScore}c", NamedTextColor.WHITE)).append(assignRandomPun()).append(Component.text(blankLines)))
+        }
+        for(player in Bukkit.getOnlinePlayers()) {
+            sendTabList(player)
+        }
+    }
+
+    fun sendTabList(player : Player) {
+        player.sendPlayerListHeaderAndFooter(currentHeader, footer)
+    }
+
+    private fun assignRandomPun() : Component {
         val randomIndex = Random.nextInt(cheesePuns.size)
         val randomPun = cheesePuns[randomIndex]
-        header = Component.text("Cheese Hunt").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, true)
-            .append(Component.text("\n               An MCC Tester classic meme, brought to you by ").color(NamedTextColor.WHITE).decoration(TextDecoration.BOLD, false).append(Component.text("Byrt").color(NamedTextColor.RED))
-            .append(Component.text(".               \n").color(NamedTextColor.GRAY).decoration(TextDecoration.BOLD, false)))
-        footer = Component.text(randomPun).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, true)
+        return Component.text(randomPun).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, true).decoration(TextDecoration.BOLD, false)
     }
 
     fun populateCheesePuns() {
-        cheesePuns.add("\n'When life gives you cheese, you make a minigame with it'\n")
-        cheesePuns.add("\n'I don't have any gouda puns to put here'\n")
-        cheesePuns.add("\n'Do you brie-lieve in life after love?'\n")
-        cheesePuns.add("\n'I'd make a cheesy joke, but I gouda say, it'd brie a bit too forced'\n")
-        cheesePuns.add("\n'You cheddar not say any cheese jokes!'\n")
-        cheesePuns.add("\n'Made you look: Cheese Edition'\n")
-        cheesePuns.add("\n'Nothing gets cheddar than this'\n")
-        cheesePuns.add("\n'Anything you can do, I can do feta'\n")
-        cheesePuns.add("\n'You think you’re feta than me?'\n")
-        cheesePuns.add("\n'Hello, is it brie you're looking for?'\n")
-        cheesePuns.add("\n'This might sound cheesy, but I think you're really grate'\n")
-        cheesePuns.add("\n'Damn! You're looking mozzar-hella good today!'\n")
-        cheesePuns.add("\n'Hey, I camembert the last time we saw each other'\n")
-        cheesePuns.add("\n'After the cheese factory exploded, all that was left was de-brie'\n")
-        cheesePuns.add("\n'Sweet dreams are made of cheese'\n")
-        cheesePuns.add("\n'I brought my Cheese rifle, it's time to go hunting'\n")
-        cheesePuns.add("\n'I swiss you the best!'\n")
-        cheesePuns.add("\n'Cheddar days are coming...'\n")
-        cheesePuns.add("\n'Sweet dreams are made of cheese,\nWho am I to disa-brie,\nI cheddar the world by the feta cheese,\nEverybody's looking for stilton.'\n")
-        assignRandomPun()
-    }
-
-    fun getTabHeader(): Component {
-        return header
-    }
-
-    fun getTabFooter(): Component {
-        return footer
+        cheesePuns.add("\n\n'When life gives you cheese, you make a minigame with it'\n")
+        cheesePuns.add("\n\n'I don't have any gouda puns to put here'\n")
+        cheesePuns.add("\n\n'Do you brie-lieve in life after love?'\n")
+        cheesePuns.add("\n\n'I'd make a cheesy joke, but I gouda say, it'd brie a bit too forced'\n")
+        cheesePuns.add("\n\n'You cheddar not say any cheese jokes!'\n")
+        cheesePuns.add("\n\n'Made you look: Cheese Edition'\n")
+        cheesePuns.add("\n\n'Nothing gets cheddar than this'\n")
+        cheesePuns.add("\n\n'Anything you can do, I can do feta'\n")
+        cheesePuns.add("\n\n'You think you’re feta than me?'\n")
+        cheesePuns.add("\n\n'Hello, is it brie you're looking for?'\n")
+        cheesePuns.add("\n\n'This might sound cheesy, but I think you're really grate'\n")
+        cheesePuns.add("\n\n'Damn! You're looking mozzar-hella good today!'\n")
+        cheesePuns.add("\n\n'Hey, I camembert the last time we saw each other'\n")
+        cheesePuns.add("\n\n'After the cheese factory exploded, all that was left was de-brie'\n")
+        cheesePuns.add("\n\n'Sweet dreams are made of cheese'\n")
+        cheesePuns.add("\n\n'I brought my Cheese rifle, it's time to go hunting'\n")
+        cheesePuns.add("\n\n'I swiss you the best!'\n")
+        cheesePuns.add("\n\n'Cheddar days are coming...'\n")
+        cheesePuns.add("\n\n'Sweet dreams are made of cheese,\nWho am I to disa-brie,\nI cheddar the world by the feta cheese,\nEverybody's looking for stilton.'\n")
     }
 }

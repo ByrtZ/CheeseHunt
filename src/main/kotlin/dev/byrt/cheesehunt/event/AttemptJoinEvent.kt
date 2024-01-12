@@ -14,6 +14,7 @@ class AttemptJoinEvent : Listener {
     private fun onAttemptLogin(e : AsyncPlayerPreLoginEvent) {
         if(!Bukkit.getWhitelistedPlayers().contains(Bukkit.getOfflinePlayer(e.uniqueId))) {
             Main.getGame().dev.parseDevMessage("Player '${e.name}' (${e.uniqueId}) attempted to join but is not whitelisted.", DevStatus.SEVERE)
+            Main.getGame().dev.parseTempWhitelistPrompt(e.name)
         }
     }
 }

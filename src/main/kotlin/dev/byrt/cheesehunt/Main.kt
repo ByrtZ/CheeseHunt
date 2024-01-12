@@ -22,6 +22,7 @@ import org.bukkit.event.Listener
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.plugin.messaging.Messenger
+import org.incendo.interfaces.paper.PaperInterfaceListeners
 
 import org.reflections.Reflections
 
@@ -41,6 +42,7 @@ class Main : JavaPlugin() {
         setupEventListeners()
         setupConfigs()
         setupPluginMessageListener()
+        setupInterfaces()
     }
 
     override fun onDisable() {
@@ -49,6 +51,7 @@ class Main : JavaPlugin() {
     }
 
     private fun setupCommands() {
+        logger.info("Setting up commands...")
         val commandManager: PaperCommandManager<CommandSender> = try {
             PaperCommandManager.createNative(
                 this,
@@ -99,6 +102,7 @@ class Main : JavaPlugin() {
     }
 
     private fun setupCommandConfirmation(commandManager : PaperCommandManager<CommandSender>) {
+        logger.info("Setting up command confirmation...")
         try {
             val confirmationManager : CommandConfirmationManager<CommandSender> = CommandConfirmationManager(
                 30L, TimeUnit.SECONDS,
@@ -119,6 +123,7 @@ class Main : JavaPlugin() {
     }
 
     private fun setupEventListeners() {
+        logger.info("Setting up event listeners...")
         val reflections = Reflections("dev.byrt.cheesehunt.event")
         val listeners = reflections.getSubTypesOf(Listener::class.java)
 
@@ -134,11 +139,18 @@ class Main : JavaPlugin() {
     }
 
     private fun setupPluginMessageListener() {
+        logger.info("Setting up plugin message channels...")
         messenger = Bukkit.getMessenger()
         messenger.registerIncomingPluginChannel(this, "minecraft:brand", PluginMessenger())
     }
 
+    private fun setupInterfaces() {
+        logger.info("Setting up interfaces...")
+        PaperInterfaceListeners.install(this)
+    }
+
     private fun setupConfigs() {
+        logger.info("Setting up configurations...")
         game.configManager.setup()
         game.whitelistManager.setWhitelist(WhitelistGroup.ADMIN)
         game.mapManager.setCurrentMap(null, Maps.REFORGED)

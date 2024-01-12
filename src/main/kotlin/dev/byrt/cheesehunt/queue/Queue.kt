@@ -89,6 +89,6 @@ class Queue(private val game : Game) {
 
     companion object {
         const val MAX_PLAYERS = 32
-        const val MIN_PLAYERS = 2
+        const val MIN_PLAYERS = 4
     }
 }

@@ -7,6 +7,7 @@ import dev.byrt.cheesehunt.game.Game
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
+import net.kyori.adventure.text.format.TextColor
 
 import com.destroystokyo.paper.Namespaced
 
@@ -29,6 +30,7 @@ class ItemManager(private val game : Game) {
         val item = ItemStack(powerUpItem.material, powerUpItem.amount)
         val itemMeta = item.itemMeta
         itemMeta.displayName(powerUpItem.displayName)
+        itemMeta.lore(powerUpItem.displayLore)
         item.itemMeta = itemMeta
 
         val dropItemRed = game.locationManager.getRedItemSpawn().world.dropItem(game.locationManager.getRedItemSpawn(), item)
@@ -63,6 +65,13 @@ class ItemManager(private val game : Game) {
                 val teamABoots = ItemStack(Material.LEATHER_BOOTS)
                 val teamABootsMeta: ItemMeta = teamABoots.itemMeta
                 teamABootsMeta.displayName(Component.text("Red Team Boots").color(NamedTextColor.RED).decoration(TextDecoration.ITALIC, false))
+                val teamABootsRarity = ItemRarity.COMMON
+                val teamABootsType = ItemType.ARMOUR
+                val teamABootsLore = listOf(
+                    Component.text("${teamABootsRarity.rarityGlyph}${teamABootsType.typeGlyph}", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false),
+                    Component.text("A snazzy pair of Red Team's boots.", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false)
+                )
+                teamABootsMeta.lore(teamABootsLore)
                 teamABootsMeta.isUnbreakable = true
                 teamABootsMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_DYE, ItemFlag.HIDE_ATTRIBUTES)
                 teamABoots.itemMeta = teamABootsMeta
@@ -75,6 +84,13 @@ class ItemManager(private val game : Game) {
                 val teamBBoots = ItemStack(Material.LEATHER_BOOTS)
                 val teamBBootsMeta: ItemMeta = teamBBoots.itemMeta
                 teamBBootsMeta.displayName(Component.text("Blue Team Boots").color(NamedTextColor.BLUE).decoration(TextDecoration.ITALIC, false))
+                val teamBBootsRarity = ItemRarity.COMMON
+                val teamBBootsType = ItemType.ARMOUR
+                val teamBBootsLore = listOf(
+                    Component.text("${teamBBootsRarity.rarityGlyph}${teamBBootsType.typeGlyph}", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false),
+                    Component.text("A snazzy pair of Blue Team's boots.", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false)
+                )
+                teamBBootsMeta.lore(teamBBootsLore)
                 teamBBootsMeta.isUnbreakable = true
                 teamBBootsMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_DYE, ItemFlag.HIDE_ATTRIBUTES)
                 teamBBoots.itemMeta = teamBBootsMeta
@@ -85,18 +101,36 @@ class ItemManager(private val game : Game) {
             }
             Teams.SPECTATOR -> {
                 val spectatorBoots = ItemStack(Material.LEATHER_BOOTS)
-                val spectatorBootsMeta: ItemMeta = spectatorBoots.itemMeta
-                spectatorBootsMeta.displayName(Component.text("Spectator Boots").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false))
+                val spectatorBootsMeta = spectatorBoots.itemMeta
                 spectatorBootsMeta.isUnbreakable = true
                 spectatorBootsMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_DYE, ItemFlag.HIDE_ATTRIBUTES)
-                spectatorBoots.itemMeta = spectatorBootsMeta
-                val lm: LeatherArmorMeta = spectatorBoots.itemMeta as LeatherArmorMeta
                 if(player.isOp) {
+                    val spectatorBootsRarity = ItemRarity.SPECIAL
+                    val spectatorBootsType = ItemType.ARMOUR
+                    spectatorBootsMeta.displayName(Component.text("Admin Boots").color(TextColor.fromHexString(spectatorBootsRarity.rarityColour)).decoration(TextDecoration.ITALIC, false))
+                    val spectatorBootsLore = listOf(
+                        Component.text("${spectatorBootsRarity.rarityGlyph}${spectatorBootsType.typeGlyph}", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false),
+                        Component.text("A very special pair of Admin boots.", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false)
+                    )
+                    spectatorBootsMeta.lore(spectatorBootsLore)
+                    spectatorBoots.itemMeta = spectatorBootsMeta
+                    val lm: LeatherArmorMeta = spectatorBoots.itemMeta as LeatherArmorMeta
                     lm.setColor(Color.fromRGB(170, 0, 0))
+                    spectatorBoots.itemMeta = lm
                 } else {
+                    val spectatorBootsRarity = ItemRarity.COMMON
+                    val spectatorBootsType = ItemType.ARMOUR
+                    spectatorBootsMeta.displayName(Component.text("Spectator Boots").color(TextColor.fromHexString(spectatorBootsRarity.rarityColour)).decoration(TextDecoration.ITALIC, false))
+                    val spectatorBootsLore = listOf(
+                        Component.text("${spectatorBootsRarity.rarityGlyph}${spectatorBootsType.typeGlyph}", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false),
+                        Component.text("A boring old pair of Spectator boots.", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false)
+                    )
+                    spectatorBootsMeta.lore(spectatorBootsLore)
+                    spectatorBoots.itemMeta = spectatorBootsMeta
+                    val lm: LeatherArmorMeta = spectatorBoots.itemMeta as LeatherArmorMeta
                     lm.setColor(Color.GRAY)
+                    spectatorBoots.itemMeta = lm
                 }
-                spectatorBoots.itemMeta = lm
                 player.inventory.boots = spectatorBoots
             }
         }
@@ -105,36 +139,62 @@ class ItemManager(private val game : Game) {
     fun givePlayerKit(player : Player) {
         val mainWeapon = ItemStack(Material.STONE_SWORD, 1)
         val mainWeaponMeta: ItemMeta = mainWeapon.itemMeta
-        mainWeaponMeta.displayName(Component.text("Swiss Sword").color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
+        val mainWeaponRarity = ItemRarity.COMMON
+        val mainWeaponType = ItemType.WEAPON
+        mainWeaponMeta.displayName(Component.text("Swiss Sword").color(TextColor.fromHexString(mainWeaponRarity.rarityColour)).decoration(TextDecoration.ITALIC, false))
+        val mainWeaponLore = listOf(
+            Component.text("${mainWeaponRarity.rarityGlyph}${mainWeaponType.typeGlyph}", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false),
+            Component.text("A standard melee weapon.", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false)
+        )
+        mainWeaponMeta.lore(mainWeaponLore)
         mainWeaponMeta.isUnbreakable = true
         mainWeaponMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES)
         mainWeapon.itemMeta = mainWeaponMeta
         player.inventory.addItem(mainWeapon)
 
         val subWeapon = ItemStack(Material.BOW, 1)
-        val subWeaponMeta: ItemMeta = subWeapon.itemMeta
-        subWeaponMeta.displayName(Component.text("Stilton Sniper").color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
+        val subWeaponMeta = subWeapon.itemMeta
+        val subWeaponRarity = ItemRarity.COMMON
+        val subWeaponType = ItemType.WEAPON
+        subWeaponMeta.displayName(Component.text("Stilton Sniper").color(TextColor.fromHexString(subWeaponRarity.rarityColour)).decoration(TextDecoration.ITALIC, false))
+        val subWeaponLore = listOf(
+            Component.text("${subWeaponRarity.rarityGlyph}${subWeaponType.typeGlyph}", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false),
+            Component.text("A standard ranged weapon.", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false)
+        )
+        subWeaponMeta.lore(subWeaponLore)
         subWeaponMeta.isUnbreakable = true
         subWeaponMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES)
         subWeapon.itemMeta = subWeaponMeta
         player.inventory.addItem(subWeapon)
 
-        val cheeseCollector = ItemStack(Material.WOODEN_PICKAXE, 1)
-        val cheeseCollectorMeta: ItemMeta = cheeseCollector.itemMeta
-        cheeseCollectorMeta.displayName(Component.text("Gouda Gatherer").color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false))
-        cheeseCollectorMeta.isUnbreakable = true
-        cheeseCollectorMeta.setDestroyableKeys(Collections.singletonList(Material.SPONGE.key) as Collection<Namespaced>)
-        cheeseCollectorMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_DESTROYS)
-        cheeseCollector.itemMeta = cheeseCollectorMeta
-        player.inventory.addItem(cheeseCollector)
+        givePlayerPickaxe(player)
 
-        player.inventory.addItem(ItemStack(Material.ARROW, 3))
+        val subWeaponAmmo = ItemStack(Material.ARROW, 3)
+        val subWeaponAmmoMeta = subWeaponAmmo.itemMeta
+        val subWeaponAmmoRarity = ItemRarity.COMMON
+        val subWeaponAmmoType = ItemType.CONSUMABLE
+        subWeaponAmmoMeta.displayName(Component.text("Arrow").color(TextColor.fromHexString(subWeaponAmmoRarity.rarityColour)).decoration(TextDecoration.ITALIC, false))
+        val subWeaponAmmoLore = listOf(
+            Component.text("${subWeaponAmmoRarity.rarityGlyph}${subWeaponAmmoType.typeGlyph}", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false),
+            Component.text("A regular flint-tipped arrow to", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false),
+            Component.text("be used with a bow or crossbow.", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false)
+        )
+        subWeaponAmmoMeta.lore(subWeaponAmmoLore)
+        subWeaponAmmo.itemMeta = subWeaponAmmoMeta
+        player.inventory.addItem(ItemStack(subWeaponAmmo))
     }
 
     fun givePlayerPickaxe(player : Player) {
         val cheeseCollector = ItemStack(Material.WOODEN_PICKAXE, 1)
         val cheeseCollectorMeta: ItemMeta = cheeseCollector.itemMeta
-        cheeseCollectorMeta.displayName(Component.text("Cheese Collector").color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false))
+        val cheeseCollectorRarity = ItemRarity.COMMON
+        val cheeseCollectorType = ItemType.TOOL
+        cheeseCollectorMeta.displayName(Component.text("Gouda Gatherer", TextColor.fromHexString(cheeseCollectorRarity.rarityColour)).decoration(TextDecoration.ITALIC, false))
+        val cheeseCollectorLore = listOf(
+            Component.text("${cheeseCollectorRarity.rarityGlyph}${cheeseCollectorType.typeGlyph}", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false),
+            Component.text("Perfect for cheese farming!", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false)
+        )
+        cheeseCollectorMeta.lore(cheeseCollectorLore)
         cheeseCollectorMeta.isUnbreakable = true
         cheeseCollectorMeta.setDestroyableKeys(Collections.singletonList(Material.SPONGE.key) as Collection<Namespaced>)
         cheeseCollectorMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_DESTROYS)
@@ -145,7 +205,12 @@ class ItemManager(private val game : Game) {
     fun getCheeseItem(team : Teams) : ItemStack {
         val cheese = ItemStack(Material.SPONGE, 1)
         val cheeseMeta: ItemMeta = cheese.itemMeta
-        cheeseMeta.displayName(Component.text("Cheese").color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false))
+        val cheeseRarity = ItemRarity.LEGENDARY
+        cheeseMeta.displayName(Component.text("Cheese", TextColor.fromHexString(cheeseRarity.rarityColour)).decoration(TextDecoration.ITALIC, false))
+        val cheeseLore = listOf(
+            Component.text(cheeseRarity.rarityGlyph, NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false),
+            Component.text("A delicious chunk of cheese.", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false)
+        )
         when(team) {
             Teams.RED -> {
                 cheeseMeta.setPlaceableKeys(Collections.singletonList(Material.RED_WOOL.key) as Collection<Namespaced>)
@@ -157,6 +222,7 @@ class ItemManager(private val game : Game) {
             }
         }
         cheeseMeta.addItemFlags(ItemFlag.HIDE_PLACED_ON)
+        cheeseMeta.lore(cheeseLore)
         cheese.itemMeta = cheeseMeta
         return cheese
     }
@@ -273,11 +339,96 @@ class ItemManager(private val game : Game) {
     }
 }
 
-enum class PowerUpItem(val material : Material, val amount : Int, val displayName : Component, val consumeMessage : Component) {
-    RESURRECTION_CHARM(Material.TOTEM_OF_UNDYING, 1, Component.text("Resurrection Charm", NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false), Component.text("[").append(Component.text("▶", NamedTextColor.YELLOW)).append(Component.text("] ")).append(Component.text("Your Resurrection charm saved you from death!", NamedTextColor.LIGHT_PURPLE))),
-    THROWABLE_TNT(Material.TNT, 2, Component.text("Throwing TNT", NamedTextColor.RED).decoration(TextDecoration.ITALIC, false), Component.text("[").append(Component.text("▶", NamedTextColor.YELLOW)).append(Component.text("] ")).append(Component.text("You used a Throwing TNT!", NamedTextColor.GREEN))),
-    INVISIBILITY_CHARM(Material.GRAY_DYE, 1, Component.text("Invisibili-brie Charm", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false), Component.text("[").append(Component.text("▶", NamedTextColor.YELLOW)).append(Component.text("] ")).append(Component.text("Your Invisibili-brie charm granted you invisibility for 10 seconds!", NamedTextColor.GREEN))),
-    SPEED_CHARM(Material.LIGHT_BLUE_DYE, 1, Component.text("Parma-zoom Charm", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false), Component.text("[").append(Component.text("▶", NamedTextColor.YELLOW)).append(Component.text("] ")).append(Component.text("Your Parma-zoom charm granted you speed for 4 seconds!", NamedTextColor.GREEN))),
-    ESCAPE_CHARM(Material.FEATHER, 1, Component.text("Escape Charm", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false), Component.text("[").append(Component.text("▶", NamedTextColor.YELLOW)).append(Component.text("] ")).append(Component.text("Your Escape charm sent you back to your base!", NamedTextColor.GREEN))),
-    HASTE_CHARM(Material.ORANGE_DYE, 1, Component.text("Hallou-mine Charm", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false), Component.text("[").append(Component.text("▶", NamedTextColor.YELLOW)).append(Component.text("] ")).append(Component.text("Your Hallou-mine charm granted you haste for 8 seconds!", NamedTextColor.GREEN)))
+enum class PowerUpItem(val material : Material, val amount : Int, val displayName : Component, val displayLore : List<Component>, val consumeMessage : Component) {
+    RESURRECTION_CHARM(
+        Material.TOTEM_OF_UNDYING,
+        1,
+        Component.text("Resurrection Charm", TextColor.fromHexString(ItemRarity.LEGENDARY.rarityColour)).decoration(TextDecoration.ITALIC, false),
+        listOf(
+            Component.text("${ItemRarity.LEGENDARY.rarityGlyph}${ItemType.CONSUMABLE.typeGlyph}", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false),
+            Component.text("A totem that deeply connects", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false),
+            Component.text("with its user to grant them", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false),
+            Component.text("a second life.", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false)
+        ),
+        Component.text("[").append(Component.text("▶", NamedTextColor.YELLOW)).append(Component.text("] ")).append(Component.text("Your Resurrection charm saved you from death!", NamedTextColor.LIGHT_PURPLE))
+    ),
+
+    THROWABLE_TNT(
+        Material.TNT,
+        2,
+        Component.text("Throwing TNT", TextColor.fromHexString(ItemRarity.EPIC.rarityColour)).decoration(TextDecoration.ITALIC, false),
+        listOf(
+            Component.text("${ItemRarity.EPIC.rarityGlyph}${ItemType.UTILITY.typeGlyph}", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false),
+            Component.text("An explosive that can be thrown", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false),
+            Component.text("by right-clicking.", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false)
+        ),
+        Component.text("[").append(Component.text("▶", NamedTextColor.YELLOW)).append(Component.text("] ")).append(Component.text("You used a Throwing TNT!", NamedTextColor.GREEN))
+    ),
+
+    INVISIBILITY_CHARM(
+        Material.GRAY_DYE,
+        1,
+        Component.text("Invisibili-brie Charm", TextColor.fromHexString(ItemRarity.RARE.rarityColour)).decoration(TextDecoration.ITALIC, false),
+        listOf(
+            Component.text("${ItemRarity.RARE.rarityGlyph}${ItemType.CONSUMABLE.typeGlyph}", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false),
+            Component.text("A charm that grants the user", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false),
+            Component.text("full temporary invisibility when consumed.", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false),
+        ),
+        Component.text("[").append(Component.text("▶", NamedTextColor.YELLOW)).append(Component.text("] ")).append(Component.text("Your Invisibili-brie charm granted you invisibility for 10 seconds!", NamedTextColor.GREEN))
+    ),
+
+    SPEED_CHARM(
+        Material.LIGHT_BLUE_DYE,
+        1,
+        Component.text("Parma-zoom Charm", TextColor.fromHexString(ItemRarity.RARE.rarityColour)).decoration(TextDecoration.ITALIC, false),
+        listOf(
+            Component.text("${ItemRarity.RARE.rarityGlyph}${ItemType.CONSUMABLE.typeGlyph}", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false),
+            Component.text("A charm that grants the user", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false),
+            Component.text("a temporary speed boost when consumed.", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false),
+        ),
+        Component.text("[").append(Component.text("▶", NamedTextColor.YELLOW)).append(Component.text("] ")).append(Component.text("Your Parma-zoom charm granted you speed for 4 seconds!", NamedTextColor.GREEN))
+    ),
+
+    ESCAPE_CHARM(
+        Material.FEATHER,
+        1,
+        Component.text("Escape Charm", TextColor.fromHexString(ItemRarity.EPIC.rarityColour)).decoration(TextDecoration.ITALIC, false),
+        listOf(
+            Component.text("${ItemRarity.EPIC.rarityGlyph}${ItemType.CONSUMABLE.typeGlyph}", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false),
+            Component.text("A charm that allows the user", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false),
+            Component.text("to escape to their team's base.", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false),
+        ),
+        Component.text("[").append(Component.text("▶", NamedTextColor.YELLOW)).append(Component.text("] ")).append(Component.text("Your Escape charm sent you back to your base!", NamedTextColor.GREEN))
+    ),
+
+    HASTE_CHARM(
+        Material.ORANGE_DYE,
+        1,
+        Component.text("Hallou-mine Charm", TextColor.fromHexString(ItemRarity.UNCOMMON.rarityColour)).decoration(TextDecoration.ITALIC, false),
+        listOf(
+            Component.text("${ItemRarity.UNCOMMON.rarityGlyph}${ItemType.CONSUMABLE.typeGlyph}", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false),
+            Component.text("A charm that grants the user a", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false),
+            Component.text("temporary mining speed boost when consumed.", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false),
+        ),
+        Component.text("[").append(Component.text("▶", NamedTextColor.YELLOW)).append(Component.text("] ")).append(Component.text("Your Hallou-mine charm granted you haste for 8 seconds!", NamedTextColor.GREEN))
+    )
+}
+
+enum class ItemRarity(val rarityName : String, val rarityColour : String, val rarityGlyph : String) {
+    COMMON("Common", "#ffffff", "\uF001"),
+    UNCOMMON("Uncommon", "#0ed145", "\uF002"),
+    RARE("Rare", "#00a8f3", "\uF003"),
+    EPIC("Epic", "#b83dba", "\uF004"),
+    LEGENDARY("Legendary", "#ff7f27", "\uF005"),
+    MYTHIC("Mythic", "#ff3374", "\uF006"),
+    SPECIAL("Special", "#ec1c24", "\uF007"),
+    UNREAL("Unreal", "#8666e6", "\uF008")
+}
+
+enum class ItemType(val typeName : String, val typeGlyph : String) {
+    ARMOUR("Armour", "\uF009"),
+    CONSUMABLE("Consumable", "\uF010"),
+    TOOL("Tool", "\uF011"),
+    UTILITY("Utility", "\uF012"),
+    WEAPON("Weapon", "\uF013")
 }

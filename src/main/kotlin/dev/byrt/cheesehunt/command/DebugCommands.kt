@@ -5,6 +5,8 @@ import dev.byrt.cheesehunt.game.GameState
 import dev.byrt.cheesehunt.state.Teams
 import dev.byrt.cheesehunt.util.DevStatus
 import dev.byrt.cheesehunt.manager.PowerUpItem
+import dev.byrt.cheesehunt.manager.ItemRarity
+import dev.byrt.cheesehunt.manager.ItemType
 
 import cloud.commandframework.annotations.Argument
 import cloud.commandframework.annotations.CommandDescription
@@ -13,9 +15,13 @@ import cloud.commandframework.annotations.CommandPermission
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextColor
+import net.kyori.adventure.text.format.TextDecoration
 
 import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 
 @Suppress("unused")
 class DebugCommands : BaseCommand {
@@ -145,5 +151,49 @@ class DebugCommands : BaseCommand {
     fun debugForceLeaveQueue(sender : Player, @Argument("player") player : Player) {
         Main.getGame().dev.parseDevMessage("${sender.name} threw ${player.name} out of the Queue.", DevStatus.INFO)
         Main.getGame().queue.leaveQueue(player)
+    }
+
+    @CommandMethod("debug test interfaces")
+    @CommandDescription("Debug command for interface testing.")
+    @CommandPermission("cheesehunt.debug")
+    fun debugTestInterface(sender : Player) {
+        Main.getGame().interfaceManager.testInterface(sender)
+    }
+
+    @CommandMethod("debug test rarities")
+    @CommandDescription("Debug command for item rarity testing.")
+    @CommandPermission("cheesehunt.debug")
+    fun debugTestRarities(sender : Player) {
+        for(rarity in ItemRarity.values()) {
+            val rarityTestItem = ItemStack(Material.STICK, 1)
+            val rarityTestItemMeta = rarityTestItem.itemMeta
+            rarityTestItemMeta.displayName(Component.text("Test Item").color(TextColor.fromHexString(rarity.rarityColour)).decoration(
+                TextDecoration.ITALIC, false))
+            val rarityTestItemLore = listOf(
+                Component.text(rarity.rarityGlyph, NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false),
+                Component.text("Debug item.", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false)
+            )
+            rarityTestItemMeta.lore(rarityTestItemLore)
+            rarityTestItem.itemMeta = rarityTestItemMeta
+            sender.inventory.addItem(ItemStack(rarityTestItem))
+        }
+    }
+
+    @CommandMethod("debug test types")
+    @CommandDescription("Debug command for item type testing.")
+    @CommandPermission("cheesehunt.debug")
+    fun debugTestTypes(sender : Player) {
+        for(type in ItemType.values()) {
+            val typeTestItem = ItemStack(Material.STICK, 1)
+            val typeTestItemMeta = typeTestItem.itemMeta
+            typeTestItemMeta.displayName(Component.text("Test Item").color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false))
+            val typeTestItemLore = listOf(
+                Component.text(type.typeGlyph, NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false),
+                Component.text("Debug item.", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false)
+            )
+            typeTestItemMeta.lore(typeTestItemLore)
+            typeTestItem.itemMeta = typeTestItemMeta
+            sender.inventory.addItem(ItemStack(typeTestItem))
+        }
     }
 }

@@ -12,7 +12,7 @@ class Rounds(private val game : Game) {
             RoundState.TWO -> { setRoundState(RoundState.THREE) }
             RoundState.THREE -> { setRoundState(RoundState.FOUR) }
             RoundState.FOUR -> { setRoundState(RoundState.FIVE) }
-            RoundState.FIVE -> {}
+            RoundState.FIVE -> { game.plugin.logger.warning("Attempted to increment past Round 5.") }
         }
     }
 

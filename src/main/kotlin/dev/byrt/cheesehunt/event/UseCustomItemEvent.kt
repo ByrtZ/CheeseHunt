@@ -1,5 +1,6 @@
 package dev.byrt.cheesehunt.event
 
+import dev.byrt.cheesehunt.manager.ItemRarity
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
@@ -31,7 +32,7 @@ class UseCustomItemEvent : Listener {
 
     @EventHandler
     private fun onPlayerUseAspectOfTheVoid(e : PlayerInteractEvent) {
-        if(e.player.hasPermission("cheesehunt.customitem") && e.player.inventory.itemInMainHand.type == Material.DIAMOND_SHOVEL && e.player.inventory.itemInMainHand.itemMeta.displayName() == Component.text("Aspect of the Void").color(TextColor.fromHexString("#992af5")).decoration(TextDecoration.ITALIC, false)) {
+        if(e.player.hasPermission("cheesehunt.customitem") && e.player.inventory.itemInMainHand.type == Material.DIAMOND_SHOVEL && e.player.inventory.itemInMainHand.itemMeta.displayName() == Component.text("Aspect of the Void").color(TextColor.fromHexString(ItemRarity.SPECIAL.rarityColour)).decoration(TextDecoration.ITALIC, false)) {
             if(e.player.isSneaking) {
                 if (e.action == Action.RIGHT_CLICK_AIR) {
                     onTeleport(e.player, 80)
@@ -46,7 +47,7 @@ class UseCustomItemEvent : Listener {
                 }
             }
         }
-        if(!e.player.hasPermission("cheesehunt.customitem") && e.player.inventory.itemInMainHand.type == Material.DIAMOND_SHOVEL && e.player.inventory.itemInMainHand.itemMeta.displayName() == Component.text("Aspect of the Void").color(TextColor.fromHexString("#992af5")).decoration(TextDecoration.ITALIC, false)) {
+        if(!e.player.hasPermission("cheesehunt.customitem") && e.player.inventory.itemInMainHand.type == Material.DIAMOND_SHOVEL && e.player.inventory.itemInMainHand.itemMeta.displayName() == Component.text("Aspect of the Void").color(TextColor.fromHexString(ItemRarity.SPECIAL.rarityColour)).decoration(TextDecoration.ITALIC, false)) {
             e.player.sendMessage(failMessage)
             e.player.playSound(failSound)
         }
@@ -88,14 +89,14 @@ class UseCustomItemEvent : Listener {
 
     @EventHandler
     private fun onBlockBreak(e : BlockBreakEvent) {
-        if(e.player.inventory.itemInMainHand.type == Material.DIAMOND_SHOVEL && e.player.inventory.itemInMainHand.itemMeta.displayName() == Component.text("Aspect of the Void").color(TextColor.fromHexString("#992af5")).decoration(TextDecoration.ITALIC, false)) {
+        if(e.player.inventory.itemInMainHand.type == Material.DIAMOND_SHOVEL && e.player.inventory.itemInMainHand.itemMeta.displayName() == Component.text("Aspect of the Void").color(TextColor.fromHexString(ItemRarity.SPECIAL.rarityColour)).decoration(TextDecoration.ITALIC, false)) {
             e.isCancelled = true
         }
     }
 
     @EventHandler
     private fun onInteract(e : PlayerInteractEvent) {
-        if(e.player.inventory.itemInMainHand.type == Material.DIAMOND_SHOVEL || e.player.inventory.itemInOffHand.type == Material.DIAMOND_SHOVEL && e.player.inventory.itemInMainHand.itemMeta.displayName() == Component.text("Aspect of the Void").color(TextColor.fromHexString("#992af5")).decoration(TextDecoration.ITALIC, false) && e.player.inventory.itemInOffHand.itemMeta.displayName() == Component.text("Aspect of the Void").color(TextColor.fromHexString("#992af5")).decoration(TextDecoration.ITALIC, false)) {
+        if(e.player.inventory.itemInMainHand.type == Material.DIAMOND_SHOVEL || e.player.inventory.itemInOffHand.type == Material.DIAMOND_SHOVEL && e.player.inventory.itemInMainHand.itemMeta.displayName() == Component.text("Aspect of the Void").color(TextColor.fromHexString(ItemRarity.SPECIAL.rarityColour)).decoration(TextDecoration.ITALIC, false) && e.player.inventory.itemInOffHand.itemMeta.displayName() == Component.text("Aspect of the Void").color(TextColor.fromHexString(ItemRarity.SPECIAL.rarityColour)).decoration(TextDecoration.ITALIC, false)) {
             e.isCancelled = true
         }
     }

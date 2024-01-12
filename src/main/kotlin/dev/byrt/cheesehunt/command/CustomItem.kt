@@ -1,9 +1,12 @@
 package dev.byrt.cheesehunt.command
 
+import dev.byrt.cheesehunt.manager.ItemRarity
+
 import cloud.commandframework.annotations.Argument
 import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
+import dev.byrt.cheesehunt.manager.ItemType
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -36,7 +39,15 @@ class CustomItem : BaseCommand {
     private fun createTeleportSpoon(player : Player) {
         val teleportSpoon = ItemStack(Material.DIAMOND_SHOVEL)
         val teleportSpoonMeta: ItemMeta = teleportSpoon.itemMeta
-        teleportSpoonMeta.displayName(Component.text("Aspect of the Void").color(TextColor.fromHexString("#992af5")).decoration(TextDecoration.ITALIC, false))
+        val teleportSpoonRarity = ItemRarity.SPECIAL
+        val teleportSpoonType = ItemType.UTILITY
+        teleportSpoonMeta.displayName(Component.text("Aspect of the Void").color(TextColor.fromHexString(teleportSpoonRarity.rarityColour)).decoration(TextDecoration.ITALIC, false))
+        val teleportSpoonLore = listOf(
+            Component.text("${teleportSpoonRarity.rarityGlyph}${teleportSpoonType.typeGlyph}", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false),
+            Component.text("An out of this world wand that grants the", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false),
+            Component.text("ability to teleport upon interaction.", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false)
+        )
+        teleportSpoonMeta.lore(teleportSpoonLore)
         teleportSpoonMeta.isUnbreakable = true
         teleportSpoonMeta.addEnchant(Enchantment.MENDING, 1, false)
         teleportSpoonMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES)
@@ -48,7 +59,14 @@ class CustomItem : BaseCommand {
     private fun createRayGun(player : Player) {
         val rayGun = ItemStack(Material.GOLDEN_SWORD)
         val rayGunMeta: ItemMeta = rayGun.itemMeta
-        rayGunMeta.displayName(Component.text("Ray-Gun").color(TextColor.fromHexString("#fa6028")).decoration(TextDecoration.ITALIC, false))
+        val rayGunRarity = ItemRarity.SPECIAL
+        val rayGunType = ItemType.WEAPON
+        rayGunMeta.displayName(Component.text("Ray-Gun").color(TextColor.fromHexString(rayGunRarity.rarityColour)).decoration(TextDecoration.ITALIC, false))
+        val rayGunLore = listOf(
+            Component.text("${rayGunRarity.rarityGlyph}${rayGunType.typeGlyph}", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false),
+            Component.text("You already know what this does.", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false)
+        )
+        rayGunMeta.lore(rayGunLore)
         rayGunMeta.isUnbreakable = true
         rayGunMeta.addEnchant(Enchantment.MENDING, 1, false)
         rayGunMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES)

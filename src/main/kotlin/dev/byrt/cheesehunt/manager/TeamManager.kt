@@ -309,6 +309,27 @@ class TeamManager(private val game : Game) {
         return this.spectators
     }
 
+    fun getAdminNames(): Component {
+        val components = ArrayList<ComponentLike>()
+        val operators = ArrayList<Player>()
+        for(operator in Bukkit.getOperators()) {
+            if(operator.isOnline) {
+                operator.player?.let { operators.add(it) }
+            }
+        }
+        if(operators.isEmpty()) {
+            components.add(Component.text("\nNo admins available.", NamedTextColor.GRAY))
+        } else {
+            for(admin in operators) {
+                if(admin != operators[0]) {
+                    components.add(Component.text("     "))
+                }
+                components.add(Component.text(admin.name, NamedTextColor.DARK_RED))
+            }
+        }
+        return Component.join(JoinConfiguration.noSeparators(), components)
+    }
+
     fun getPlayerNames(team: Teams): Component {
         val components = ArrayList<ComponentLike>()
         var uuidList = ArrayList<UUID>()

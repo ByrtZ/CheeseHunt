@@ -60,7 +60,6 @@ class WhitelistCommands : BaseCommand {
     @CommandDescription("Adds the specified player to the specified whitelist group.")
     @CommandPermission("cheesehunt.whitelist.add")
     fun addPlayerToWhitelistGroup(sender : Player, @Argument("player") player : String, @Argument("group") group : WhitelistGroup) {
-        sender.sendMessage(Component.text("Attempting to add $player to $group whitelist group...", NamedTextColor.GRAY))
         try {
             when(group) {
                 WhitelistGroup.OFF -> {
@@ -86,7 +85,6 @@ class WhitelistCommands : BaseCommand {
     @CommandDescription("Removes the specified player from the specified whitelist group.")
     @CommandPermission("cheesehunt.whitelist.remove")
     fun removePlayerFromWhitelistGroup(sender : Player, @Argument("player") player : String, @Argument("group") group : WhitelistGroup) {
-        sender.sendMessage(Component.text("Attempting to remove $player to $group whitelist group...", NamedTextColor.GRAY))
         try {
             when(group) {
                 WhitelistGroup.OFF -> {
@@ -112,7 +110,6 @@ class WhitelistCommands : BaseCommand {
     @CommandDescription("Temporarily adds the specified player to the server whitelist until removal or restart.")
     @CommandPermission("cheesehunt.whitelist.tempadd")
     fun addPlayerTempWhitelist(sender : Player, @Argument("player") player : String) {
-        sender.sendMessage(Component.text("Attempting to temporarily whitelist $player...", NamedTextColor.GRAY))
         try {
             if(!Main.getPlugin().server.whitelistedPlayers.contains(Bukkit.getOfflinePlayer(player))) {
                 Main.getGame().whitelistManager.tempWhitelistPlayer(player)
@@ -129,7 +126,6 @@ class WhitelistCommands : BaseCommand {
     @CommandDescription("Temporarily remove the specified player to the server whitelist.")
     @CommandPermission("cheesehunt.whitelist.tempremove")
     fun removePlayerTempWhitelist(sender : Player, @Argument("player") player : String) {
-        sender.sendMessage(Component.text("Attempting to temporarily unwhitelist $player...", NamedTextColor.GRAY))
         try {
             if(Main.getPlugin().server.whitelistedPlayers.contains(Bukkit.getOfflinePlayer(player))) {
                 Main.getGame().whitelistManager.removeTempWhitelistPlayer(player)
@@ -143,15 +139,21 @@ class WhitelistCommands : BaseCommand {
     }
 
     @CommandMethod("whitelist reload")
-    @CommandDescription("Reloads the whitelist.yml file.")
+    @CommandDescription("Reloads the whitelist.yml file and re-applies the current whitelist group.")
     @CommandPermission("cheesehunt.whitelist.reload")
     @Confirmation
     fun whitelistReload(sender : Player) {
-        sender.sendMessage(Component.text("Reloading whitelist configuration...", NamedTextColor.RED))
         try {
             Main.getGame().configManager.saveWhitelistConfig()
             Main.getGame().configManager.reloadWhitelistConfig()
             Main.getGame().dev.parseDevMessage("Whitelist configuration reloaded by ${sender.name}.", DevStatus.INFO)
+            try {
+                Main.getGame().whitelistManager.setWhitelist(Main.getGame().whitelistManager.getWhitelistedGroup())
+                Main.getGame().dev.parseDevMessage("Whitelist re-applied automatically due to configuration reload.", DevStatus.INFO_SUCCESS)
+            } catch (e : Exception) {
+                Main.getGame().dev.parseDevMessage("Whitelist failed to automatically reload.", DevStatus.ERROR)
+                Main.getPlugin().logger.severe("Whitelist automatic reload failed:\n${e.printStackTrace()}")
+            }
 
         } catch (e : Exception) {
             sender.sendMessage(Component.text("Failed to reload whitelist configuration.", NamedTextColor.RED))

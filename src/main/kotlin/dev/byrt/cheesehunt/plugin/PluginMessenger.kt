@@ -18,5 +18,4 @@ class PluginMessenger : PluginMessageListener {
             e.printStackTrace()
         }
     }
-
 }

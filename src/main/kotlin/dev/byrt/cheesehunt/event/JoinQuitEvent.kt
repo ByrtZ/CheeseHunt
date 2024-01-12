@@ -24,7 +24,7 @@ class JoinQuitEvent : Listener {
         Main.getGame().infoBoardManager.showScoreboard()
         e.player.teleport(Location(Bukkit.getWorld("Cheese"), 0.5, -52.0 ,0.5, 0.0f, 0.0f))
         e.player.inventory.clear()
-        Main.getGame().tabListManager.sendTabList(e.player)
+        Main.getGame().tabListManager.updateAllTabList()
         Main.getGame().teamManager.addToTeam(e.player, e.player.uniqueId, Teams.SPECTATOR)
         if(Main.getGame().gameManager.getGameState() == GameState.IDLE) {
             e.player.gameMode = GameMode.ADVENTURE
@@ -38,6 +38,7 @@ class JoinQuitEvent : Listener {
         Main.getGame().teamManager.getPlayerTeam(e.player.uniqueId).let { Main.getGame().teamManager.removeFromTeam(e.player, e.player.uniqueId, it)}
         Main.getGame().musicTask.stopMusicLoop(e.player, Music.NULL)
         Main.getGame().respawnTask.stopRespawnLoop(e.player)
+        Main.getGame().tabListManager.updateAllTabList()
         if(Main.getGame().cheeseManager.playerHasCheese(e.player)) {
             Main.getGame().cheeseManager.setPlayerHasCheese(e.player, false)
         }

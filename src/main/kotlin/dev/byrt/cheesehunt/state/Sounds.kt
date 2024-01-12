@@ -55,6 +55,11 @@ class Sounds(private val game : Game) {
         const val PICKUP_ITEM = "entity.item.pickup"
         const val ESCAPE = "entity.bat.takeoff"
     }
+    object Movement {
+        const val USE_LAUNCH_PAD = "entity.wither.shoot"
+        const val USE_JUMP_PAD = "entity.wither.shoot"
+        const val USE_SPEED_PAD = "block.beacon.activate"
+    }
     object Tutorial {
         const val TUTORIAL_POP = "entity.item.pickup"
     }

@@ -11,28 +11,13 @@ import java.io.File
 import java.io.IOException
 
 class ConfigManager(private val game : Game) {
-    private lateinit var whitelistConfig : File
-    private lateinit var whitelistFileConfig : FileConfiguration
     private lateinit var mapConfig : File
     private lateinit var mapFileConfig : FileConfiguration
 
     fun setup() {
         Main.getPlugin().config.options().copyDefaults()
         Main.getPlugin().saveDefaultConfig()
-        setupWhitelistConfig()
         setupMapConfig()
-    }
-
-    private fun setupWhitelistConfig() {
-        whitelistConfig = File(Bukkit.getServer().pluginManager.getPlugin("CheeseHunt")!!.dataFolder, "whitelist.yml")
-        if (!whitelistConfig.exists()) {
-            try {
-                whitelistConfig.createNewFile()
-            } catch (e : IOException) {
-                // no.
-            }
-        }
-       whitelistFileConfig = YamlConfiguration.loadConfiguration(whitelistConfig)
     }
 
     private fun setupMapConfig() {
@@ -71,29 +56,14 @@ class ConfigManager(private val game : Game) {
         }
     }
 
-    fun saveWhitelistConfig() {
-        try {
-            whitelistFileConfig.save(whitelistConfig)
-        } catch (e: IOException) {
-            Main.getPlugin().logger.severe("Unable to save whitelist configuration, printing stack trace:\n${e.printStackTrace()}")
-        }
-    }
 
     private fun reloadMapConfig() {
         mapFileConfig = YamlConfiguration.loadConfiguration(mapConfig)
     }
 
-    fun reloadWhitelistConfig() {
-        whitelistFileConfig = YamlConfiguration.loadConfiguration(whitelistConfig)
-    }
-
     fun saveReloadMapConfig() {
         saveMapConfig()
         reloadMapConfig()
-    }
-
-    fun getWhitelistConfig(): FileConfiguration {
-        return whitelistFileConfig
     }
 
     fun getMapConfig(): FileConfiguration {

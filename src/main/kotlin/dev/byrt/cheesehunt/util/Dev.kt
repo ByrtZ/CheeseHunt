@@ -3,7 +3,6 @@ package dev.byrt.cheesehunt.util
 import dev.byrt.cheesehunt.game.Game
 
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextColor
 
@@ -16,11 +15,6 @@ class Dev(private val game : Game) {
         val parsed = Component.text("\uD001 ", NamedTextColor.WHITE)
             .append(Component.text(message, status.colour))
         sendAdminMessage(parsed)
-    }
-
-    fun parseTempWhitelistPrompt(name : String) {
-        val tempWhitelistPrompt = Component.text("\uD001 ", NamedTextColor.WHITE).append(Component.text("Want to add $name to temporary whitelist? ", NamedTextColor.AQUA).append(Component.text("[Click here].", TextColor.fromHexString("#ffff00")).clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/whitelist tempadd $name"))))
-        sendAdminMessage(tempWhitelistPrompt)
     }
 
     fun parseJoinClientBrandMessage(playerName : String, brand : String, status : DevStatus) {

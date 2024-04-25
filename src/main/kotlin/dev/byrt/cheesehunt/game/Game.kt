@@ -30,7 +30,6 @@ class Game(val plugin : Main) {
     val scoreManager = ScoreManager(this)
     val statsManager = StatisticsManager(this)
     val configManager = ConfigManager(this)
-    val whitelistManager = WhitelistManager(this)
     val mapManager = MapManager(this)
     val cooldownManager = CooldownManager(this)
     val queue = Queue(this)
@@ -79,7 +78,6 @@ class Game(val plugin : Main) {
         queueVisuals.removeQueueNPC()
         teamManager.destroyDisplayTeams()
         infoBoardManager.destroyScoreboard()
-        configManager.saveWhitelistConfig()
         configManager.saveMapConfig()
     }
 

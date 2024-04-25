@@ -2,6 +2,7 @@ plugins {
     kotlin("jvm") version "1.8.20"
     java
     id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("xyz.jpenilla.run-paper") version "2.2.4"
 }
 
 group = "dev.byrt"
@@ -24,4 +25,8 @@ dependencies {
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+}
+
+tasks.runServer {
+    minecraftVersion("1.20.1")
 }

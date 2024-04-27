@@ -100,9 +100,6 @@ class Game(val plugin : CheeseHunt) : ParentModule(plugin) {
         for(player in Bukkit.getOnlinePlayers()) {
             player.showTitle(Title.title(Component.text("\uD000"), Component.text(""), Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(3), Duration.ofSeconds(1))))
             CheeseHunt.getGame().teamManager.addToTeam(player, player.uniqueId, Teams.SPECTATOR)
-            if(player.isOp) {
-                CheeseHunt.getGame().teamManager.addToAdminDisplay(player.uniqueId)
-            }
         }
     }
 

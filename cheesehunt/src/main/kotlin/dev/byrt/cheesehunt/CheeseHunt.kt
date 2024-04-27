@@ -9,6 +9,10 @@ import cloud.commandframework.paper.PaperCommandManager
 import dev.byrt.cheesehunt.command.BaseCommand
 import dev.byrt.cheesehunt.game.Game
 import dev.byrt.cheesehunt.manager.Maps
+import me.lucyydotp.cheeselib.game.nameformat.CustomNameTags
+import me.lucyydotp.cheeselib.game.nameformat.NameFormatter
+import me.lucyydotp.cheeselib.inject.GlobalInjectionContext
+import me.lucyydotp.cheeselib.inject.bind
 import me.lucyydotp.cheeselib.inject.context
 import me.lucyydotp.cheeselib.module.ModuleHolder
 import me.lucyydotp.cheeselib.module.ParentModule
@@ -37,6 +41,9 @@ class CheeseHunt(parent: ModuleHolder) : ParentModule(parent) {
     val game = Game(this).registerAsChild()
 
     init {
+        GlobalInjectionContext.bind(NameFormatter(this).registerAsChild())
+        CustomNameTags(this).registerAsChild()
+
         onEnable {
             setupCommands()
             setupEventListeners()

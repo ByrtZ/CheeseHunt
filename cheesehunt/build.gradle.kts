@@ -42,6 +42,10 @@ tasks {
     runServer {
         minecraftVersion("1.20.4")
 
-        pluginJars(project(":common").tasks.getByName("reobfJar").outputs.files)
+        pluginJars(
+            *listOf("common", "standalone")
+                .map { project(":$it").tasks.getByName("reobfJar").outputs.files }
+                .toTypedArray()
+        )
     }
 }

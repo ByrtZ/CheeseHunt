@@ -32,22 +32,18 @@ class TeamManager(private val game : Game) : Module(game) {
 
     private lateinit var redDisplayTeam: Team
     private lateinit var blueDisplayTeam: Team //by lazy { Bukkit.getScoreboardManager().mainScoreboard.registerNewTeam("blueDisplay") }
-    private lateinit var spectatorDisplayTeam: Team //by lazy { Bukkit.getScoreboardManager().mainScoreboard.registerNewTeam("spectator") }
-    private lateinit var adminDisplayTeam: Team //by lazy { Bukkit.getScoreboardManager().mainScoreboard.registerNewTeam("admin") }
 
     init {
         onEnable {
             val mainBoard = Bukkit.getScoreboardManager().mainScoreboard
             redDisplayTeam = mainBoard.registerNewTeam("redDisplay")
             blueDisplayTeam = mainBoard.registerNewTeam("blueDisplay")
-            spectatorDisplayTeam = mainBoard.registerNewTeam("spectatorDisplay")
-            adminDisplayTeam = mainBoard.registerNewTeam("adminDisplay")
 
             buildDisplayTeams()
         }
 
         onDisable {
-            listOf(redDisplayTeam, blueDisplayTeam, spectatorDisplayTeam, adminDisplayTeam).forEach(Team::unregister)
+            listOf(redDisplayTeam, blueDisplayTeam).forEach(Team::unregister)
         }
     }
 
@@ -81,11 +77,6 @@ class TeamManager(private val game : Game) : Module(game) {
                 if(redTeam.contains(uuid)) { removeFromTeam(player, uuid, Teams.RED) }
                 if(blueTeam.contains(uuid)) { removeFromTeam(player, uuid, Teams.BLUE) }
                 spectators.add(uuid)
-                if(player.isOp) {
-                    adminDisplayTeam.addPlayer(player)
-                } else {
-                    spectatorDisplayTeam.addPlayer(player)
-                }
                 game.itemManager.givePlayerTeamBoots(player, Teams.SPECTATOR)
                 player.sendMessage(Component.text("You are now a Spectator."))
             }
@@ -115,7 +106,6 @@ class TeamManager(private val game : Game) : Module(game) {
             }
             Teams.SPECTATOR -> {
                 spectators.remove(uuid)
-                spectatorDisplayTeam.removePlayer(Bukkit.getOfflinePlayer(uuid))
                 player.sendMessage(Component.text("You are no longer a Spectator."))
             }
         }
@@ -135,9 +125,6 @@ class TeamManager(private val game : Game) : Module(game) {
         }
     }
 
-    fun addToAdminDisplay(uuid : UUID) {
-        adminDisplayTeam.addPlayer(Bukkit.getOfflinePlayer(uuid))
-    }
 
     fun buildDisplayTeams() {
         redDisplayTeam.color(NamedTextColor.RED)
@@ -151,18 +138,6 @@ class TeamManager(private val game : Game) : Module(game) {
         blueDisplayTeam.suffix(Component.text("").color(NamedTextColor.WHITE))
         blueDisplayTeam.displayName(Component.text("Blue").color(NamedTextColor.BLUE))
         blueDisplayTeam.setAllowFriendlyFire(false)
-
-        adminDisplayTeam.color(NamedTextColor.DARK_RED)
-        adminDisplayTeam.prefix(Component.text("\uD002 ").color(NamedTextColor.WHITE))
-        adminDisplayTeam.suffix(Component.text("").color(NamedTextColor.WHITE))
-        adminDisplayTeam.displayName(Component.text("Admin").color(NamedTextColor.DARK_RED))
-        adminDisplayTeam.setAllowFriendlyFire(false)
-
-        spectatorDisplayTeam.color(NamedTextColor.GRAY)
-        spectatorDisplayTeam.prefix(Component.text("\uD003 ").color(NamedTextColor.WHITE))
-        spectatorDisplayTeam.suffix(Component.text("").color(NamedTextColor.WHITE))
-        spectatorDisplayTeam.displayName(Component.text("Spectator").color(NamedTextColor.GRAY))
-        spectatorDisplayTeam.setAllowFriendlyFire(false)
     }
 
     fun showDisplayTeamNames() {
@@ -178,8 +153,6 @@ class TeamManager(private val game : Game) : Module(game) {
     fun destroyDisplayTeams() {
         redDisplayTeam.unregister()
         blueDisplayTeam.unregister()
-        adminDisplayTeam.unregister()
-        spectatorDisplayTeam.unregister()
     }
 
     fun getPlayerTeam(uuid : UUID): Teams {

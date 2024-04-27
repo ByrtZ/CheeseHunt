@@ -28,7 +28,7 @@ interface InjectionContext : InjectionSite {
  * Binds a [value] to type [T].
  * @see InjectionContext.bind
  */
-inline fun <reified T : Any> InjectionContext.bind(value: T) = bind(T::class, value)
+inline fun <reified T : Any> InjectionContext.bind(value: T) = value.also { bind(T::class, value) }
 
 /**
  * Unbinds a [value] from type [T].

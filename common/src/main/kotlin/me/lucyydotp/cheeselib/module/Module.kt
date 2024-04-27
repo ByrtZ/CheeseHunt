@@ -1,5 +1,6 @@
 package me.lucyydotp.cheeselib.module
 
+import me.lucyydotp.cheeselib.game.nameformat.EventEmitter
 import me.lucyydotp.cheeselib.inject.InjectionSite
 import org.bukkit.Bukkit
 
@@ -23,6 +24,7 @@ abstract class Module(val parent: ModuleHolder): InjectionSite by parent {
      */
     fun onEnable(action: () -> Unit) {
         enableActions.add(action)
+        if (isEnabled) action()
     }
 
     /**
@@ -30,6 +32,17 @@ abstract class Module(val parent: ModuleHolder): InjectionSite by parent {
      */
     fun onDisable(action: () -> Unit) {
         disableActions.add(action)
+    }
+
+    /** Listens for an event while the module is active. */
+    fun <T : Any> listen(eventEmitter: EventEmitter<T>, priority: Int = 100, handler: (T) -> Unit) {
+        var subscription: EventEmitter.Subscription<T>? = null
+        onEnable {
+            subscription = eventEmitter.subscribe(handler, priority)
+        }
+        onDisable {
+            subscription?.unsubscribe()
+        }
     }
 
     /**

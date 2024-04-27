@@ -3,28 +3,44 @@ package dev.byrt.cheesehunt.manager
 import dev.byrt.cheesehunt.game.Game
 import dev.byrt.cheesehunt.game.GameState
 import dev.byrt.cheesehunt.state.Teams
-
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
-
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
-
-import kotlin.collections.ArrayList
 import kotlin.random.Random
 
-class TabListManager(private var game : Game) {
+class TabListManager(private var game: Game) {
     private var cheesePuns = ArrayList<String>()
-    private val baseHeader = Component.text("\nCheese Hunt", NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, true).append(Component.text("\n\n               An MCC Tester classic meme, brought to you by ", NamedTextColor.WHITE).decoration(TextDecoration.BOLD, false).append(Component.text("Byrt", NamedTextColor.RED)).append(Component.text(".               \n", NamedTextColor.WHITE).decoration(TextDecoration.BOLD, false)))
+
+    private val baseHeader = Component.text {
+        with(it) {
+            append(Component.text(" ".repeat(100)))
+            appendNewline()
+            append(Component.text("Cheese Hunt", NamedTextColor.YELLOW, TextDecoration.BOLD))
+            appendNewline()
+            append(Component.text("An MCC Tester classic meme, brought to you by "))
+            append(Component.text("Byrt", NamedTextColor.RED))
+            append(Component.text(","))
+            appendNewline()
+            append(Component.text("and \"improved\" by Lucy."))
+            appendNewline()
+        }
+    }
+
     private var currentHeader = Component.text("")
     private var blankLines = ""
-    private val baseAdminFooter = Component.text("\n\nOnline Admins:\n", NamedTextColor.DARK_RED).decoration(TextDecoration.BOLD, false)
+    private val baseAdminFooter =
+        Component.text("\n\nOnline Admins:\n", NamedTextColor.DARK_RED).decoration(TextDecoration.BOLD, false)
     private var footer = Component.text("")
 
     fun buildBase() {
-        for(i in 0..200) { blankLines += "\n" }
-        currentHeader = baseHeader.append(Component.text("\nNo teams available.", NamedTextColor.GRAY)).append(baseAdminFooter).append(game.teamManager.getAdminNames()).append(assignRandomPun()).append(Component.text(blankLines))
+        for (i in 0..200) {
+            blankLines += "\n"
+        }
+        currentHeader =
+            baseHeader.append(Component.text("\nNo teams available.", NamedTextColor.GRAY)).append(baseAdminFooter)
+                .append(game.teamManager.getAdminNames()).append(assignRandomPun()).append(Component.text(blankLines))
     }
 
     fun updateAllTabList() {
@@ -33,50 +49,109 @@ class TabListManager(private var game : Game) {
         val redScore = game.scoreManager.getRedScore()
         val blueScore = game.scoreManager.getBlueScore()
         val adminFooter = baseAdminFooter.append(game.teamManager.getAdminNames())
-        if(red.isEmpty() && blue.isEmpty()) {
-            currentHeader = baseHeader.append(Component.text("\nNo teams available.", NamedTextColor.GRAY).decoration(TextDecoration.BOLD, false)).append(adminFooter).append(assignRandomPun()).append(Component.text(blankLines))
+        if (red.isEmpty() && blue.isEmpty()) {
+            currentHeader = baseHeader.append(
+                Component.text("\nNo teams available.", NamedTextColor.GRAY).decoration(TextDecoration.BOLD, false)
+            ).append(adminFooter).append(assignRandomPun()).append(Component.text(blankLines))
         }
-        if(red.isNotEmpty() && blue.isNotEmpty() && game.scoreManager.getRedScore() > game.scoreManager.getBlueScore()) {
+        if (red.isNotEmpty() && blue.isNotEmpty() && game.scoreManager.getRedScore() > game.scoreManager.getBlueScore()) {
             currentHeader = baseHeader
-                .append(Component.text("\n1. ", NamedTextColor.WHITE).decoration(TextDecoration.BOLD, false).append(Component.text("Red Team\n", NamedTextColor.RED)).append(game.teamManager.getPlayerNames(Teams.RED)).append(Component.text("     ${redScore}c", NamedTextColor.WHITE))
-                .append(Component.text("\n\n2. ", NamedTextColor.WHITE).append(Component.text("Blue Team\n", NamedTextColor.BLUE)).append(game.teamManager.getPlayerNames(Teams.BLUE)).append(Component.text("     ${blueScore}c", NamedTextColor.WHITE)).append(adminFooter).append(assignRandomPun()).append(Component.text(blankLines))))
+                .append(
+                    Component.text("\n1. ", NamedTextColor.WHITE).decoration(TextDecoration.BOLD, false)
+                        .append(Component.text("Red Team\n", NamedTextColor.RED))
+                        .append(game.teamManager.getPlayerNames(Teams.RED))
+                        .append(Component.text("     ${redScore}c", NamedTextColor.WHITE))
+                        .append(
+                            Component.text("\n\n2. ", NamedTextColor.WHITE)
+                                .append(Component.text("Blue Team\n", NamedTextColor.BLUE))
+                                .append(game.teamManager.getPlayerNames(Teams.BLUE))
+                                .append(Component.text("     ${blueScore}c", NamedTextColor.WHITE)).append(adminFooter)
+                                .append(assignRandomPun()).append(Component.text(blankLines))
+                        )
+                )
         }
-        if(red.isNotEmpty() && blue.isNotEmpty() && game.scoreManager.getRedScore() < game.scoreManager.getBlueScore()) {
+        if (red.isNotEmpty() && blue.isNotEmpty() && game.scoreManager.getRedScore() < game.scoreManager.getBlueScore()) {
             currentHeader = baseHeader
-                .append(Component.text("\n1. ", NamedTextColor.WHITE).decoration(TextDecoration.BOLD, false).append(Component.text("Blue Team\n", NamedTextColor.BLUE)).append(game.teamManager.getPlayerNames(Teams.BLUE)).append(Component.text("     ${blueScore}c", NamedTextColor.WHITE))
-                    .append(Component.text("\n\n2. ", NamedTextColor.WHITE).append(Component.text("Red Team\n", NamedTextColor.RED)).append(game.teamManager.getPlayerNames(Teams.RED)).append(Component.text("     ${redScore}c", NamedTextColor.WHITE)).append(adminFooter).append(assignRandomPun()).append(Component.text(blankLines))))
+                .append(
+                    Component.text("\n1. ", NamedTextColor.WHITE).decoration(TextDecoration.BOLD, false)
+                        .append(Component.text("Blue Team\n", NamedTextColor.BLUE))
+                        .append(game.teamManager.getPlayerNames(Teams.BLUE))
+                        .append(Component.text("     ${blueScore}c", NamedTextColor.WHITE))
+                        .append(
+                            Component.text("\n\n2. ", NamedTextColor.WHITE)
+                                .append(Component.text("Red Team\n", NamedTextColor.RED))
+                                .append(game.teamManager.getPlayerNames(Teams.RED))
+                                .append(Component.text("     ${redScore}c", NamedTextColor.WHITE)).append(adminFooter)
+                                .append(assignRandomPun()).append(Component.text(blankLines))
+                        )
+                )
         }
-        if(red.isNotEmpty() && blue.isNotEmpty() && game.scoreManager.getRedScore() == game.scoreManager.getBlueScore() && game.gameManager.getGameState() != GameState.IDLE) {
+        if (red.isNotEmpty() && blue.isNotEmpty() && game.scoreManager.getRedScore() == game.scoreManager.getBlueScore() && game.gameManager.getGameState() != GameState.IDLE) {
             currentHeader = baseHeader
-                .append(Component.text("\n1. ", NamedTextColor.WHITE).decoration(TextDecoration.BOLD, false).append(Component.text("Red Team\n", NamedTextColor.RED)).append(game.teamManager.getPlayerNames(Teams.RED)).append(Component.text("     ${redScore}c", NamedTextColor.WHITE))
-                    .append(Component.text("\n\n1. ", NamedTextColor.WHITE).append(Component.text("Blue Team\n", NamedTextColor.BLUE)).append(game.teamManager.getPlayerNames(Teams.BLUE)).append(Component.text("     ${blueScore}c", NamedTextColor.WHITE)).append(adminFooter).append(assignRandomPun()).append(Component.text(blankLines))))
+                .append(
+                    Component.text("\n1. ", NamedTextColor.WHITE).decoration(TextDecoration.BOLD, false)
+                        .append(Component.text("Red Team\n", NamedTextColor.RED))
+                        .append(game.teamManager.getPlayerNames(Teams.RED))
+                        .append(Component.text("     ${redScore}c", NamedTextColor.WHITE))
+                        .append(
+                            Component.text("\n\n1. ", NamedTextColor.WHITE)
+                                .append(Component.text("Blue Team\n", NamedTextColor.BLUE))
+                                .append(game.teamManager.getPlayerNames(Teams.BLUE))
+                                .append(Component.text("     ${blueScore}c", NamedTextColor.WHITE)).append(adminFooter)
+                                .append(assignRandomPun()).append(Component.text(blankLines))
+                        )
+                )
         }
-        if(red.isNotEmpty() && blue.isNotEmpty() && game.gameManager.getGameState() == GameState.IDLE) {
+        if (red.isNotEmpty() && blue.isNotEmpty() && game.gameManager.getGameState() == GameState.IDLE) {
             currentHeader = baseHeader
-                .append(Component.text("\n1. ", NamedTextColor.WHITE).decoration(TextDecoration.BOLD, false).append(Component.text("Red Team\n", NamedTextColor.RED)).append(game.teamManager.getPlayerNames(Teams.RED)).append(Component.text("     ${redScore}c", NamedTextColor.WHITE))
-                    .append(Component.text("\n\n2. ", NamedTextColor.WHITE).append(Component.text("Blue Team\n", NamedTextColor.BLUE)).append(game.teamManager.getPlayerNames(Teams.BLUE)).append(Component.text("     ${blueScore}c", NamedTextColor.WHITE)).append(adminFooter).append(assignRandomPun()).append(Component.text(blankLines))))
+                .append(
+                    Component.text("\n1. ", NamedTextColor.WHITE).decoration(TextDecoration.BOLD, false)
+                        .append(Component.text("Red Team\n", NamedTextColor.RED))
+                        .append(game.teamManager.getPlayerNames(Teams.RED))
+                        .append(Component.text("     ${redScore}c", NamedTextColor.WHITE))
+                        .append(
+                            Component.text("\n\n2. ", NamedTextColor.WHITE)
+                                .append(Component.text("Blue Team\n", NamedTextColor.BLUE))
+                                .append(game.teamManager.getPlayerNames(Teams.BLUE))
+                                .append(Component.text("     ${blueScore}c", NamedTextColor.WHITE)).append(adminFooter)
+                                .append(assignRandomPun()).append(Component.text(blankLines))
+                        )
+                )
         }
-        if(red.isNotEmpty() && blue.isEmpty()) {
+        if (red.isNotEmpty() && blue.isEmpty()) {
             currentHeader = baseHeader
-                .append(Component.text("\n1. ", NamedTextColor.WHITE).decoration(TextDecoration.BOLD, false).append(Component.text("Red Team\n", NamedTextColor.RED)).append(game.teamManager.getPlayerNames(Teams.RED)).append(Component.text("     ${redScore}c", NamedTextColor.WHITE)).append(adminFooter).append(assignRandomPun()).append(Component.text(blankLines)))
+                .append(
+                    Component.text("\n1. ", NamedTextColor.WHITE).decoration(TextDecoration.BOLD, false)
+                        .append(Component.text("Red Team\n", NamedTextColor.RED))
+                        .append(game.teamManager.getPlayerNames(Teams.RED))
+                        .append(Component.text("     ${redScore}c", NamedTextColor.WHITE)).append(adminFooter)
+                        .append(assignRandomPun()).append(Component.text(blankLines))
+                )
         }
-        if(blue.isNotEmpty() && red.isEmpty()) {
+        if (blue.isNotEmpty() && red.isEmpty()) {
             currentHeader = baseHeader
-                .append(Component.text("\n1. ", NamedTextColor.WHITE).decoration(TextDecoration.BOLD, false).append(Component.text("Blue Team\n", NamedTextColor.BLUE)).append(game.teamManager.getPlayerNames(Teams.BLUE)).append(Component.text("     ${blueScore}c", NamedTextColor.WHITE)).append(adminFooter).append(assignRandomPun()).append(Component.text(blankLines)))
+                .append(
+                    Component.text("\n1. ", NamedTextColor.WHITE).decoration(TextDecoration.BOLD, false)
+                        .append(Component.text("Blue Team\n", NamedTextColor.BLUE))
+                        .append(game.teamManager.getPlayerNames(Teams.BLUE))
+                        .append(Component.text("     ${blueScore}c", NamedTextColor.WHITE)).append(adminFooter)
+                        .append(assignRandomPun()).append(Component.text(blankLines))
+                )
         }
-        for(player in Bukkit.getOnlinePlayers()) {
+        for (player in Bukkit.getOnlinePlayers()) {
             sendTabList(player)
         }
     }
 
-    private fun sendTabList(player : Player) {
+    private fun sendTabList(player: Player) {
         player.sendPlayerListHeaderAndFooter(currentHeader, footer)
     }
 
-    private fun assignRandomPun() : Component {
+    private fun assignRandomPun(): Component {
         val randomIndex = Random.nextInt(cheesePuns.size)
         val randomPun = cheesePuns[randomIndex]
-        return Component.text(randomPun).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, true).decoration(TextDecoration.BOLD, false)
+        return Component.text(randomPun).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, true)
+            .decoration(TextDecoration.BOLD, false)
     }
 
     fun populateCheesePuns() {

@@ -1,0 +1,4 @@
+name: cheeselib
+main: me.lucyydotp.cheeselib.common.CommonPlugin
+api-version: '1.20'
+version: 1.0.0-SNAPSHOT # TODO: resource processing

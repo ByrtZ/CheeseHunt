@@ -20,9 +20,8 @@ open class InjectionContextImpl : InjectionContext {
     }
 
 
-    override fun <T : Any> getOrNull(clazz: KClass<T>): T? {
-        TODO("Not yet implemented")
-    }
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : Any> getOrNull(clazz: KClass<T>): T? = values[clazz] as T?
 
 }
 

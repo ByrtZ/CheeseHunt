@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.paperweight)
+    alias(libs.plugins.shadow)
     kotlin("jvm")
 }
 

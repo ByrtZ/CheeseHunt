@@ -13,18 +13,34 @@ repositories {
     maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
 }
 
+val shade by configurations.creating
+
+configurations.implementation.configure {
+    extendsFrom(shade)
+}
+
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
-    implementation("org.reflections:reflections:0.10.2")
-    implementation("cloud.commandframework:cloud-paper:1.8.4")
-    implementation("cloud.commandframework:cloud-annotations:1.8.4")
-    implementation("org.incendo.interfaces:interfaces-paper:1.0.0-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
+    compileOnly(project(":common"))
+
+    shade("org.reflections:reflections:0.10.2")
+    shade("cloud.commandframework:cloud-paper:1.8.4")
+    shade("cloud.commandframework:cloud-annotations:1.8.4")
+    shade("org.incendo.interfaces:interfaces-paper:1.0.0-SNAPSHOT")
 }
 
 kotlin {
     jvmToolchain(21)
 }
 
-tasks.runServer {
-    minecraftVersion("1.20.4")
+
+tasks {
+    shadowJar {
+        configurations = listOf(shade)
+    }
+
+    runServer {
+        minecraftVersion("1.20.4")
+        pluginJars(project(":common").tasks.shadowJar.map { it.archiveFile })
+    }
 }

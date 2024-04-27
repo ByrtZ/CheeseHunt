@@ -1,6 +1,12 @@
 name: CheeseHunt
 version: '2.0'
 main: dev.byrt.cheesehunt.Main
-api-version: 1.20
+api-version: '1.20'
 authors: [ Byrt ]
 description: Cheese Hunt minigame created for a group of nerds.
+
+dependencies:
+  server:
+    cheeselib:
+      load: BEFORE
+      join-classpath: true

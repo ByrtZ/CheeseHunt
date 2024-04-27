@@ -79,7 +79,7 @@ class InfoBoardManager(private val game: Game) : ParentModule(game) {
     private fun teamScores() = listOf(
         Teams.RED to game.scoreManager.getRedScore(),
         Teams.BLUE to game.scoreManager.getBlueScore(),
-    ).sortedBy(Pair<Teams, Int>::second)
+    ).sortedByDescending(Pair<Teams, Int>::second)
         .mapIndexed { index, (team, score) ->
             Board.Line(
                 Component.text(" ${index + 1}. ") + team.teamName,

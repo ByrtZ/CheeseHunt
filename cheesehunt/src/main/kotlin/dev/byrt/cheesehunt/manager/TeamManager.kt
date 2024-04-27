@@ -1,6 +1,6 @@
 package dev.byrt.cheesehunt.manager
 
-import dev.byrt.cheesehunt.Main
+import dev.byrt.cheesehunt.CheeseHunt
 import dev.byrt.cheesehunt.game.Game
 import dev.byrt.cheesehunt.state.Sounds
 import dev.byrt.cheesehunt.state.Teams
@@ -105,11 +105,11 @@ class TeamManager(private val game : Game) {
     fun shuffle(players : Collection<Player>) {
         var i = 0
         players.shuffled().forEach {
-            Main.getGame().teamManager.removeFromTeam(it, it.uniqueId, Main.getGame().teamManager.getPlayerTeam(it.uniqueId))
+            CheeseHunt.getGame().teamManager.removeFromTeam(it, it.uniqueId, CheeseHunt.getGame().teamManager.getPlayerTeam(it.uniqueId))
             if (i % 2 == 0) {
-                Main.getGame().teamManager.addToTeam(it, it.uniqueId, Teams.RED)
+                CheeseHunt.getGame().teamManager.addToTeam(it, it.uniqueId, Teams.RED)
             } else {
-                Main.getGame().teamManager.addToTeam(it, it.uniqueId, Teams.BLUE)
+                CheeseHunt.getGame().teamManager.addToTeam(it, it.uniqueId, Teams.BLUE)
             }
             i++
         }
@@ -174,7 +174,7 @@ class TeamManager(private val game : Game) {
 
     fun redWinGame() {
         for(player in Bukkit.getOnlinePlayers()) {
-            if(Main.getGame().teamManager.getPlayerTeam(player.uniqueId) == Teams.RED) {
+            if(CheeseHunt.getGame().teamManager.getPlayerTeam(player.uniqueId) == Teams.RED) {
                 player.playSound(player.location, Sounds.Round.WIN_ROUND, 1f, 1f)
                 game.cheeseManager.teamFireworks(player, Teams.RED)
                 player.sendMessage(Component.text("\nYour team won the game!\n").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true))
@@ -190,7 +190,7 @@ class TeamManager(private val game : Game) {
                     )
                 )
             }
-            if(Main.getGame().teamManager.getPlayerTeam(player.uniqueId) == Teams.BLUE) {
+            if(CheeseHunt.getGame().teamManager.getPlayerTeam(player.uniqueId) == Teams.BLUE) {
                 player.playSound(player.location, Sounds.Round.LOSE_ROUND, 1f, 1f)
                 player.sendMessage(Component.text("\nYour team lost the game!\n").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true))
                 player.showTitle(
@@ -210,7 +210,7 @@ class TeamManager(private val game : Game) {
 
     fun blueWinGame() {
         for(player in Bukkit.getOnlinePlayers()) {
-            if(Main.getGame().teamManager.getPlayerTeam(player.uniqueId) == Teams.BLUE) {
+            if(CheeseHunt.getGame().teamManager.getPlayerTeam(player.uniqueId) == Teams.BLUE) {
                 player.playSound(player.location, Sounds.Round.WIN_ROUND, 1f, 1f)
                 game.cheeseManager.teamFireworks(player, Teams.BLUE)
                 player.sendMessage(Component.text("\nYour team won the game!\n").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true))
@@ -226,7 +226,7 @@ class TeamManager(private val game : Game) {
                     )
                 )
             }
-            if(Main.getGame().teamManager.getPlayerTeam(player.uniqueId) == Teams.RED) {
+            if(CheeseHunt.getGame().teamManager.getPlayerTeam(player.uniqueId) == Teams.RED) {
                 player.playSound(player.location, Sounds.Round.LOSE_ROUND, 1f, 1f)
                 player.sendMessage(Component.text("\nYour team lost the game!\n").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true))
                 player.showTitle(
@@ -246,7 +246,7 @@ class TeamManager(private val game : Game) {
 
     fun noWinGame() {
         for(player in Bukkit.getOnlinePlayers()) {
-            if(Main.getGame().teamManager.getPlayerTeam(player.uniqueId) == Teams.RED || Main.getGame().teamManager.getPlayerTeam(player.uniqueId) == Teams.BLUE) {
+            if(CheeseHunt.getGame().teamManager.getPlayerTeam(player.uniqueId) == Teams.RED || CheeseHunt.getGame().teamManager.getPlayerTeam(player.uniqueId) == Teams.BLUE) {
                 player.playSound(player.location, Sounds.Round.DRAW_ROUND, 1f, 2f)
                 player.sendMessage(Component.text("\nNo team won!\n").color(NamedTextColor.YELLOW).decoration(
                     TextDecoration.BOLD, true))

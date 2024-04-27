@@ -4,172 +4,102 @@ import dev.byrt.cheesehunt.game.Game
 import dev.byrt.cheesehunt.game.GameState
 import dev.byrt.cheesehunt.state.RoundState
 import dev.byrt.cheesehunt.state.Teams
-import io.papermc.paper.scoreboard.numbers.NumberFormat
-
+import me.lucyydotp.cheeselib.game.scoreboard.Board
+import me.lucyydotp.cheeselib.inject.context
+import me.lucyydotp.cheeselib.module.ParentModule
+import net.kyori.adventure.extra.kotlin.plus
+import net.kyori.adventure.extra.kotlin.text
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.format.TextDecoration
+import java.text.DecimalFormat
 
-import org.bukkit.Bukkit
-import org.bukkit.ChatColor
-import org.bukkit.scoreboard.*
+class InfoBoardManager(private val game: Game) : ParentModule(game) {
 
-@Suppress("DEPRECATION")
-class InfoBoardManager(private val game : Game) {
-    private var scoreboardManager: ScoreboardManager = Bukkit.getScoreboardManager()
-    private var scoreboard: Scoreboard = scoreboardManager.mainScoreboard
-    private lateinit var cheeseHuntBoard: Objective
-    private lateinit var currentGameText: Score
-    private lateinit var currentMapText: Score
-    private lateinit var currentRoundText: Score
-    private lateinit var gameStatusText: Score
-    private lateinit var gameScoreText: Score
-    private lateinit var redScore: Score
-    private lateinit var blueScore: Score
-    private lateinit var blankSpaceOne: Score
-    private lateinit var blankSpaceTwo: Score
+    private val board = Board(
+        this,
+        Component.text("Byrt's Server", NamedTextColor.YELLOW, TextDecoration.BOLD)
+    ).registerAsChild()
 
-    fun buildScoreboard() {
-        constructScoreboardInfo()
-        cheeseHuntBoard.displaySlot = DisplaySlot.SIDEBAR
-        cheeseHuntBoard.numberFormat(NumberFormat.blank())
-        currentGameText.score = 8
-        currentMapText.score = 7
-        currentRoundText.score = 6
-        gameStatusText.score = 5
-        blankSpaceOne.score = 4
-        gameScoreText.score = 3
-        redScore.score = 2
-        blueScore.score = 1
-        blankSpaceTwo.score = 0
-    }
+    private val mapManager: MapManager by context()
+
+    private var gameMapInfo by board.section(defaultLines = gameMapInfo())
+    private var timer by board.section(defaultLines = timer())
+    private val _newline1 = board.section(defaultLines = listOf(Board.Line(Component.empty())))
+
+    private var multiplier by board.section(defaultLines = multiplier())
+    private var teamScores by board.section(defaultLines = teamScores())
+    private val _newline2 = board.section(defaultLines = listOf(Board.Line(Component.empty())))
 
     fun destroyScoreboard() {
-        cheeseHuntBoard.displaySlot = null
-        cheeseHuntBoard.unregister()
+        // TODO(lucy): no-op
+//        cheeseHuntBoard.displaySlot = null
+//        cheeseHuntBoard.unregister()
     }
 
-    private fun constructScoreboardInfo() {
-        cheeseHuntBoard = scoreboard.registerNewObjective(
-            "cheese_hunt_board",
-            Criteria.DUMMY,
-            Component.text("Byrt's Server").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, true)
-        )
-
-        currentGameText = cheeseHuntBoard.getScore(ChatColor.AQUA.toString() + "" + ChatColor.BOLD + "Game: " + ChatColor.RESET + "Cheese Hunt")
-        currentMapText = cheeseHuntBoard.getScore(ChatColor.AQUA.toString() + "" + ChatColor.BOLD + "Map: " + ChatColor.WHITE + "Reforged")
-        currentRoundText = cheeseHuntBoard.getScore(ChatColor.GREEN.toString() + "" + ChatColor.BOLD + "Round: " + ChatColor.RESET + "None")
-        gameStatusText = cheeseHuntBoard.getScore(ChatColor.RED.toString() + "" + ChatColor.BOLD + "Game status: " + ChatColor.RESET + "Waiting...")
-        gameScoreText = cheeseHuntBoard.getScore(ChatColor.AQUA.toString() + "" + ChatColor.BOLD + "Game Coins: " + ChatColor.RESET + "(" + ChatColor.YELLOW + "x1.0" + ChatColor.RESET + ")")
-        redScore = cheeseHuntBoard.getScore(" 1. " + ChatColor.RED.toString() + "Red Team " + ChatColor.RESET + "                 0c")
-        blueScore = cheeseHuntBoard.getScore(" 2. " + ChatColor.BLUE.toString() + "Blue Team " + ChatColor.RESET + "                0c")
-        blankSpaceOne = cheeseHuntBoard.getScore("§")
-        blankSpaceTwo = cheeseHuntBoard.getScore("§§")
+    private fun withColoredPrefix(prefix: String, message: String, color: TextColor) = text {
+        append(Component.text("$prefix: ", color, TextDecoration.BOLD))
+        append(Component.text(prefix))
     }
 
-    fun showScoreboard() {
-        cheeseHuntBoard.displaySlot = DisplaySlot.SIDEBAR
+    private fun gameMapInfo() = listOf(
+        Board.Line(withColoredPrefix("Game", "Cheese Hunt", NamedTextColor.AQUA)),
+        // FIXME(lucy): make mapManager injectable
+        Board.Line(withColoredPrefix("Map", /*mapManager.getCurrentMap().mapName*/"Reforged", NamedTextColor.AQUA))
+    )
+
+    private val formattedTimeLeft: String get() {
+        val timeLeft = game.gameTask.getTimeLeft()
+        return String.format("%02d:%02d", timeLeft / 60, timeLeft % 60)
     }
 
-    fun updateScoreboardTimer(displayTime : String, previousDisplayTime : String, gameState : GameState) {
-        if(gameState == GameState.STARTING) {
-            cheeseHuntBoard.scoreboard!!.resetScores(ChatColor.RED.toString() + "" + ChatColor.BOLD + "Game status: " + ChatColor.RESET + "Waiting...")
-            cheeseHuntBoard.scoreboard!!.resetScores(ChatColor.RED.toString() + "" + ChatColor.BOLD + "Game over!")
-            cheeseHuntBoard.scoreboard!!.resetScores(ChatColor.RED.toString() + "" + ChatColor.BOLD + "Next round: " + ChatColor.RESET + previousDisplayTime)
-            cheeseHuntBoard.scoreboard!!.resetScores(ChatColor.GREEN.toString() + "" + ChatColor.BOLD + "Round: " + ChatColor.RESET + "None")
-
-            if(game.roundManager.getRoundState() == RoundState.ONE) {
-                cheeseHuntBoard.scoreboard!!.resetScores(ChatColor.RED.toString() + "" + ChatColor.BOLD + "Game begins: " + ChatColor.RESET + "" + previousDisplayTime)
-                gameStatusText = cheeseHuntBoard.getScore(ChatColor.RED.toString() + "" + ChatColor.BOLD + "Game begins: " + ChatColor.RESET + "" + displayTime)
-                gameStatusText.score = 5
-
-                cheeseHuntBoard.scoreboard?.resetScores(ChatColor.GREEN.toString() + "" + ChatColor.BOLD + "Round: " + ChatColor.RESET + "None")
-                currentRoundText = cheeseHuntBoard.getScore(ChatColor.GREEN.toString() + "" + ChatColor.BOLD + "Round: " + ChatColor.RESET + "1/${game.roundManager.getTotalRounds()}")
-                currentRoundText.score = 6
-            } else {
-                cheeseHuntBoard.scoreboard?.resetScores(ChatColor.RED.toString() + "" + ChatColor.BOLD + "Round begins: " + ChatColor.RESET + previousDisplayTime)
-                gameStatusText = cheeseHuntBoard.getScore(ChatColor.RED.toString() + "" + ChatColor.BOLD + "Round begins: " + ChatColor.RESET + "" + displayTime)
-                gameStatusText.score = 5
-            }
-        }
-        if(gameState == GameState.IN_GAME) {
-            cheeseHuntBoard.scoreboard?.resetScores(ChatColor.RED.toString() + "" + ChatColor.BOLD + "Game begins: " + ChatColor.RESET + previousDisplayTime)
-            cheeseHuntBoard.scoreboard?.resetScores(ChatColor.RED.toString() + "" + ChatColor.BOLD + "Round begins: " + ChatColor.RESET + previousDisplayTime)
-            cheeseHuntBoard.scoreboard?.resetScores(ChatColor.RED.toString() + "" + ChatColor.BOLD + "Time left: " + ChatColor.RESET + "" + previousDisplayTime)
-            gameStatusText = cheeseHuntBoard.getScore(ChatColor.RED.toString() + "" + ChatColor.BOLD + "Time left: " + ChatColor.RESET + "" + displayTime)
-            gameStatusText.score = 5
-        }
-        if(gameState == GameState.OVERTIME) {
-            cheeseHuntBoard.scoreboard?.resetScores(ChatColor.RED.toString() + "" + ChatColor.BOLD + "Time left: " + ChatColor.RESET + "" + previousDisplayTime)
-            cheeseHuntBoard.scoreboard?.resetScores(ChatColor.RED.toString() + "" + ChatColor.BOLD + "OVERTIME: " + ChatColor.RESET + "" + previousDisplayTime)
-            gameStatusText = cheeseHuntBoard.getScore(ChatColor.RED.toString() + "" + ChatColor.BOLD + "OVERTIME: " + ChatColor.RESET + "" + displayTime)
-            gameStatusText.score = 5
-        }
-        if(gameState == GameState.ROUND_END) {
-            cheeseHuntBoard.scoreboard?.resetScores(ChatColor.RED.toString() + "" + ChatColor.BOLD + "Time left: " + ChatColor.RESET + previousDisplayTime)
-            cheeseHuntBoard.scoreboard?.resetScores(ChatColor.RED.toString() + "" + ChatColor.BOLD + "Next round: " + ChatColor.RESET + previousDisplayTime)
-            cheeseHuntBoard.scoreboard?.resetScores(ChatColor.RED.toString() + "" + ChatColor.BOLD + "OVERTIME: " + ChatColor.RESET + "" + previousDisplayTime)
-            gameStatusText = cheeseHuntBoard.getScore(ChatColor.RED.toString() + "" + ChatColor.BOLD + "Next round: " + ChatColor.RESET + "" + displayTime)
-            gameStatusText.score = 5
-        }
-        if(gameState == GameState.GAME_END) {
-            cheeseHuntBoard.scoreboard?.resetScores(ChatColor.RED.toString() + "" + ChatColor.BOLD + "Time left: " + ChatColor.RESET + "" + previousDisplayTime)
-            cheeseHuntBoard.scoreboard?.resetScores(ChatColor.RED.toString() + "" + ChatColor.BOLD + "OVERTIME: " + ChatColor.RESET + "" + previousDisplayTime)
-            cheeseHuntBoard.scoreboard?.resetScores(ChatColor.RED.toString() + "" + ChatColor.BOLD + "Game ending: " + ChatColor.RESET + previousDisplayTime)
-
-            gameStatusText = if (displayTime == "00:00") {
-                cheeseHuntBoard.getScore(ChatColor.RED.toString() + "" + ChatColor.BOLD + "Game over!")
-            } else {
-                cheeseHuntBoard.getScore(ChatColor.RED.toString() + "" + ChatColor.BOLD + "Game ending: " + ChatColor.RESET + "" + displayTime)
-            }
-            gameStatusText.score = 5
-        }
+    private fun timer() = when (game.gameManager.getGameState()) {
+        GameState.IDLE -> withColoredPrefix("Game status", "Waiting...", NamedTextColor.RED)
+        GameState.STARTING -> withColoredPrefix(if (game.roundManager.getRoundState() == RoundState.ONE) "Game begins" else "Round begins", formattedTimeLeft, NamedTextColor.RED)
+        GameState.IN_GAME -> withColoredPrefix("Time left", formattedTimeLeft, NamedTextColor.RED)
+        GameState.OVERTIME -> withColoredPrefix("OVERTIME", formattedTimeLeft, NamedTextColor.RED)
+        GameState.ROUND_END -> withColoredPrefix("Next round", formattedTimeLeft, NamedTextColor.RED)
+        GameState.GAME_END -> withColoredPrefix("Game ending:", formattedTimeLeft, NamedTextColor.RED)
+    }.let {
+        listOf(Board.Line(it))
     }
+
+    private val multiplierNumberFormat = DecimalFormat("##0.0")
+
+    private fun multiplier() = text {
+        append(Component.text("Game Coins: ", NamedTextColor.AQUA))
+        append(Component.text("("))
+        append(Component.text( multiplierNumberFormat.format(game.scoreManager.getMultiplier())))
+        append(Component.text(")"))
+    }.let {
+        listOf(Board.Line(it))
+    }
+
+    private fun teamScores() = listOf(
+        Teams.RED to game.scoreManager.getRedScore(),
+        Teams.BLUE to game.scoreManager.getBlueScore(),
+    ).sortedBy(Pair<Teams, Int>::second)
+        .mapIndexed { index, (team, score) ->
+            Board.Line(
+                Component.text("${index + 1}. ") + team.teamName,
+                Component.text("${score}c  ")
+            )
+        }
 
     fun updateScoreboardScores() {
-        cheeseHuntBoard.scoreboard?.resetScores(" 1. " + ChatColor.RED.toString() + "Red Team " + ChatColor.RESET + "                 0c")
-        cheeseHuntBoard.scoreboard?.resetScores(" 2. " + ChatColor.BLUE.toString() + "Blue Team " + ChatColor.RESET + "                0c")
-
-        cheeseHuntBoard.scoreboard?.resetScores(" 1. " + ChatColor.RED.toString() + "Red Team " + ChatColor.RESET + "                 ${game.scoreManager.getPreviousRedScore()}c")
-        cheeseHuntBoard.scoreboard?.resetScores(" 2. " + ChatColor.RED.toString() + "Red Team " + ChatColor.RESET + "                 ${game.scoreManager.getPreviousRedScore()}c")
-        cheeseHuntBoard.scoreboard?.resetScores(" 1. " + ChatColor.BLUE.toString() + "Blue Team " + ChatColor.RESET + "                ${game.scoreManager.getPreviousBlueScore()}c")
-        cheeseHuntBoard.scoreboard?.resetScores(" 2. " + ChatColor.BLUE.toString() + "Blue Team " + ChatColor.RESET + "                ${game.scoreManager.getPreviousBlueScore()}c")
-
-        cheeseHuntBoard.scoreboard?.resetScores(" 1. " + ChatColor.RED.toString() + "Red Team " + ChatColor.RESET + "                 ${game.scoreManager.getRedScore()}c")
-        cheeseHuntBoard.scoreboard?.resetScores(" 2. " + ChatColor.RED.toString() + "Red Team " + ChatColor.RESET + "                 ${game.scoreManager.getRedScore()}c")
-        cheeseHuntBoard.scoreboard?.resetScores(" 1. " + ChatColor.BLUE.toString() + "Blue Team " + ChatColor.RESET + "                ${game.scoreManager.getBlueScore()}c")
-        cheeseHuntBoard.scoreboard?.resetScores(" 2. " + ChatColor.BLUE.toString() + "Blue Team " + ChatColor.RESET + "                ${game.scoreManager.getBlueScore()}c")
-        if(game.scoreManager.calcPlacements().isNullOrEmpty()) {
-            redScore = cheeseHuntBoard.getScore(" 1. " + ChatColor.RED.toString() + "Red Team " + ChatColor.RESET + "                 ${game.scoreManager.getRedScore()}c")
-            redScore.score = 2
-            blueScore = cheeseHuntBoard.getScore(" 1. " + ChatColor.BLUE.toString() + "Blue Team " + ChatColor.RESET + "                ${game.scoreManager.getBlueScore()}c")
-            blueScore.score = 1
-        }
-        if(game.scoreManager.calcPlacements()?.get(0) == Teams.RED) {
-            redScore = cheeseHuntBoard.getScore(" 1. " + ChatColor.RED.toString() + "Red Team " + ChatColor.RESET + "                 ${game.scoreManager.getRedScore()}c")
-            redScore.score = 2
-            blueScore = cheeseHuntBoard.getScore(" 2. " + ChatColor.BLUE.toString() + "Blue Team " + ChatColor.RESET + "                ${game.scoreManager.getBlueScore()}c")
-            blueScore.score = 1
-        }
-        if(game.scoreManager.calcPlacements()?.get(0) == Teams.BLUE) {
-            redScore = cheeseHuntBoard.getScore(" 2. " + ChatColor.RED.toString() + "Red Team " + ChatColor.RESET + "                 ${game.scoreManager.getRedScore()}c")
-            redScore.score = 1
-            blueScore = cheeseHuntBoard.getScore(" 1. " + ChatColor.BLUE.toString() + "Blue Team " + ChatColor.RESET + "                ${game.scoreManager.getBlueScore()}c")
-            blueScore.score = 2
-        }
+        teamScores = teamScores()
     }
 
-    fun updateScoreboardMultiplier(currentMultiplier : Int, newMultiplier : Int) {
-        cheeseHuntBoard.scoreboard?.resetScores(ChatColor.AQUA.toString() + "" + ChatColor.BOLD + "Game Coins: " + ChatColor.RESET + "(" + ChatColor.YELLOW + "x1.0" + ChatColor.RESET + ")")
-        cheeseHuntBoard.scoreboard?.resetScores(ChatColor.AQUA.toString() + "" + ChatColor.BOLD + "Game Coins: " + ChatColor.RESET + "(" + ChatColor.YELLOW + "x$currentMultiplier.0" + ChatColor.RESET + ")")
-        gameScoreText = cheeseHuntBoard.getScore(ChatColor.AQUA.toString() + "" + ChatColor.BOLD + "Game Coins: " + ChatColor.RESET + "(" + ChatColor.YELLOW + "x$newMultiplier.0" + ChatColor.RESET + ")")
-        gameScoreText.score = 3
+    fun updateScoreboardTimer() {
+        timer = timer()
     }
 
-    fun updateCurrentMap(currentMap : Maps, newMap : Maps) {
-        cheeseHuntBoard.scoreboard?.resetScores(ChatColor.AQUA.toString() + "" + ChatColor.BOLD + "Map: " + ChatColor.GRAY + "UNCONFIGURED")
-        cheeseHuntBoard.scoreboard?.resetScores(ChatColor.AQUA.toString() + "" + ChatColor.BOLD + "Map: " + ChatColor.RESET + currentMap.mapName)
-        currentMapText = cheeseHuntBoard.getScore(ChatColor.AQUA.toString() + "" + ChatColor.BOLD + "Map: " + ChatColor.RESET + newMap.mapName)
-        currentMapText.score = 7
+    fun updateScoreboardMultiplier() {
+        multiplier = multiplier()
+    }
+
+    fun updateCurrentMap() {
+        gameMapInfo = gameMapInfo()
     }
 }

@@ -1,6 +1,6 @@
 package dev.byrt.cheesehunt.game
 
-import dev.byrt.cheesehunt.Main
+import dev.byrt.cheesehunt.CheeseHunt
 import dev.byrt.cheesehunt.manager.*
 import dev.byrt.cheesehunt.state.*
 import dev.byrt.cheesehunt.task.Music
@@ -36,7 +36,7 @@ class GameTask(private var game : Game) {
                 previousDisplayTime = String.format("%02d:%02d", previousTimeLeft / 60, previousTimeLeft % 60)
 
                 // Update scoreboard timer
-                game.infoBoardManager.updateScoreboardTimer(displayTime, previousDisplayTime, game.gameManager.getGameState())
+                game.infoBoardManager.updateScoreboardTimer()
 
                 // Game/round starting front end
                 if(game.gameManager.getGameState() == GameState.STARTING && game.timerManager.getTimerState() == TimerState.ACTIVE) {
@@ -239,8 +239,8 @@ class GameTask(private var game : Game) {
                         }
                         if(timeLeft == 28) {
                             for(player in Bukkit.getOnlinePlayers()) {
-                                Main.getGame().musicTask.stopMusicLoop(player, Music.MAIN)
-                                Main.getGame().musicTask.startMusicLoop(player, Main.getPlugin(), Music.OVERTIME)
+                                CheeseHunt.getGame().musicTask.stopMusicLoop(player, Music.MAIN)
+                                CheeseHunt.getGame().musicTask.startMusicLoop(player, CheeseHunt.getPlugin(), Music.OVERTIME)
                             }
                         }
                     }
@@ -336,7 +336,7 @@ class GameTask(private var game : Game) {
                 }
             }
         }
-        gameRunnable.runTaskTimer(Main.getPlugin(), 0L, 20L)
+        gameRunnable.runTaskTimer(CheeseHunt.getPlugin(), 0L, 20L)
         currentGameTaskId = gameRunnable.taskId
         gameRunnableList[gameRunnable.taskId] = gameRunnable
     }
@@ -347,12 +347,12 @@ class GameTask(private var game : Game) {
 
     fun setTimeLeft(setTimeLeft: Int, sender : Player?) {
         val setTimerTimeLeft = String.format("%02d:%02d", setTimeLeft / 60, setTimeLeft % 60)
-        game.infoBoardManager.updateScoreboardTimer(setTimerTimeLeft, displayTime, game.gameManager.getGameState())
+        game.infoBoardManager.updateScoreboardTimer()
         timeLeft = setTimeLeft
         if(sender != null) {
-            Main.getGame().dev.parseDevMessage("Timer updated to $timeLeft seconds by ${sender.name}.", DevStatus.INFO)
+            CheeseHunt.getGame().dev.parseDevMessage("Timer updated to $timeLeft seconds by ${sender.name}.", DevStatus.INFO)
         } else {
-            Main.getGame().dev.parseDevMessage("Timer updated to $timeLeft seconds.", DevStatus.INFO)
+            CheeseHunt.getGame().dev.parseDevMessage("Timer updated to $timeLeft seconds.", DevStatus.INFO)
         }
     }
 

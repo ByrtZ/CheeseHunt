@@ -37,8 +37,9 @@ open class ParentModule(parent: ModuleHolder) :
     /**
      * Registers a module as a child of this module, enabling it if this module is already enabled.
      * @throws IllegalArgumentException if [module] has a parent that is not this module, or is already enabled
+     * @return [module]
      */
-    protected fun register(module: Module) {
+    protected fun <T : Module> register(module: T) = module.also {
         require(module.parent === this) { "Module is registered to a different parent" }
         require(module.state == State.Disabled) { "Cannot register an already enabled module" }
         if (this.isEnabled) module.enable()
@@ -54,4 +55,6 @@ open class ParentModule(parent: ModuleHolder) :
         _modules -= module
         if (module.isEnabled) module.disable()
     }
+
+    protected fun <T : Module> T.registerAsChild() = register(this)
 }

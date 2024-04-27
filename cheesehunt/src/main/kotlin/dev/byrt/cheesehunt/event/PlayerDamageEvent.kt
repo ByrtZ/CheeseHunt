@@ -1,6 +1,6 @@
 package dev.byrt.cheesehunt.event
 
-import dev.byrt.cheesehunt.Main
+import dev.byrt.cheesehunt.CheeseHunt
 import dev.byrt.cheesehunt.game.GameState
 
 import net.kyori.adventure.text.Component
@@ -18,11 +18,11 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent
 class PlayerDamageEvent : Listener {
     @EventHandler
     private fun playerDamagePlayer(e : EntityDamageByEntityEvent) {
-        if(Main.getGame().gameManager.getGameState() == GameState.IN_GAME) {
+        if(CheeseHunt.getGame().gameManager.getGameState() == GameState.IN_GAME) {
             if(e.entity is Player && e.damager is Player || e.damager is Arrow || e.damager is TNTPrimed) {
                 val player = e.entity as Player
-                if(Main.getGame().cheeseManager.playerHasCheese(player)) {
-                    Main.getGame().cheeseManager.playerDropCheese(player)
+                if(CheeseHunt.getGame().cheeseManager.playerHasCheese(player)) {
+                    CheeseHunt.getGame().cheeseManager.playerDropCheese(player)
                 }
                 if(e.damager is Arrow) {
                     e.damager.remove()
@@ -33,11 +33,11 @@ class PlayerDamageEvent : Listener {
                 val player = e.entity as Player
                 val damager = e.damager as Player
                 e.isCancelled =
-                    (Main.getGame().teamManager.isInRedTeam(player.uniqueId) && Main.getGame().teamManager.isInRedTeam(damager.uniqueId)
-                     || Main.getGame().teamManager.isInBlueTeam(player.uniqueId) && Main.getGame().teamManager.isInBlueTeam(damager.uniqueId))
+                    (CheeseHunt.getGame().teamManager.isInRedTeam(player.uniqueId) && CheeseHunt.getGame().teamManager.isInRedTeam(damager.uniqueId)
+                     || CheeseHunt.getGame().teamManager.isInBlueTeam(player.uniqueId) && CheeseHunt.getGame().teamManager.isInBlueTeam(damager.uniqueId))
             }
         } else {
-            if(Main.getGame().gameManager.getGameState() == GameState.OVERTIME) {
+            if(CheeseHunt.getGame().gameManager.getGameState() == GameState.OVERTIME) {
                 if(e.damager is Player) {
                     e.damager.sendMessage(Component.text("You cannot hurt players during overtime, go get the Cheese!", NamedTextColor.RED))
                 }

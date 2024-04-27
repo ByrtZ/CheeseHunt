@@ -1,12 +1,13 @@
 package dev.byrt.cheesehunt.game
 
-import dev.byrt.cheesehunt.Main
+import dev.byrt.cheesehunt.CheeseHunt
 import dev.byrt.cheesehunt.interfaces.*
 import dev.byrt.cheesehunt.manager.*
 import dev.byrt.cheesehunt.queue.*
 import dev.byrt.cheesehunt.state.*
 import dev.byrt.cheesehunt.task.*
 import dev.byrt.cheesehunt.util.*
+import me.lucyydotp.cheeselib.module.ParentModule
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
@@ -15,7 +16,7 @@ import org.bukkit.Bukkit
 
 import java.time.Duration
 
-class Game(val plugin : Main) {
+class Game(val plugin : CheeseHunt) : ParentModule(plugin) {
     val gameManager = GameManager(this)
     val roundManager = Rounds(this)
     val timerManager = Timer(this)
@@ -24,7 +25,7 @@ class Game(val plugin : Main) {
     val itemManager = ItemManager(this)
     val blockManager = BlockManager(this)
     val cheeseManager = CheeseManager(this)
-    val infoBoardManager = InfoBoardManager(this)
+    val infoBoardManager = InfoBoardManager(this).registerAsChild()
     val tabListManager = TabListManager(this)
     val locationManager = LocationManager(this)
     val scoreManager = ScoreManager(this)
@@ -64,7 +65,6 @@ class Game(val plugin : Main) {
     }
 
     fun setup() {
-        infoBoardManager.buildScoreboard()
         teamManager.buildDisplayTeams()
         locationManager.populateSpawns()
         locationManager.populateWinShowArea()
@@ -93,7 +93,6 @@ class Game(val plugin : Main) {
         scoreManager.resetScores()
         statsManager.resetStatistics()
         infoBoardManager.destroyScoreboard()
-        infoBoardManager.buildScoreboard()
         queue.setQueueState(QueueState.IDLE)
         queueVisuals.removeQueueNPC()
         queueVisuals.spawnQueueNPC()
@@ -101,9 +100,9 @@ class Game(val plugin : Main) {
 
         for(player in Bukkit.getOnlinePlayers()) {
             player.showTitle(Title.title(Component.text("\uD000"), Component.text(""), Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(3), Duration.ofSeconds(1))))
-            Main.getGame().teamManager.addToTeam(player, player.uniqueId, Teams.SPECTATOR)
+            CheeseHunt.getGame().teamManager.addToTeam(player, player.uniqueId, Teams.SPECTATOR)
             if(player.isOp) {
-                Main.getGame().teamManager.addToAdminDisplay(player.uniqueId)
+                CheeseHunt.getGame().teamManager.addToAdminDisplay(player.uniqueId)
             }
         }
     }

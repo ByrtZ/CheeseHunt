@@ -2,5 +2,6 @@ rootProject.name = "CheeseHuntTheSequel"
 
 include(
     "common",
-    "cheesehunt"
+    "cheesehunt",
+    "standalone"
 )

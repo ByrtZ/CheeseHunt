@@ -1,6 +1,6 @@
 package dev.byrt.cheesehunt.game
 
-import dev.byrt.cheesehunt.Main
+import dev.byrt.cheesehunt.CheeseHunt
 import dev.byrt.cheesehunt.state.Sounds
 import dev.byrt.cheesehunt.state.TimerState
 import dev.byrt.cheesehunt.task.Music
@@ -88,7 +88,7 @@ class GameManager(private val game : Game) {
         for(player in Bukkit.getOnlinePlayers()) {
             player.playSound(player.location, Sounds.Round.ROUND_END_PLING, 1f, 1f)
             player.playSound(player.location, Sounds.Round.ROUND_END_PLING, 1f, 2f)
-            game.musicTask.startMusicLoop(player, game.plugin, Music.MAIN)
+            game.musicTask.startMusicLoop(player, game.plugin.plugin, Music.MAIN)
             player.resetTitle()
         }
         game.playerManager.giveItemsToPlayers()
@@ -147,8 +147,8 @@ class GameManager(private val game : Game) {
             player.playSound(player.location, Sounds.GameOver.GAME_OVER_PLING, 1f, 2f)
             player.playSound(player.location, Sounds.GameOver.GAME_OVER_EFFECT_1, 1f, 1f)
             player.playSound(player.location, Sounds.GameOver.GAME_OVER_EFFECT_2, 1f, 1f)
-            Main.getGame().musicTask.stopMusicLoop(player, Music.MAIN)
-            Main.getGame().musicTask.stopMusicLoop(player, Music.OVERTIME)
+            CheeseHunt.getGame().musicTask.stopMusicLoop(player, Music.MAIN)
+            CheeseHunt.getGame().musicTask.stopMusicLoop(player, Music.OVERTIME)
             player.playSound(player.location, Sounds.Music.GAME_OVER_MUSIC, SoundCategory.VOICE, 0.85f, 1f)
             player.showTitle(Title.title(
                 Component.text("Game Over!", NamedTextColor.RED, TextDecoration.BOLD),

@@ -4,6 +4,7 @@ import me.lucyydotp.cheeselib.inject.InjectionContext
 import me.lucyydotp.cheeselib.inject.bind
 import me.lucyydotp.cheeselib.module.Module
 import me.lucyydotp.cheeselib.module.ModuleHolder
+import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
 
 abstract class ModuleEntrypointPlugin<T> : JavaPlugin(), ModuleHolder where T : Module, T : InjectionContext {
@@ -13,7 +14,7 @@ abstract class ModuleEntrypointPlugin<T> : JavaPlugin(), ModuleHolder where T : 
         get() = setOf(module)
 
     override fun onEnable() {
-        module.bind<JavaPlugin>(this)
+        module.bind<Plugin>(this)
         module.enable()
     }
 

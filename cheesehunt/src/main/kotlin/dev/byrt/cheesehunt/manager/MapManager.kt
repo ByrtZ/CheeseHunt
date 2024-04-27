@@ -13,7 +13,7 @@ class MapManager(private val game : Game) {
         if(map == currentMap) {
             sender?.sendMessage(Component.text("Unable to set current map to $map as it is already active.", NamedTextColor.RED))
         } else {
-            game.infoBoardManager.updateCurrentMap(currentMap, map)
+            game.infoBoardManager.updateCurrentMap()
             when(map) {
                 Maps.REFORGED -> {
                     currentMap = map

@@ -1,6 +1,6 @@
 package dev.byrt.cheesehunt.manager
 
-import dev.byrt.cheesehunt.Main
+import dev.byrt.cheesehunt.CheeseHunt
 import dev.byrt.cheesehunt.game.Game
 import dev.byrt.cheesehunt.state.Teams
 
@@ -112,23 +112,23 @@ class PlayerManager(private var game : Game) {
 
     fun teleportPlayersToGame() {
         Bukkit.getOnlinePlayers().stream().filter { player: Player? -> player?.let {
-            Main.getGame().teamManager.getPlayerTeam(it.uniqueId) } != Teams.SPECTATOR}
+            CheeseHunt.getGame().teamManager.getPlayerTeam(it.uniqueId) } != Teams.SPECTATOR}
                 .forEach{ player: Player -> teleportPlayers(player) }
     }
 
     private fun teleportPlayers(player : Player) {
-        if(Main.getGame().teamManager.isInRedTeam(player.uniqueId)) {
-                for(redPlayerUUID in Main.getGame().teamManager.getRedTeam()) {
+        if(CheeseHunt.getGame().teamManager.isInRedTeam(player.uniqueId)) {
+                for(redPlayerUUID in CheeseHunt.getGame().teamManager.getRedTeam()) {
                     val redPlayer = Bukkit.getPlayer(redPlayerUUID)
-                    redPlayer!!.teleport(Main.getGame().locationManager.getRedSpawns()[Main.getGame().locationManager.getRedSpawnCounter()])
-                    Main.getGame().locationManager.incrementSpawnCounter(Teams.RED)
+                    redPlayer!!.teleport(CheeseHunt.getGame().locationManager.getRedSpawns()[CheeseHunt.getGame().locationManager.getRedSpawnCounter()])
+                    CheeseHunt.getGame().locationManager.incrementSpawnCounter(Teams.RED)
                 }
         }
-        if(Main.getGame().teamManager.isInBlueTeam(player.uniqueId)) {
-            for(bluePlayerUUID in Main.getGame().teamManager.getBlueTeam()) {
+        if(CheeseHunt.getGame().teamManager.isInBlueTeam(player.uniqueId)) {
+            for(bluePlayerUUID in CheeseHunt.getGame().teamManager.getBlueTeam()) {
                 val bluePlayer = Bukkit.getPlayer(bluePlayerUUID)
-                bluePlayer!!.teleport(Main.getGame().locationManager.getBlueSpawns()[Main.getGame().locationManager.getBlueSpawnCounter()])
-                Main.getGame().locationManager.incrementSpawnCounter(Teams.BLUE)
+                bluePlayer!!.teleport(CheeseHunt.getGame().locationManager.getBlueSpawns()[CheeseHunt.getGame().locationManager.getBlueSpawnCounter()])
+                CheeseHunt.getGame().locationManager.incrementSpawnCounter(Teams.BLUE)
             }
         }
     }
@@ -143,19 +143,19 @@ class PlayerManager(private var game : Game) {
 
     private fun teleportPlayersToSpawn() {
         for(player in Bukkit.getOnlinePlayers()) {
-            player.teleport(Main.getGame().locationManager.getSpawn())
+            player.teleport(CheeseHunt.getGame().locationManager.getSpawn())
         }
     }
 
     fun setSpectatorsGameMode() {
         Bukkit.getOnlinePlayers().stream().filter { player: Player? -> player?.let {
-            Main.getGame().teamManager.getPlayerTeam(it.uniqueId) } == Teams.SPECTATOR}
+            CheeseHunt.getGame().teamManager.getPlayerTeam(it.uniqueId) } == Teams.SPECTATOR}
             .forEach{ player: Player -> player.gameMode = GameMode.SPECTATOR }
     }
 
     fun setPlayersAdventure() {
         Bukkit.getOnlinePlayers().stream().filter { player: Player? -> player?.let {
-            Main.getGame().teamManager.getPlayerTeam(it.uniqueId) } != Teams.SPECTATOR}
+            CheeseHunt.getGame().teamManager.getPlayerTeam(it.uniqueId) } != Teams.SPECTATOR}
             .forEach{ player: Player -> player.gameMode = GameMode.ADVENTURE }
     }
 

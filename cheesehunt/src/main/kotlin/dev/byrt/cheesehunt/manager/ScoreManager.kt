@@ -96,8 +96,8 @@ class ScoreManager(private val game : Game) {
     }
 
     fun setMultiplier(newMultiplier : Int) {
-        game.infoBoardManager.updateScoreboardMultiplier(multiplier, newMultiplier)
         multiplier = newMultiplier
+        game.infoBoardManager.updateScoreboardMultiplier()
         if(newMultiplier == 1) {
             for(player in Bukkit.getOnlinePlayers()) {
                 player.playSound(player.location, Sounds.Score.MULTIPLIER_RESET, 1f, 1f)

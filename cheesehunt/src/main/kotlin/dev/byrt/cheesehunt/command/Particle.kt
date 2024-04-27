@@ -4,7 +4,7 @@ import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 
-import dev.byrt.cheesehunt.Main
+import dev.byrt.cheesehunt.CheeseHunt
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -16,7 +16,6 @@ import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import org.bukkit.scheduler.BukkitRunnable
 
-import java.util.*
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -30,7 +29,7 @@ class Particle : BaseCommand {
             sender.sendMessage(Component.text("No funny test particles for you.", NamedTextColor.RED))
         } else {
             sender.sendMessage(Component.text("Spawned new particle tornado.", NamedTextColor.GREEN))
-            particleLoop(sender.location, Main.getPlugin())
+            particleLoop(sender.location, CheeseHunt.getPlugin())
         }
     }
 

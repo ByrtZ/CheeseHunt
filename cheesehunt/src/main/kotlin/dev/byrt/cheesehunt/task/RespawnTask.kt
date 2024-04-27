@@ -1,6 +1,6 @@
 package dev.byrt.cheesehunt.task
 
-import dev.byrt.cheesehunt.Main
+import dev.byrt.cheesehunt.CheeseHunt
 import dev.byrt.cheesehunt.game.Game
 import dev.byrt.cheesehunt.state.Sounds
 import dev.byrt.cheesehunt.state.Teams
@@ -64,7 +64,7 @@ class RespawnTask(private val game: Game) {
 
     fun stopRespawnLoop(player : Player) {
         respawnLoopMap.remove(player.uniqueId)?.cancel()
-        game.itemManager.givePlayerTeamBoots(player, Main.getGame().teamManager.getPlayerTeam(player.uniqueId))
+        game.itemManager.givePlayerTeamBoots(player, CheeseHunt.getGame().teamManager.getPlayerTeam(player.uniqueId))
         if(game.gameManager.getGameState() == GameState.OVERTIME) {
             game.itemManager.givePlayerPickaxe(player)
         } else {

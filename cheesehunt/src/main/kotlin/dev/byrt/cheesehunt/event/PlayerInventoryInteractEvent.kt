@@ -1,6 +1,6 @@
 package dev.byrt.cheesehunt.event
 
-import dev.byrt.cheesehunt.Main
+import dev.byrt.cheesehunt.CheeseHunt
 
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -11,26 +11,26 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent
 class PlayerInventoryInteractEvent : Listener {
     @EventHandler
     private fun onInventoryClick(e : InventoryClickEvent) {
-        e.isCancelled = !(Main.getGame().getBuildMode() && e.whoClicked.isOp)
+        e.isCancelled = !(CheeseHunt.getGame().getBuildMode() && e.whoClicked.isOp)
     }
 
     @EventHandler
     private fun onInventoryMove(e : InventoryMoveItemEvent) {
-        e.isCancelled = !Main.getGame().getBuildMode()
+        e.isCancelled = !CheeseHunt.getGame().getBuildMode()
     }
 
     @EventHandler
     private fun onInventoryDrag(e : InventoryDragEvent) {
-        e.isCancelled = !(Main.getGame().getBuildMode() && e.whoClicked.isOp)
+        e.isCancelled = !(CheeseHunt.getGame().getBuildMode() && e.whoClicked.isOp)
     }
 
     @EventHandler
     private fun onInventory(e : InventoryPickupItemEvent) {
-        e.isCancelled = !Main.getGame().getBuildMode()
+        e.isCancelled = !CheeseHunt.getGame().getBuildMode()
     }
 
     @EventHandler
     private fun onOffhand(e : PlayerSwapHandItemsEvent) {
-        e.isCancelled = !Main.getGame().getBuildMode()
+        e.isCancelled = !CheeseHunt.getGame().getBuildMode()
     }
 }

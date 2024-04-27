@@ -21,7 +21,7 @@ open class InjectionContextImpl : InjectionContext {
 
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : Any> getOrNull(clazz: KClass<T>): T? = values[clazz] as T?
+    override fun <T : Any> injectOrNull(clazz: KClass<T>): T? = values[clazz] as T?
 
 }
 
@@ -30,5 +30,5 @@ open class InjectionContextImpl : InjectionContext {
  * if this context does not have a value directly.
  */
 class CascadingInjectionContext(private val parentContext: InjectionContext) : InjectionContextImpl() {
-    override fun <T : Any> getOrNull(clazz: KClass<T>): T? = super.getOrNull(clazz) ?: parentContext.getOrNull(clazz)
+    override fun <T : Any> injectOrNull(clazz: KClass<T>): T? = super.injectOrNull(clazz) ?: parentContext.injectOrNull(clazz)
 }

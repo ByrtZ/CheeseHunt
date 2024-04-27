@@ -1,6 +1,6 @@
 package dev.byrt.cheesehunt.event
 
-import dev.byrt.cheesehunt.Main
+import dev.byrt.cheesehunt.CheeseHunt
 import dev.byrt.cheesehunt.game.GameState
 import dev.byrt.cheesehunt.state.Sounds
 
@@ -17,12 +17,12 @@ import org.bukkit.event.player.PlayerDropItemEvent
 class PlayerItemEvent : Listener {
     @EventHandler
     private fun dropItem(e : PlayerDropItemEvent) {
-        e.isCancelled = !(Main.getGame().getBuildMode() && e.player.isOp)
+        e.isCancelled = !(CheeseHunt.getGame().getBuildMode() && e.player.isOp)
     }
 
     @EventHandler
     private fun attemptPickupItem(e : PlayerAttemptPickupItemEvent) {
-        if(Main.getGame().gameManager.getGameState() == GameState.IN_GAME || Main.getGame().gameManager.getGameState() == GameState.OVERTIME) {
+        if(CheeseHunt.getGame().gameManager.getGameState() == GameState.IN_GAME || CheeseHunt.getGame().gameManager.getGameState() == GameState.OVERTIME) {
             if(e.player.inventory.contains(e.item.itemStack.type) || e.player.inventory.itemInOffHand.type == e.item.itemStack.type) {
                 e.player.sendActionBar(Component.text("⚠ You cannot hold any more of this item. ⚠", NamedTextColor.RED))
                 e.isCancelled = true

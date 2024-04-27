@@ -1,6 +1,6 @@
 package dev.byrt.cheesehunt.command
 
-import dev.byrt.cheesehunt.Main
+import dev.byrt.cheesehunt.CheeseHunt
 import dev.byrt.cheesehunt.state.Sounds
 import dev.byrt.cheesehunt.state.*
 import dev.byrt.cheesehunt.util.DevStatus
@@ -35,19 +35,19 @@ class GameCommands : BaseCommand {
     @CommandPermission("cheesehunt.startgame")
     @Confirmation
     fun start(sender : Player) {
-        if(Main.getGame().gameManager.getGameState() == GameState.IDLE) {
-            if(Main.getGame().teamManager.getRedTeam().size >= 1 && Main.getGame().teamManager.getBlueTeam().size >= 1) {
-                Main.getGame().dev.parseDevMessage("${sender.name} started a Cheese Hunt game!", DevStatus.INFO_SUCCESS)
+        if(CheeseHunt.getGame().gameManager.getGameState() == GameState.IDLE) {
+            if(CheeseHunt.getGame().teamManager.getRedTeam().size >= 1 && CheeseHunt.getGame().teamManager.getBlueTeam().size >= 1) {
+                CheeseHunt.getGame().dev.parseDevMessage("${sender.name} started a Cheese Hunt game!", DevStatus.INFO_SUCCESS)
                 for(player in Bukkit.getOnlinePlayers()) {
                     player.sendMessage(Component.text("\nA Cheese Hunt game is starting!\n").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
                     player.playSound(startGameSuccessSound)
                 }
-                Main.getGame().startGame()
+                CheeseHunt.getGame().startGame()
             } else {
                 sender.sendMessage(Component.text("There are not enough players on teams to start a Cheese Hunt game.").color(NamedTextColor.RED))
                 sender.playSound(startGameFailSound)
             }
-        } else if(Main.getGame().gameManager.getGameState() == GameState.GAME_END) {
+        } else if(CheeseHunt.getGame().gameManager.getGameState() == GameState.GAME_END) {
             sender.sendMessage(Component.text("A restart is required for a new Cheese Hunt game.").color(NamedTextColor.RED))
             sender.playSound(startGameFailSound)
         } else {
@@ -61,9 +61,9 @@ class GameCommands : BaseCommand {
     @CommandPermission("cheesehunt.force.start")
     @Confirmation
     fun forceStartGame(sender : Player) {
-        if(Main.getGame().gameManager.getGameState() == GameState.IDLE) {
-            Main.getGame().dev.parseDevMessage("${sender.name} forcefully started a Cheese Hunt game!", DevStatus.WARNING)
-            Main.getGame().startGame()
+        if(CheeseHunt.getGame().gameManager.getGameState() == GameState.IDLE) {
+            CheeseHunt.getGame().dev.parseDevMessage("${sender.name} forcefully started a Cheese Hunt game!", DevStatus.WARNING)
+            CheeseHunt.getGame().startGame()
             for(player in Bukkit.getOnlinePlayers()) {
                 player.sendMessage(Component.text("\nA Cheese Hunt game is starting!\n").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
                 player.playSound(startGameSuccessSound)
@@ -79,10 +79,10 @@ class GameCommands : BaseCommand {
     @CommandPermission("cheesehunt.force.stop")
     @Confirmation
     fun forceStopGame(sender : Player) {
-        if(Main.getGame().gameManager.getGameState() != GameState.IDLE) {
-            if(Main.getGame().gameManager.getGameState() != GameState.GAME_END) {
-                Main.getGame().dev.parseDevMessage("${sender.name} force stopped the current Cheese Hunt game.", DevStatus.WARNING)
-                Main.getGame().stopGame()
+        if(CheeseHunt.getGame().gameManager.getGameState() != GameState.IDLE) {
+            if(CheeseHunt.getGame().gameManager.getGameState() != GameState.GAME_END) {
+                CheeseHunt.getGame().dev.parseDevMessage("${sender.name} force stopped the current Cheese Hunt game.", DevStatus.WARNING)
+                CheeseHunt.getGame().stopGame()
             } else {
                 sender.sendMessage(Component.text("Game currently ending.").color(NamedTextColor.RED))
             }
@@ -97,13 +97,13 @@ class GameCommands : BaseCommand {
     @CommandPermission("cheesehunt.reloadgame")
     @Confirmation
     fun reloadGame(sender : Player) {
-        if(Main.getGame().gameManager.getGameState() == GameState.GAME_END && Main.getGame().timerManager.getTimerState() == TimerState.INACTIVE) {
+        if(CheeseHunt.getGame().gameManager.getGameState() == GameState.GAME_END && CheeseHunt.getGame().timerManager.getTimerState() == TimerState.INACTIVE) {
             sender.showTitle(Title.title(Component.text(""), Component.text("Reloading...", NamedTextColor.RED), Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(3), Duration.ofSeconds(1))))
             sender.playSound(reloadStartSound)
-            Main.getGame().reload()
+            CheeseHunt.getGame().reload()
             sender.showTitle(Title.title(Component.text(""), Component.text("Game reloaded!", NamedTextColor.GREEN), Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(1), Duration.ofSeconds(1))))
             sender.playSound(reloadCompleteSound)
-            Main.getGame().dev.parseDevMessage("${sender.name} reloaded the game.", DevStatus.INFO)
+            CheeseHunt.getGame().dev.parseDevMessage("${sender.name} reloaded the game.", DevStatus.INFO)
         } else {
             sender.sendMessage(Component.text("Unable to reload game.", NamedTextColor.RED))
         }
@@ -113,14 +113,14 @@ class GameCommands : BaseCommand {
     @CommandDescription("Toggles whether overtime should occur or not.")
     @CommandPermission("cheesehunt.overtime")
     fun overtime(sender : Player) {
-        if(Main.getGame().gameManager.getGameState() == GameState.IDLE) {
-            if(Main.getGame().gameManager.isOvertimeActive()) {
-                Main.getGame().gameManager.setOvertimeState(false)
-                Main.getGame().dev.parseDevMessage("Overtime disabled for next game by ${sender.name}.", DevStatus.INFO_FAIL)
+        if(CheeseHunt.getGame().gameManager.getGameState() == GameState.IDLE) {
+            if(CheeseHunt.getGame().gameManager.isOvertimeActive()) {
+                CheeseHunt.getGame().gameManager.setOvertimeState(false)
+                CheeseHunt.getGame().dev.parseDevMessage("Overtime disabled for next game by ${sender.name}.", DevStatus.INFO_FAIL)
                 sender.playSound(reloadStartSound)
             } else {
-                Main.getGame().gameManager.setOvertimeState(true)
-                Main.getGame().dev.parseDevMessage("Overtime enabled for next game by ${sender.name}.", DevStatus.INFO_SUCCESS)
+                CheeseHunt.getGame().gameManager.setOvertimeState(true)
+                CheeseHunt.getGame().dev.parseDevMessage("Overtime enabled for next game by ${sender.name}.", DevStatus.INFO_SUCCESS)
                 sender.playSound(reloadCompleteSound)
             }
         } else {

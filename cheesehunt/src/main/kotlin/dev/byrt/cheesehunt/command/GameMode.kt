@@ -1,6 +1,6 @@
 package dev.byrt.cheesehunt.command
 
-import dev.byrt.cheesehunt.Main
+import dev.byrt.cheesehunt.CheeseHunt
 import dev.byrt.cheesehunt.util.DevStatus
 
 import cloud.commandframework.annotations.Argument
@@ -21,25 +21,25 @@ class GameMode : BaseCommand {
             PlayerGameModes.S -> {
                 if(sender.gameMode != GameMode.SURVIVAL) {
                     sender.gameMode = GameMode.SURVIVAL
-                    Main.getGame().dev.parseDevMessage("${sender.name} set own game mode to Survival mode.", DevStatus.INFO)
+                    CheeseHunt.getGame().dev.parseDevMessage("${sender.name} set own game mode to Survival mode.", DevStatus.INFO)
                 }
             }
             PlayerGameModes.C -> {
                 if(sender.gameMode != GameMode.CREATIVE) {
                     sender.gameMode = GameMode.CREATIVE
-                    Main.getGame().dev.parseDevMessage("${sender.name} set own game mode to Creative mode.", DevStatus.INFO)
+                    CheeseHunt.getGame().dev.parseDevMessage("${sender.name} set own game mode to Creative mode.", DevStatus.INFO)
                 }
             }
             PlayerGameModes.A -> {
                 if(sender.gameMode != GameMode.ADVENTURE) {
                     sender.gameMode = GameMode.ADVENTURE
-                    Main.getGame().dev.parseDevMessage("${sender.name} set own game mode to Adventure mode.", DevStatus.INFO)
+                    CheeseHunt.getGame().dev.parseDevMessage("${sender.name} set own game mode to Adventure mode.", DevStatus.INFO)
                 }
             }
             PlayerGameModes.SP -> {
                 if(sender.gameMode != GameMode.SPECTATOR) {
                     sender.gameMode = GameMode.SPECTATOR
-                    Main.getGame().dev.parseDevMessage("${sender.name} set own game mode to Spectator mode.", DevStatus.INFO)
+                    CheeseHunt.getGame().dev.parseDevMessage("${sender.name} set own game mode to Spectator mode.", DevStatus.INFO)
                 }
             }
         }

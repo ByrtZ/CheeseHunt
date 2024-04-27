@@ -1,6 +1,6 @@
 package dev.byrt.cheesehunt.event
 
-import dev.byrt.cheesehunt.Main
+import dev.byrt.cheesehunt.CheeseHunt
 import dev.byrt.cheesehunt.game.GameState
 import dev.byrt.cheesehunt.task.Music
 
@@ -21,16 +21,16 @@ class PlayerResourcePackLoadEvent : Listener {
         if(e.status == Status.SUCCESSFULLY_LOADED) {
             e.player.showTitle(Title.title(Component.text("\uD000"), Component.text(""), Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(1), Duration.ofSeconds(1))))
 
-            if(Main.getGame().gameManager.getGameState() == GameState.IN_GAME) {
-                if(Main.getGame().gameTask.getTimeLeft() >= 29) {
-                    Main.getGame().musicTask.startMusicLoop(e.player, Main.getPlugin(), Music.MAIN)
+            if(CheeseHunt.getGame().gameManager.getGameState() == GameState.IN_GAME) {
+                if(CheeseHunt.getGame().gameTask.getTimeLeft() >= 29) {
+                    CheeseHunt.getGame().musicTask.startMusicLoop(e.player, CheeseHunt.getPlugin(), Music.MAIN)
                 } else {
-                    Main.getGame().musicTask.startMusicLoop(e.player, Main.getPlugin(), Music.OVERTIME)
+                    CheeseHunt.getGame().musicTask.startMusicLoop(e.player, CheeseHunt.getPlugin(), Music.OVERTIME)
                 }
             }
 
-            if(Main.getGame().gameManager.getGameState() == GameState.OVERTIME) {
-                Main.getGame().musicTask.startMusicLoop(e.player, Main.getPlugin(), Music.OVERTIME)
+            if(CheeseHunt.getGame().gameManager.getGameState() == GameState.OVERTIME) {
+                CheeseHunt.getGame().musicTask.startMusicLoop(e.player, CheeseHunt.getPlugin(), Music.OVERTIME)
             }
         }
     }

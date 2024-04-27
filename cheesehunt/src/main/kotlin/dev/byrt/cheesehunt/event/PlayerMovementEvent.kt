@@ -2,7 +2,7 @@ package dev.byrt.cheesehunt.event
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent
 
-import dev.byrt.cheesehunt.Main
+import dev.byrt.cheesehunt.CheeseHunt
 import dev.byrt.cheesehunt.game.GameState
 import dev.byrt.cheesehunt.state.Sounds
 import dev.byrt.cheesehunt.state.Teams
@@ -32,12 +32,12 @@ class PlayerMovementEvent : Listener {
             else -> {}
         }
 
-        if(Main.getGame().gameManager.getGameState() == GameState.IN_GAME || Main.getGame().gameManager.getGameState() == GameState.OVERTIME) {
-            if(e.player.location.block.type == Material.STRUCTURE_VOID && e.player.gameMode != GameMode.SPECTATOR && Main.getGame().teamManager.getPlayerTeam(e.player.uniqueId) != Teams.SPECTATOR) {
+        if(CheeseHunt.getGame().gameManager.getGameState() == GameState.IN_GAME || CheeseHunt.getGame().gameManager.getGameState() == GameState.OVERTIME) {
+            if(e.player.location.block.type == Material.STRUCTURE_VOID && e.player.gameMode != GameMode.SPECTATOR && CheeseHunt.getGame().teamManager.getPlayerTeam(e.player.uniqueId) != Teams.SPECTATOR) {
                 e.player.damage(0.1)
                 e.player.health = 0.0
             }
-            if(Main.getGame().cheeseManager.playerHasCheese(e.player)) {
+            if(CheeseHunt.getGame().cheeseManager.playerHasCheese(e.player)) {
                 e.player.addPotionEffect(PotionEffect(PotionEffectType.SLOW, 20, 3, false, false))
             }
         }

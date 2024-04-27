@@ -1,6 +1,6 @@
 package dev.byrt.cheesehunt.command
 
-import dev.byrt.cheesehunt.Main
+import dev.byrt.cheesehunt.CheeseHunt
 import dev.byrt.cheesehunt.util.DevStatus
 import dev.byrt.cheesehunt.state.Sounds
 
@@ -25,7 +25,7 @@ class Announce : BaseCommand {
     @CommandDescription("Puts a formatted announcement message in chat.")
     @CommandPermission("cheesehunt.announce")
     fun announce(sender : Player, @Argument("text") text: Array<String>) {
-        Main.getGame().dev.parseDevMessage("Announcement sent by ${sender.name}.", DevStatus.INFO)
+        CheeseHunt.getGame().dev.parseDevMessage("Announcement sent by ${sender.name}.", DevStatus.INFO)
         val rawAnnounceMessage = text.joinToString(" ")
         for(player in Bukkit.getServer().onlinePlayers) {
             player.playSound(player.location, Sounds.Alert.GENERAL_ALERT, 1.0f, 1.0f)

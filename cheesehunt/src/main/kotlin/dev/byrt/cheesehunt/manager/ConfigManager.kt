@@ -1,6 +1,6 @@
 package dev.byrt.cheesehunt.manager
 
-import dev.byrt.cheesehunt.Main
+import dev.byrt.cheesehunt.CheeseHunt
 import dev.byrt.cheesehunt.game.Game
 
 import org.bukkit.Bukkit
@@ -15,8 +15,8 @@ class ConfigManager(private val game : Game) {
     private lateinit var mapFileConfig : FileConfiguration
 
     fun setup() {
-        Main.getPlugin().config.options().copyDefaults()
-        Main.getPlugin().saveDefaultConfig()
+        CheeseHunt.getPlugin().config.options().copyDefaults()
+        CheeseHunt.getPlugin().saveDefaultConfig()
         setupMapConfig()
     }
 
@@ -43,7 +43,7 @@ class ConfigManager(private val game : Game) {
             "blueSpawn" -> {
 
             } else -> {
-                Main.getPlugin().logger.warning("No $data data for $map.")
+                CheeseHunt.getPlugin().logger.warning("No $data data for $map.")
             }
         }
     }
@@ -52,7 +52,7 @@ class ConfigManager(private val game : Game) {
         try {
             mapFileConfig.save(mapConfig)
         } catch (e: IOException) {
-            Main.getPlugin().logger.severe("Unable to save map configuration, printing stack trace:\n${e.printStackTrace()}")
+            CheeseHunt.getPlugin().logger.severe("Unable to save map configuration, printing stack trace:\n${e.printStackTrace()}")
         }
     }
 

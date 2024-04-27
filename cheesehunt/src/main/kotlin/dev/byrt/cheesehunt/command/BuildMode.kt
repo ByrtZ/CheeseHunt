@@ -1,6 +1,6 @@
 package dev.byrt.cheesehunt.command
 
-import dev.byrt.cheesehunt.Main
+import dev.byrt.cheesehunt.CheeseHunt
 import dev.byrt.cheesehunt.game.GameState
 import dev.byrt.cheesehunt.state.Sounds
 
@@ -25,23 +25,23 @@ class BuildMode : BaseCommand {
     @CommandDescription("Toggles the ability to build for operators while not in game.")
     @CommandPermission("cheesehunt.buildmode")
     fun start(sender : Player) {
-        if(Main.getGame().gameManager.getGameState() == GameState.IDLE) {
-            if(Main.getGame().getBuildMode()) {
+        if(CheeseHunt.getGame().gameManager.getGameState() == GameState.IDLE) {
+            if(CheeseHunt.getGame().getBuildMode()) {
                 for(player in Bukkit.getOnlinePlayers()) {
                     if(player.isOp) {
                         player.playSound(buildToggleSuccessSound)
                     }
                 }
-                Main.getGame().dev.parseDevMessage("Building disabled by ${sender.name}.", DevStatus.INFO_FAIL)
-                Main.getGame().setBuildMode(false)
+                CheeseHunt.getGame().dev.parseDevMessage("Building disabled by ${sender.name}.", DevStatus.INFO_FAIL)
+                CheeseHunt.getGame().setBuildMode(false)
             } else {
                 for(player in Bukkit.getOnlinePlayers()) {
                     if(player.isOp) {
                         player.playSound(buildToggleSuccessSound)
                     }
                 }
-                Main.getGame().dev.parseDevMessage("Building enabled by ${sender.name}.", DevStatus.INFO_SUCCESS)
-                Main.getGame().setBuildMode(true)
+                CheeseHunt.getGame().dev.parseDevMessage("Building enabled by ${sender.name}.", DevStatus.INFO_SUCCESS)
+                CheeseHunt.getGame().setBuildMode(true)
             }
         } else {
             sender.sendMessage(Component.text("You can only toggle Build Mode when the game is idle.").color(NamedTextColor.RED))

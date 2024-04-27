@@ -1,6 +1,6 @@
 package dev.byrt.cheesehunt.event
 
-import dev.byrt.cheesehunt.Main
+import dev.byrt.cheesehunt.CheeseHunt
 import dev.byrt.cheesehunt.game.GameState
 
 import org.bukkit.entity.Arrow
@@ -12,7 +12,7 @@ import org.bukkit.event.entity.ProjectileHitEvent
 class ArrowLandEvent : Listener {
     @EventHandler
     private fun onArrowLand(e : ProjectileHitEvent) {
-        if(Main.getGame().gameManager.getGameState() == GameState.IN_GAME || Main.getGame().gameManager.getGameState() == GameState.OVERTIME) {
+        if(CheeseHunt.getGame().gameManager.getGameState() == GameState.IN_GAME || CheeseHunt.getGame().gameManager.getGameState() == GameState.OVERTIME) {
             if(e.entity is Arrow && e.hitEntity == null) {
                 e.entity.remove()
             }

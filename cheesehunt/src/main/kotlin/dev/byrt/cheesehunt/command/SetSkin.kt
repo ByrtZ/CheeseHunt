@@ -1,6 +1,6 @@
 package dev.byrt.cheesehunt.command
 
-import dev.byrt.cheesehunt.Main
+import dev.byrt.cheesehunt.CheeseHunt
 import dev.byrt.cheesehunt.util.DevStatus
 
 import cloud.commandframework.annotations.Argument
@@ -33,7 +33,7 @@ class SetSkin : BaseCommand {
         try {
             sender.sendMessage(Component.text("Attempting to change ${player.name}'s skin to ${skin}'s skin...").color(NamedTextColor.GRAY))
             setPlayerSkin(player, skin)
-            Main.getGame().dev.parseDevMessage("${player.name}'s skin updated to ${skin}'s skin by ${sender.name}.", DevStatus.INFO)
+            CheeseHunt.getGame().dev.parseDevMessage("${player.name}'s skin updated to ${skin}'s skin by ${sender.name}.", DevStatus.INFO)
         } catch(e : Exception) {
             sender.sendMessage(Component.text("An error occurred when attempting to change a player's skin.").color(NamedTextColor.RED))
             e.printStackTrace()

@@ -1,6 +1,6 @@
 package dev.byrt.cheesehunt.command
 
-import dev.byrt.cheesehunt.Main
+import dev.byrt.cheesehunt.CheeseHunt
 
 import cloud.commandframework.annotations.Argument
 import cloud.commandframework.annotations.CommandDescription
@@ -31,7 +31,7 @@ class Worlds : BaseCommand {
                         try {
                             if(!Bukkit.getWorlds().contains(Bukkit.getWorld("original"))) {
                                 sender.sendMessage(Component.text("Attempting to open $world...").color(NamedTextColor.GRAY))
-                                Main.getPlugin().server.createWorld(WorldCreator.name("original"))
+                                CheeseHunt.getPlugin().server.createWorld(WorldCreator.name("original"))
                                 sender.sendMessage(Component.text("Successfully opened $world.").color(NamedTextColor.GREEN))
                             }
                         } catch(e : Exception) {
@@ -43,7 +43,7 @@ class Worlds : BaseCommand {
                         try {
                             if(!Bukkit.getWorlds().contains(Bukkit.getWorld("Valorant"))) {
                                 sender.sendMessage(Component.text("Attempting to open $world...").color(NamedTextColor.GRAY))
-                                Main.getPlugin().server.createWorld(WorldCreator.name("Valorant"))
+                                CheeseHunt.getPlugin().server.createWorld(WorldCreator.name("Valorant"))
                                 sender.sendMessage(Component.text("Successfully opened $world.").color(NamedTextColor.GREEN))
                             }
                         } catch(e : Exception) {
@@ -55,7 +55,7 @@ class Worlds : BaseCommand {
                         try {
                             if(!Bukkit.getWorlds().contains(Bukkit.getWorld("eleos"))) {
                                 sender.sendMessage(Component.text("Attempting to open $world...").color(NamedTextColor.GRAY))
-                                Main.getPlugin().server.createWorld(WorldCreator.name("eleos"))
+                                CheeseHunt.getPlugin().server.createWorld(WorldCreator.name("eleos"))
                                 sender.sendMessage(Component.text("Successfully opened $world.").color(NamedTextColor.GREEN))
                             }
                         } catch(e : Exception) {
@@ -67,7 +67,7 @@ class Worlds : BaseCommand {
                         try {
                             if(!Bukkit.getWorlds().contains(Bukkit.getWorld("dezzer"))) {
                                 sender.sendMessage(Component.text("Attempting to open $world...").color(NamedTextColor.GRAY))
-                                Main.getPlugin().server.createWorld(WorldCreator.name("dezzer"))
+                                CheeseHunt.getPlugin().server.createWorld(WorldCreator.name("dezzer"))
                                 sender.sendMessage(Component.text("Successfully opened $world.").color(NamedTextColor.GREEN))
                             }
                         } catch(e : Exception) {
@@ -79,7 +79,7 @@ class Worlds : BaseCommand {
                         try {
                             if(!Bukkit.getWorlds().contains(Bukkit.getWorld("pkw"))) {
                                 sender.sendMessage(Component.text("Attempting to open $world...").color(NamedTextColor.GRAY))
-                                Main.getPlugin().server.createWorld(WorldCreator.name("pkw"))
+                                CheeseHunt.getPlugin().server.createWorld(WorldCreator.name("pkw"))
                                 sender.sendMessage(Component.text("Successfully opened $world.").color(NamedTextColor.GREEN))
                             }
                         } catch(e : Exception) {
@@ -103,7 +103,7 @@ class Worlds : BaseCommand {
                                         player.teleport(Location(Bukkit.getWorld("Cheese"), 0.5, -52.0 ,0.5, 0.0f, 0.0f))
                                     }
                                 }
-                                Main.getPlugin().server.unloadWorld("original", true)
+                                CheeseHunt.getPlugin().server.unloadWorld("original", true)
                                 sender.sendMessage(Component.text("Successfully closed $world.").color(NamedTextColor.GREEN))
                             }
                         } catch(e : Exception) {
@@ -120,7 +120,7 @@ class Worlds : BaseCommand {
                                         player.teleport(Location(Bukkit.getWorld("Cheese"), 0.5, -52.0 ,0.5, 0.0f, 0.0f))
                                     }
                                 }
-                                Main.getPlugin().server.unloadWorld("Valorant", true)
+                                CheeseHunt.getPlugin().server.unloadWorld("Valorant", true)
                                 sender.sendMessage(Component.text("Successfully closed $world.").color(NamedTextColor.GREEN))
                             }
                         } catch(e : Exception) {
@@ -137,7 +137,7 @@ class Worlds : BaseCommand {
                                         player.teleport(Location(Bukkit.getWorld("Cheese"), 0.5, -52.0 ,0.5, 0.0f, 0.0f))
                                     }
                                 }
-                                Main.getPlugin().server.unloadWorld("eleos", true)
+                                CheeseHunt.getPlugin().server.unloadWorld("eleos", true)
                                 sender.sendMessage(Component.text("Successfully closed $world.").color(NamedTextColor.GREEN))
                             }
                         } catch(e : Exception) {
@@ -154,7 +154,7 @@ class Worlds : BaseCommand {
                                         player.teleport(Location(Bukkit.getWorld("Cheese"), 0.5, -52.0 ,0.5, 0.0f, 0.0f))
                                     }
                                 }
-                                Main.getPlugin().server.unloadWorld("dezzer", true)
+                                CheeseHunt.getPlugin().server.unloadWorld("dezzer", true)
                                 sender.sendMessage(Component.text("Successfully closed $world.").color(NamedTextColor.GREEN))
                             }
                         } catch(e : Exception) {
@@ -171,7 +171,7 @@ class Worlds : BaseCommand {
                                         player.teleport(Location(Bukkit.getWorld("Cheese"), 0.5, -52.0 ,0.5, 0.0f, 0.0f))
                                     }
                                 }
-                                Main.getPlugin().server.unloadWorld("pkw", true)
+                                CheeseHunt.getPlugin().server.unloadWorld("pkw", true)
                                 sender.sendMessage(Component.text("Successfully closed $world.").color(NamedTextColor.GREEN))
                             }
                         } catch(e : Exception) {

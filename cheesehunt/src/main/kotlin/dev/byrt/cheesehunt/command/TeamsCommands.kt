@@ -2,7 +2,7 @@ package dev.byrt.cheesehunt.command
 
 import cloud.commandframework.annotations.*
 
-import dev.byrt.cheesehunt.Main
+import dev.byrt.cheesehunt.CheeseHunt
 import dev.byrt.cheesehunt.game.GameState
 import dev.byrt.cheesehunt.state.*
 import dev.byrt.cheesehunt.state.Sounds
@@ -19,7 +19,6 @@ import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 
 import java.time.Duration
-import java.util.*
 
 @Suppress("unused")
 class TeamsCommands : BaseCommand {
@@ -31,12 +30,12 @@ class TeamsCommands : BaseCommand {
     @CommandDescription("Puts the specified player on the specified team.")
     @CommandPermission("cheesehunt.jointeam")
     fun setTeam(sender : Player, @Argument("player") player : Player, @Argument("team") team : Teams) {
-        if(Main.getGame().gameManager.getGameState() == GameState.IDLE) {
-            if(Main.getGame().teamManager.getPlayerTeam(player.uniqueId) == Teams.RED && team == Teams.RED || Main.getGame().teamManager.getPlayerTeam(player.uniqueId) == Teams.BLUE && team == Teams.BLUE || Main.getGame().teamManager.getPlayerTeam(player.uniqueId) == Teams.SPECTATOR && team == Teams.SPECTATOR) {
+        if(CheeseHunt.getGame().gameManager.getGameState() == GameState.IDLE) {
+            if(CheeseHunt.getGame().teamManager.getPlayerTeam(player.uniqueId) == Teams.RED && team == Teams.RED || CheeseHunt.getGame().teamManager.getPlayerTeam(player.uniqueId) == Teams.BLUE && team == Teams.BLUE || CheeseHunt.getGame().teamManager.getPlayerTeam(player.uniqueId) == Teams.SPECTATOR && team == Teams.SPECTATOR) {
                 sender.sendMessage(Component.text("This player is already on ${team.toString().lowercase()} team.").color(NamedTextColor.RED))
             } else {
-                Main.getGame().teamManager.addToTeam(player, player.uniqueId, team)
-                Main.getGame().dev.parseDevMessage("Team Update: ${player.name} is now on ${team.toString().lowercase()} team.", DevStatus.INFO)
+                CheeseHunt.getGame().teamManager.addToTeam(player, player.uniqueId, team)
+                CheeseHunt.getGame().dev.parseDevMessage("Team Update: ${player.name} is now on ${team.toString().lowercase()} team.", DevStatus.INFO)
             }
         } else {
             sender.sendMessage(Component.text("Unable to modify teams in this state.", NamedTextColor.RED))
@@ -47,11 +46,11 @@ class TeamsCommands : BaseCommand {
     @CommandDescription("Automatically assigns everyone online to a team.")
     @CommandPermission("cheesehunt.autoteam")
     fun autoTeam(sender : Player, @Flag("ignoreAdmins") doesIgnoreAdmins: Boolean) {
-        if(Main.getGame().gameManager.getGameState() == GameState.IDLE) {
+        if(CheeseHunt.getGame().gameManager.getGameState() == GameState.IDLE) {
             shuffleStartDisplay(sender)
             if(!doesIgnoreAdmins) {
-                shuffle(Main.getPlugin().server.onlinePlayers)
-                Main.getGame().dev.parseDevMessage("All online players successfully split into teams by ${sender.name}.", DevStatus.INFO)
+                shuffle(CheeseHunt.getPlugin().server.onlinePlayers)
+                CheeseHunt.getGame().dev.parseDevMessage("All online players successfully split into teams by ${sender.name}.", DevStatus.INFO)
                 shuffleCompleteDisplay(sender)
             } else {
                 try {
@@ -66,7 +65,7 @@ class TeamsCommands : BaseCommand {
                         shuffleFailDisplay(sender)
                     } else {
                         shuffle(nonAdmins)
-                        Main.getGame().dev.parseDevMessage("All online non-admin players successfully split into teams by ${sender.name}.", DevStatus.INFO)
+                        CheeseHunt.getGame().dev.parseDevMessage("All online non-admin players successfully split into teams by ${sender.name}.", DevStatus.INFO)
                         shuffleCompleteDisplay(sender)
                     }
                 } catch(e : Exception) {
@@ -82,11 +81,11 @@ class TeamsCommands : BaseCommand {
     private fun shuffle(players : Collection<Player>) {
         var i = 0
         players.shuffled().forEach {
-            Main.getGame().teamManager.removeFromTeam(it, it.uniqueId, Main.getGame().teamManager.getPlayerTeam(it.uniqueId))
+            CheeseHunt.getGame().teamManager.removeFromTeam(it, it.uniqueId, CheeseHunt.getGame().teamManager.getPlayerTeam(it.uniqueId))
             if (i % 2 == 0) {
-                Main.getGame().teamManager.addToTeam(it, it.uniqueId, Teams.RED)
+                CheeseHunt.getGame().teamManager.addToTeam(it, it.uniqueId, Teams.RED)
             } else {
-                Main.getGame().teamManager.addToTeam(it, it.uniqueId, Teams.BLUE)
+                CheeseHunt.getGame().teamManager.addToTeam(it, it.uniqueId, Teams.BLUE)
             }
             i++
         }
@@ -114,23 +113,23 @@ class TeamsCommands : BaseCommand {
         when(option) {
             TeamsListOptions.RED -> {
                 sender.sendMessage(Component.text("DISPLAYING RED TEAM UUIDS:").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true))
-                sender.sendMessage(Component.text("${Main.getGame().teamManager.getRedTeam()}"))
+                sender.sendMessage(Component.text("${CheeseHunt.getGame().teamManager.getRedTeam()}"))
             }
             TeamsListOptions.BLUE -> {
                 sender.sendMessage(Component.text("DISPLAYING BLUE TEAM UUIDS:").color(NamedTextColor.BLUE).decoration(TextDecoration.BOLD, true))
-                sender.sendMessage(Component.text("${Main.getGame().teamManager.getBlueTeam()}"))
+                sender.sendMessage(Component.text("${CheeseHunt.getGame().teamManager.getBlueTeam()}"))
             }
             TeamsListOptions.SPECTATOR -> {
                 sender.sendMessage(Component.text("DISPLAYING SPECTATOR TEAM UUIDS:").decoration(TextDecoration.BOLD, true))
-                sender.sendMessage(Component.text("${Main.getGame().teamManager.getSpectators()}"))
+                sender.sendMessage(Component.text("${CheeseHunt.getGame().teamManager.getSpectators()}"))
             }
             TeamsListOptions.ALL -> {
                 sender.sendMessage(Component.text("\nDISPLAYING RED TEAM UUIDS:").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true))
-                sender.sendMessage(Component.text("${Main.getGame().teamManager.getRedTeam()}\n"))
+                sender.sendMessage(Component.text("${CheeseHunt.getGame().teamManager.getRedTeam()}\n"))
                 sender.sendMessage(Component.text("\nDISPLAYING BLUE TEAM UUIDS:").color(NamedTextColor.BLUE).decoration(TextDecoration.BOLD, true))
-                sender.sendMessage(Component.text("${Main.getGame().teamManager.getBlueTeam()}\n"))
+                sender.sendMessage(Component.text("${CheeseHunt.getGame().teamManager.getBlueTeam()}\n"))
                 sender.sendMessage(Component.text("\nDISPLAYING SPECTATOR TEAM UUIDS:").decoration(TextDecoration.BOLD, true))
-                sender.sendMessage(Component.text("${Main.getGame().teamManager.getSpectators()}\n"))
+                sender.sendMessage(Component.text("${CheeseHunt.getGame().teamManager.getSpectators()}\n"))
             }
         }
     }

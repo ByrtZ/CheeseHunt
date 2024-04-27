@@ -1,6 +1,6 @@
 package dev.byrt.cheesehunt.manager
 
-import dev.byrt.cheesehunt.Main
+import dev.byrt.cheesehunt.CheeseHunt
 import dev.byrt.cheesehunt.game.Game
 import dev.byrt.cheesehunt.state.Sounds
 import dev.byrt.cheesehunt.state.Teams
@@ -31,7 +31,7 @@ class CheeseManager(private val game : Game) {
     private var playersWithCheeseLoopMap = mutableMapOf<UUID, BukkitRunnable>()
 
     private fun incrementCheeseCollected(player : Player) {
-        when(Main.getGame().teamManager.getPlayerTeam(player.uniqueId)) {
+        when(CheeseHunt.getGame().teamManager.getPlayerTeam(player.uniqueId)) {
             Teams.RED -> {
                 redTotalCheesePickedUp += 1
                 game.statsManager.updateStatistic(player.uniqueId, Statistic.CHEESE_PICKED_UP)
@@ -41,7 +41,7 @@ class CheeseManager(private val game : Game) {
                 game.statsManager.updateStatistic(player.uniqueId, Statistic.CHEESE_PICKED_UP)
             }
             Teams.SPECTATOR -> {
-                Main.getPlugin().logger.info("[INCREMENTING ERROR] ${player.name} was on team ${Teams.SPECTATOR} when they collected cheese.")
+                CheeseHunt.getPlugin().logger.info("[INCREMENTING ERROR] ${player.name} was on team ${Teams.SPECTATOR} when they collected cheese.")
             }
         }
     }
@@ -55,7 +55,7 @@ class CheeseManager(private val game : Game) {
                 if(Bukkit.getWorld("Cheese")?.getBlockAt(x, 0, z)?.type == Material.SPONGE) {
                     redCheeseEarned++
                     tempRedCheeseEarned++
-                    Main.getPlugin().logger.info("Cheese claimed at $x, 0, $z by the RED team.")
+                    CheeseHunt.getPlugin().logger.info("Cheese claimed at $x, 0, $z by the RED team.")
                     Bukkit.getWorld("Cheese")?.getBlockAt(x, 0, z)?.type = Material.AIR
                 }
             }
@@ -65,7 +65,7 @@ class CheeseManager(private val game : Game) {
                 if(Bukkit.getWorld("Cheese")?.getBlockAt(x, 0, z)?.type == Material.SPONGE) {
                     blueCheeseEarned++
                     tempBlueCheeseEarned++
-                    Main.getPlugin().logger.info("Cheese claimed at $x, 0, $z by the BLUE team.")
+                    CheeseHunt.getPlugin().logger.info("Cheese claimed at $x, 0, $z by the BLUE team.")
                     Bukkit.getWorld("Cheese")?.getBlockAt(x, 0, z)?.type = Material.AIR
                 }
             }
@@ -86,18 +86,18 @@ class CheeseManager(private val game : Game) {
             )
         }
 
-        Main.getGame().infoBoardManager.updateScoreboardScores()
+        CheeseHunt.getGame().infoBoardManager.updateScoreboardScores()
 
         for(player in Bukkit.getOnlinePlayers()) {
             if(tempRedCheeseEarned > 0) {
-                if(Main.getGame().teamManager.isInRedTeam(player.uniqueId)) {
+                if(CheeseHunt.getGame().teamManager.isInRedTeam(player.uniqueId)) {
                     player.playSound(player.location, Sounds.Score.CLAIM_CHEESE, 1f, 1f)
                     player.sendMessage(Component.text("[+${tempRedCheeseEarned * 15 * game.scoreManager.getMultiplier()} ").append(Component.text("coins", NamedTextColor.GOLD)).append(Component.text("] ", NamedTextColor.WHITE)).append(Component.text("Your team earned coins by claiming $tempRedCheeseEarned cheese!", NamedTextColor.GREEN)))
                     teamFireworks(player, Teams.RED)
                 }
             }
             if(tempBlueCheeseEarned > 0) {
-                if(Main.getGame().teamManager.isInBlueTeam(player.uniqueId)) {
+                if(CheeseHunt.getGame().teamManager.isInBlueTeam(player.uniqueId)) {
                     player.playSound(player.location, Sounds.Score.CLAIM_CHEESE, 1f, 1f)
                     player.sendMessage(Component.text("[+${tempBlueCheeseEarned * 15 * game.scoreManager.getMultiplier()} ").append(Component.text("coins", NamedTextColor.GOLD)).append(Component.text("] ", NamedTextColor.WHITE)).append(Component.text("Your team earned coins by claiming $tempBlueCheeseEarned cheese!", NamedTextColor.GREEN)))
                     teamFireworks(player, Teams.BLUE)
@@ -122,7 +122,7 @@ class CheeseManager(private val game : Game) {
             player.removePotionEffect(PotionEffectType.SLOW_DIGGING)
         }
         startHasCheeseLoop(player)
-        player.inventory.addItem(game.itemManager.getCheeseItem(Main.getGame().teamManager.getPlayerTeam(player.uniqueId)))
+        player.inventory.addItem(game.itemManager.getCheeseItem(CheeseHunt.getGame().teamManager.getPlayerTeam(player.uniqueId)))
         collectCheeseFirework(blockBreakLocation, player)
         incrementCheeseCollected(player)
         playerHasCheese.add(player.uniqueId)
@@ -207,7 +207,7 @@ class CheeseManager(private val game : Game) {
                 hasCheeseTimer++
             }
         }
-        bukkitRunnable.runTaskTimer(Main.getPlugin(), 0L, 20L)
+        bukkitRunnable.runTaskTimer(CheeseHunt.getPlugin(), 0L, 20L)
         playersWithCheeseLoopMap[player.uniqueId] = bukkitRunnable
     }
 

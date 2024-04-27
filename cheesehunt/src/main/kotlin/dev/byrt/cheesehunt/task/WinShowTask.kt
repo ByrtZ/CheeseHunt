@@ -1,7 +1,9 @@
 package dev.byrt.cheesehunt.task
 
+import dev.byrt.cheesehunt.CheeseHunt
 import dev.byrt.cheesehunt.game.Game
 import dev.byrt.cheesehunt.state.Teams
+import me.lucyydotp.cheeselib.inject.inject
 
 import org.bukkit.Color
 import org.bukkit.FireworkEffect
@@ -14,7 +16,7 @@ class WinShowTask(private val game : Game) {
     private val winShowLoopMap = mutableMapOf<Int, BukkitRunnable>()
     private var taskID = 0
 
-    fun startWinShowLoop(plugin : Plugin, winTeam : Teams) {
+    fun startWinShowLoop(plugin : CheeseHunt, winTeam : Teams) {
         val bukkitRunnable = object : BukkitRunnable() {
             var winShowTimer = 20
             var winShowTimerSecs = 22
@@ -38,7 +40,8 @@ class WinShowTask(private val game : Game) {
                 }
             }
         }
-        bukkitRunnable.runTaskTimer(plugin, 0L, 1L)
+        // FIXME(lucy): this is horrid. don't do that
+        bukkitRunnable.runTaskTimer(plugin.inject<Plugin>(), 0L, 1L)
         taskID = bukkitRunnable.taskId
         winShowLoopMap[bukkitRunnable.taskId] = bukkitRunnable
     }

@@ -1,64 +1,67 @@
 package dev.byrt.cheesehunt
 
-import dev.byrt.cheesehunt.command.BaseCommand
-import dev.byrt.cheesehunt.game.Game
-import dev.byrt.cheesehunt.manager.Maps
-import dev.byrt.cheesehunt.plugin.PluginMessenger
-
 import cloud.commandframework.annotations.AnnotationParser
 import cloud.commandframework.execution.CommandExecutionCoordinator
 import cloud.commandframework.extra.confirmation.CommandConfirmationManager
 import cloud.commandframework.meta.CommandMeta
 import cloud.commandframework.meta.SimpleCommandMeta
 import cloud.commandframework.paper.PaperCommandManager
-
+import dev.byrt.cheesehunt.command.BaseCommand
+import dev.byrt.cheesehunt.game.Game
+import dev.byrt.cheesehunt.manager.Maps
+import me.lucyydotp.cheeselib.inject.context
+import me.lucyydotp.cheeselib.module.ModuleHolder
+import me.lucyydotp.cheeselib.module.ParentModule
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
-
 import org.bukkit.Bukkit
+import org.bukkit.Server
 import org.bukkit.command.CommandSender
 import org.bukkit.event.Listener
 import org.bukkit.plugin.Plugin
-import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.plugin.messaging.Messenger
 import org.incendo.interfaces.paper.PaperInterfaceListeners
-
 import org.reflections.Reflections
-
-import java.util.*
+import org.slf4j.Logger
+import java.util.LinkedList
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 import java.util.function.Consumer
 
-private lateinit var game : Game
-private lateinit var messenger : Messenger
+class CheeseHunt(parent: ModuleHolder) : ParentModule(parent) {
 
-class Main : JavaPlugin() {
-    override fun onEnable() {
-        logger.info("Starting Cheese Hunt plugin...")
-        game = Game(this)
+    val logger: Logger by context()
+    val plugin: Plugin by context()
+    val server: Server by context()
+
+    val game = Game(this)
+
+    init {
         game.setup()
         setupCommands()
         setupEventListeners()
         setupConfigs()
         setupPluginMessageListener()
         setupInterfaces()
-    }
 
-    override fun onDisable() {
-        logger.info("Cleaning up Cheese Hunt plugin...")
-        game.cleanUp()
+        onDisable {
+            game.cleanUp()
+        }
     }
 
     private fun setupCommands() {
         logger.info("Setting up commands...")
+
+
+        // TODO(lucy): move this out of the game
         val commandManager: PaperCommandManager<CommandSender> = try {
             PaperCommandManager.createNative(
-                this,
+                plugin,
                 CommandExecutionCoordinator.simpleCoordinator()
             )
         } catch (e: Exception) {
-            logger.severe("Failed to initialize the command manager.")
-            server.pluginManager.disablePlugin(this)
+            logger.error("Failed to initialize the command manager.")
+            server.pluginManager.disablePlugin(plugin)
             return
         }
 
@@ -116,11 +119,12 @@ class Main : JavaPlugin() {
                 .permission("cheesehunt.confirm"))
 
         } catch (e : Exception) {
-            logger.severe("Failed to initialize command confirmation manager.")
+            logger.error("Failed to initialize command confirmation manager.")
             return
         }
     }
 
+    @Deprecated("Move event listeners to their own modules")
     private fun setupEventListeners() {
         logger.info("Setting up event listeners...")
         val reflections = Reflections("dev.byrt.cheesehunt.event")
@@ -129,7 +133,7 @@ class Main : JavaPlugin() {
         listeners.forEach(Consumer { listener: Class<out Listener> ->
             try {
                 val instance = listener.getConstructor().newInstance()
-                server.pluginManager.registerEvents(instance, this)
+                server.pluginManager.registerEvents(instance, plugin)
             } catch (e: java.lang.Exception) {
                     e.printStackTrace()
                 }
@@ -138,14 +142,15 @@ class Main : JavaPlugin() {
     }
 
     private fun setupPluginMessageListener() {
-        logger.info("Setting up plugin message channels...")
-        messenger = Bukkit.getMessenger()
-        messenger.registerIncomingPluginChannel(this, "minecraft:brand", PluginMessenger())
+        // FIXME(lucy): no-op
+//        logger.info("Setting up plugin message channels...")
+//        messenger = Bukkit.getMessenger()
+//        messenger.registerIncomingPluginChannel(this, "minecraft:brand", PluginMessenger())
     }
 
     private fun setupInterfaces() {
         logger.info("Setting up interfaces...")
-        PaperInterfaceListeners.install(this)
+        PaperInterfaceListeners.install(plugin)
     }
 
     private fun setupConfigs() {
@@ -156,7 +161,9 @@ class Main : JavaPlugin() {
 
     companion object {
         fun getPlugin(): Plugin { return Bukkit.getPluginManager().getPlugin("CheeseHunt") as Plugin }
-        fun getGame(): Game { return game }
-        fun getMessenger(): Messenger { return messenger }
+        @Deprecated("Use contextual DI")
+        fun getGame(): Game { TODO() }
+        @Deprecated("Use contextual DI")
+        fun getMessenger(): Messenger { TODO() }
     }
 }

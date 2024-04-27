@@ -23,10 +23,11 @@ class InfoBoardManager(private val game: Game) : ParentModule(game) {
     ).registerAsChild()
 
     private val mapManager: MapManager by context()
+    private val multiplierNumberFormat = DecimalFormat("##0.0")
 
     private var gameMapInfo by board.section(defaultLines = gameMapInfo())
     private var timer by board.section(defaultLines = timer())
-    private val _newline1 = board.section(defaultLines = listOf(Board.Line(Component.empty())))
+    private val _newline1 = board.section(defaultLines = listOf(Board.Line(Component.text(" ".repeat(35)))))
 
     private var multiplier by board.section(defaultLines = multiplier())
     private var teamScores by board.section(defaultLines = teamScores())
@@ -40,7 +41,7 @@ class InfoBoardManager(private val game: Game) : ParentModule(game) {
 
     private fun withColoredPrefix(prefix: String, message: String, color: TextColor) = text {
         append(Component.text("$prefix: ", color, TextDecoration.BOLD))
-        append(Component.text(prefix))
+        append(Component.text(message))
     }
 
     private fun gameMapInfo() = listOf(
@@ -60,17 +61,16 @@ class InfoBoardManager(private val game: Game) : ParentModule(game) {
         GameState.IN_GAME -> withColoredPrefix("Time left", formattedTimeLeft, NamedTextColor.RED)
         GameState.OVERTIME -> withColoredPrefix("OVERTIME", formattedTimeLeft, NamedTextColor.RED)
         GameState.ROUND_END -> withColoredPrefix("Next round", formattedTimeLeft, NamedTextColor.RED)
-        GameState.GAME_END -> withColoredPrefix("Game ending:", formattedTimeLeft, NamedTextColor.RED)
+        GameState.GAME_END -> withColoredPrefix("Game ending", formattedTimeLeft, NamedTextColor.RED)
     }.let {
         listOf(Board.Line(it))
     }
 
-    private val multiplierNumberFormat = DecimalFormat("##0.0")
 
     private fun multiplier() = text {
-        append(Component.text("Game Coins: ", NamedTextColor.AQUA))
+        append(Component.text("Game Coins: ", NamedTextColor.AQUA, TextDecoration.BOLD))
         append(Component.text("("))
-        append(Component.text( multiplierNumberFormat.format(game.scoreManager.getMultiplier())))
+        append(Component.text("x" + multiplierNumberFormat.format(game.scoreManager.getMultiplier()), NamedTextColor.YELLOW))
         append(Component.text(")"))
     }.let {
         listOf(Board.Line(it))
@@ -82,7 +82,7 @@ class InfoBoardManager(private val game: Game) : ParentModule(game) {
     ).sortedBy(Pair<Teams, Int>::second)
         .mapIndexed { index, (team, score) ->
             Board.Line(
-                Component.text("${index + 1}. ") + team.teamName,
+                Component.text(" ${index + 1}. ") + team.teamName,
                 Component.text("${score}c  ")
             )
         }

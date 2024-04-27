@@ -4,6 +4,7 @@ import dev.byrt.cheesehunt.CheeseHunt
 import dev.byrt.cheesehunt.game.Game
 import dev.byrt.cheesehunt.state.Sounds
 import dev.byrt.cheesehunt.state.Teams
+import me.lucyydotp.cheeselib.module.Module
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.ComponentLike
@@ -14,7 +15,9 @@ import net.kyori.adventure.title.Title
 
 import org.bukkit.Bukkit
 import org.bukkit.Color
+import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
+import org.bukkit.scoreboard.Criteria
 import org.bukkit.scoreboard.Team
 
 import java.time.Duration
@@ -22,14 +25,31 @@ import java.util.*
 
 import kotlin.collections.ArrayList
 
-class TeamManager(private val game : Game) {
+class TeamManager(private val game : Game) : Module(game) {
     private var redTeam = ArrayList<UUID>()
     private var blueTeam = ArrayList<UUID>()
     private var spectators = ArrayList<UUID>()
-    private var redDisplayTeam: Team = Bukkit.getScoreboardManager().mainScoreboard.registerNewTeam("redDisplay")
-    private var blueDisplayTeam: Team = Bukkit.getScoreboardManager().mainScoreboard.registerNewTeam("blueDisplay")
-    private var spectatorDisplayTeam: Team = Bukkit.getScoreboardManager().mainScoreboard.registerNewTeam("spectator")
-    private var adminDisplayTeam: Team = Bukkit.getScoreboardManager().mainScoreboard.registerNewTeam("admin")
+
+    private lateinit var redDisplayTeam: Team
+    private lateinit var blueDisplayTeam: Team //by lazy { Bukkit.getScoreboardManager().mainScoreboard.registerNewTeam("blueDisplay") }
+    private lateinit var spectatorDisplayTeam: Team //by lazy { Bukkit.getScoreboardManager().mainScoreboard.registerNewTeam("spectator") }
+    private lateinit var adminDisplayTeam: Team //by lazy { Bukkit.getScoreboardManager().mainScoreboard.registerNewTeam("admin") }
+
+    init {
+        onEnable {
+            val mainBoard = Bukkit.getScoreboardManager().mainScoreboard
+            redDisplayTeam = mainBoard.registerNewTeam("redDisplay")
+            blueDisplayTeam = mainBoard.registerNewTeam("blueDisplay")
+            spectatorDisplayTeam = mainBoard.registerNewTeam("spectatorDisplay")
+            adminDisplayTeam = mainBoard.registerNewTeam("adminDisplay")
+
+            buildDisplayTeams()
+        }
+
+        onDisable {
+            listOf(redDisplayTeam, blueDisplayTeam, spectatorDisplayTeam, adminDisplayTeam).forEach(Team::unregister)
+        }
+    }
 
     fun addToTeam(player : Player, uuid : UUID, team : Teams) {
         when(team) {
@@ -62,9 +82,9 @@ class TeamManager(private val game : Game) {
                 if(blueTeam.contains(uuid)) { removeFromTeam(player, uuid, Teams.BLUE) }
                 spectators.add(uuid)
                 if(player.isOp) {
-                    adminDisplayTeam.addPlayer(Bukkit.getOfflinePlayer(uuid))
+                    adminDisplayTeam.addPlayer(player)
                 } else {
-                    spectatorDisplayTeam.addPlayer(Bukkit.getOfflinePlayer(uuid))
+                    spectatorDisplayTeam.addPlayer(player)
                 }
                 game.itemManager.givePlayerTeamBoots(player, Teams.SPECTATOR)
                 player.sendMessage(Component.text("You are now a Spectator."))
@@ -336,7 +356,7 @@ class TeamManager(private val game : Game) {
         when(team) {
             Teams.RED -> { uuidList = redTeam }
             Teams.BLUE -> { uuidList = blueTeam }
-            Teams.SPECTATOR -> { game.plugin.logger.warning("Attempted to access spectators but this feature is unnecessary at the moment.") }
+            Teams.SPECTATOR -> { game.plugin.logger.warn("Attempted to access spectators but this feature is unnecessary at the moment.") }
         }
         for(uuid in uuidList) {
             if(game.respawnTask.getRespawnLoopMap().containsKey(uuid)) {

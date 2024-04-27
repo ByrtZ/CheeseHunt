@@ -34,15 +34,17 @@ class CheeseHunt(parent: ModuleHolder) : ParentModule(parent) {
     val plugin: Plugin by context()
     val server: Server by context()
 
-    val game = Game(this)
+    val game = Game(this).registerAsChild()
 
     init {
-        game.setup()
-        setupCommands()
-        setupEventListeners()
-        setupConfigs()
-        setupPluginMessageListener()
-        setupInterfaces()
+        onEnable {
+            setupCommands()
+            setupEventListeners()
+            setupConfigs()
+            setupPluginMessageListener()
+            setupInterfaces()
+            game.setup()
+        }
 
         onDisable {
             game.cleanUp()
@@ -160,9 +162,9 @@ class CheeseHunt(parent: ModuleHolder) : ParentModule(parent) {
     }
 
     companion object {
-        fun getPlugin(): Plugin { return Bukkit.getPluginManager().getPlugin("CheeseHunt") as Plugin }
+        fun getPlugin(): CheeseHuntPlugin { return Bukkit.getPluginManager().getPlugin("CheeseHunt") as CheeseHuntPlugin }
         @Deprecated("Use contextual DI")
-        fun getGame(): Game { TODO() }
+        fun getGame(): Game = getPlugin().module.game
         @Deprecated("Use contextual DI")
         fun getMessenger(): Messenger { TODO() }
     }

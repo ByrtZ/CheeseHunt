@@ -8,7 +8,7 @@ import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
 
 abstract class ModuleEntrypointPlugin<T> : JavaPlugin(), ModuleHolder where T : Module, T : InjectionContext {
-    protected abstract val module: T
+    abstract val module: T
 
     override val modules: Set<Module>
         get() = setOf(module)

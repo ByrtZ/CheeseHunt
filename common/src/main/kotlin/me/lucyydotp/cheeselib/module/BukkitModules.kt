@@ -14,7 +14,7 @@ public fun <T> T.installBukkitListeners() where T : Module, T : Listener {
         inject<Server>().pluginManager.registerEvents(this, inject<Plugin>())
     }
 
-    onEnable {
+    onDisable {
         HandlerList.unregisterAll(this)
     }
 }

@@ -66,7 +66,7 @@ class LocationManager(private val game : Game) {
                     blueSpawnCounter++
                 }
             } else -> {
-                game.plugin.logger.severe("An error occurred when attempting to increment a spawn location counter.")
+                game.plugin.logger.error("An error occurred when attempting to increment a spawn location counter.")
             }
         }
     }

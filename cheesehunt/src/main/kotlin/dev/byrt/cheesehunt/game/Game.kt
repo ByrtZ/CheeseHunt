@@ -21,13 +21,12 @@ class Game(val plugin : CheeseHunt) : ParentModule(plugin) {
     val roundManager = Rounds(this)
     val timerManager = Timer(this)
     val playerManager = PlayerManager(this)
-    val teamManager = TeamManager(this)
+    val teamManager = TeamManager(this).registerAsChild()
     val itemManager = ItemManager(this)
     val blockManager = BlockManager(this)
     val cheeseManager = CheeseManager(this)
-    val infoBoardManager = InfoBoardManager(this).registerAsChild()
     val tabListManager = TabListManager(this)
-    val locationManager = LocationManager(this)
+    val locationManager by lazy { LocationManager(this) }
     val scoreManager = ScoreManager(this)
     val statsManager = StatisticsManager(this)
     val configManager = ConfigManager(this)
@@ -36,6 +35,7 @@ class Game(val plugin : CheeseHunt) : ParentModule(plugin) {
     val queue = Queue(this)
     val queueVisuals = QueueVisuals(this)
     val queueTask = QueueTask(this)
+    val infoBoardManager = InfoBoardManager(this).registerAsChild()
 
     val interfaceManager = InterfaceManager(this)
 
@@ -65,7 +65,6 @@ class Game(val plugin : CheeseHunt) : ParentModule(plugin) {
     }
 
     fun setup() {
-        teamManager.buildDisplayTeams()
         locationManager.populateSpawns()
         locationManager.populateWinShowArea()
         tabListManager.populateCheesePuns()

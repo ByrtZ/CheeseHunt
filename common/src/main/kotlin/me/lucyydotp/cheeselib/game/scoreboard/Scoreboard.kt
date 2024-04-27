@@ -23,11 +23,11 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
+import org.slf4j.Logger
 import java.util.UUID
 import kotlin.properties.Delegates
 import kotlin.reflect.KProperty
 import net.kyori.adventure.text.Component as KyoriComponent
-import net.minecraft.network.chat.Component as NmsComponent
 
 /**
  * A packet-based scoreboard. This class is not thread-safe.
@@ -90,7 +90,7 @@ class Board(parent: ModuleHolder, title: KyoriComponent = KyoriComponent.empty()
         null,
         NAME_PREFIX + UUID.randomUUID(),
         ObjectiveCriteria.DUMMY,
-        NmsComponent.empty(),
+        PaperAdventure.asVanilla(title),
         ObjectiveCriteria.RenderType.INTEGER,
         true,
         BlankFormat()
@@ -98,7 +98,7 @@ class Board(parent: ModuleHolder, title: KyoriComponent = KyoriComponent.empty()
 
     private val sections = mutableListOf<Section>()
 
-    public fun section(ordinal: Int = sections.size, defaultLines: List<Line> = listOf()) =
+    fun section(ordinal: Int = sections.size, defaultLines: List<Line> = listOf()) =
         sections.getOrNull(ordinal) ?: Section(ordinal, defaultLines).also {
             sections.add(ordinal, it)
         }
@@ -133,19 +133,19 @@ class Board(parent: ModuleHolder, title: KyoriComponent = KyoriComponent.empty()
 
     private fun sectionToPackets(section: Section, lastSize: Int): List<Packet<ClientGamePacketListener>> {
         val lines = section.lines
-        val sectionOrdinal = section.ordinal * SECTION_SCORE_INTERVAL
+        val sectionOrdinal = (sections.size - section.ordinal - 1) * SECTION_SCORE_INTERVAL
 
         return section.lines.mapIndexed { i, line ->
             ClientboundSetScorePacket(
-                UUID(0, (sectionOrdinal + i).toLong()).toString(),
+                UUID(0, (sectionOrdinal + SECTION_SCORE_INTERVAL - i).toLong()).toString(),
                 fakeObjective.name,
-                sectionOrdinal + i,
+                sectionOrdinal + SECTION_SCORE_INTERVAL - i,
                 PaperAdventure.asVanilla(line.text),
                 line.score?.let { FixedFormat(PaperAdventure.asVanilla(it)) },
             )
         } + (0..(lastSize - lines.size).coerceAtLeast(0)).map {
             ClientboundResetScorePacket(
-                UUID(0, (sectionOrdinal + lines.size + it).toLong()).toString(),
+                UUID(0, (sectionOrdinal + lines.size + SECTION_SCORE_INTERVAL - it).toLong()).toString(),
                 fakeObjective.name,
             )
         }
@@ -162,8 +162,11 @@ class Board(parent: ModuleHolder, title: KyoriComponent = KyoriComponent.empty()
         }
     }
 
+    private val logger by context<Logger>()
+
     @EventHandler
     fun onPlayerJoin(event: PlayerJoinEvent) {
+        logger.info("Sending scoreboard to ${event.player.name}")
         createFor(event.player, true)
     }
 }

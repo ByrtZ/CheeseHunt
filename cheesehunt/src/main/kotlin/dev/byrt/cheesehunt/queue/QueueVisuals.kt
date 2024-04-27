@@ -101,7 +101,7 @@ class QueueVisuals(private val game : Game) {
             }
             QueueState.SENDING_PLAYERS_TO_GAME -> {
                 if(!game.queueTask.getQueueActive()) {
-                    game.queueTask.startQueueTask(game.plugin)
+                    game.queueTask.startQueueTask(game.plugin.plugin)
                 }
             }
         }

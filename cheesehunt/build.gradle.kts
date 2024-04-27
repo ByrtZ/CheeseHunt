@@ -41,6 +41,7 @@ tasks {
 
     runServer {
         minecraftVersion("1.20.4")
-        pluginJars(project(":common").tasks.shadowJar.map { it.archiveFile })
+
+        pluginJars(project(":common").tasks.getByName("reobfJar").outputs.files)
     }
 }

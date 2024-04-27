@@ -12,6 +12,7 @@ import cloud.commandframework.annotations.Argument
 import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
+import dev.byrt.cheesehunt.CheeseHuntPlugin
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -55,7 +56,7 @@ class DebugCommands : BaseCommand {
     fun debugWinShow(sender : Player, @Argument("team") team : Teams) {
         CheeseHunt.getGame().dev.parseDevMessage("Win show ran for $team team by ${sender.name}.", DevStatus.INFO)
         CheeseHunt.getGame().winShowTask.stopWinShowLoop()
-        CheeseHunt.getGame().winShowTask.startWinShowLoop(CheeseHunt.getPlugin(), team)
+        CheeseHunt.getGame().winShowTask.startWinShowLoop(CheeseHunt.getPlugin().module, team)
     }
 
     @CommandMethod("debug cheese give <player>")

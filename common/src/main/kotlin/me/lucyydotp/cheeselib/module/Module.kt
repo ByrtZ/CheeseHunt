@@ -1,6 +1,7 @@
 package me.lucyydotp.cheeselib.module
 
 import me.lucyydotp.cheeselib.inject.InjectionSite
+import org.bukkit.Bukkit
 
 /**
  * A component that can be enabled and disabled.
@@ -28,7 +29,7 @@ abstract class Module(val parent: ModuleHolder): InjectionSite by parent {
      * Defines an action to run every time the module is disabled.
      */
     fun onDisable(action: () -> Unit) {
-        enableActions.add(action)
+        disableActions.add(action)
     }
 
     /**
@@ -42,6 +43,7 @@ abstract class Module(val parent: ModuleHolder): InjectionSite by parent {
 
     internal fun enable() {
         require(state == State.Disabled) { "Cannot enable an already enabled module" }
+        Bukkit.getLogger().info("Enabling module ${this::class.simpleName}")
         state = State.Enabling
         enableActions.forEach { it() }
         state = State.Enabled

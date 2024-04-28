@@ -1,12 +1,5 @@
 package dev.byrt.cheesehunt
 
-import cloud.commandframework.annotations.AnnotationParser
-import cloud.commandframework.execution.CommandExecutionCoordinator
-import cloud.commandframework.extra.confirmation.CommandConfirmationManager
-import cloud.commandframework.meta.CommandMeta
-import cloud.commandframework.meta.SimpleCommandMeta
-import cloud.commandframework.paper.PaperCommandManager
-import dev.byrt.cheesehunt.command.BaseCommand
 import dev.byrt.cheesehunt.game.Game
 import dev.byrt.cheesehunt.manager.Maps
 import me.lucyydotp.cheeselib.game.nameformat.CustomNameTags
@@ -16,20 +9,14 @@ import me.lucyydotp.cheeselib.inject.bind
 import me.lucyydotp.cheeselib.inject.context
 import me.lucyydotp.cheeselib.module.ModuleHolder
 import me.lucyydotp.cheeselib.module.ParentModule
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Bukkit
 import org.bukkit.Server
-import org.bukkit.command.CommandSender
 import org.bukkit.event.Listener
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.messaging.Messenger
 import org.incendo.interfaces.paper.PaperInterfaceListeners
 import org.reflections.Reflections
 import org.slf4j.Logger
-import java.util.LinkedList
-import java.util.Locale
-import java.util.concurrent.TimeUnit
 import java.util.function.Consumer
 
 class CheeseHunt(parent: ModuleHolder) : ParentModule(parent) {
@@ -38,14 +25,14 @@ class CheeseHunt(parent: ModuleHolder) : ParentModule(parent) {
     val plugin: Plugin by context()
     val server: Server by context()
 
-    val game = Game(this).registerAsChild()
+    val game: Game
 
     init {
         GlobalInjectionContext.bind(NameFormatter(this).registerAsChild())
+        game = Game(this).registerAsChild()
         CustomNameTags(this).registerAsChild()
 
         onEnable {
-            setupCommands()
             setupEventListeners()
             setupConfigs()
             setupPluginMessageListener()
@@ -55,81 +42,6 @@ class CheeseHunt(parent: ModuleHolder) : ParentModule(parent) {
 
         onDisable {
             game.cleanUp()
-        }
-    }
-
-    private fun setupCommands() {
-        logger.info("Setting up commands...")
-
-
-        // TODO(lucy): move this out of the game
-        val commandManager: PaperCommandManager<CommandSender> = try {
-            PaperCommandManager.createNative(
-                plugin,
-                CommandExecutionCoordinator.simpleCoordinator()
-            )
-        } catch (e: Exception) {
-            logger.error("Failed to initialize the command manager.")
-            server.pluginManager.disablePlugin(plugin)
-            return
-        }
-
-        commandManager.registerAsynchronousCompletions()
-        commandManager.registerBrigadier()
-        setupCommandConfirmation(commandManager)
-
-        // Thanks broccolai <3 https://github.com/broccolai/tickets/commit/e8c227abc298d1a34094708a24601d006ec25937
-        commandManager.commandSuggestionProcessor { context, strings ->
-            var input: String = if (context.inputQueue.isEmpty()) {
-                ""
-            } else {
-                context.inputQueue.peek()
-            }
-            input = input.lowercase(Locale.getDefault())
-            val suggestions: MutableList<String> = LinkedList()
-            for (suggestion in strings) {
-                val suggestionLower = suggestion.lowercase(Locale.getDefault())
-                if (suggestionLower.startsWith(input)) {
-                    suggestions.add(suggestion)
-                }
-            }
-            suggestions
-        }
-
-        val reflections = Reflections("dev.byrt.cheesehunt.command")
-        val commands = reflections.getSubTypesOf(BaseCommand::class.java)
-
-        val annotationParser = AnnotationParser(
-            commandManager,
-            CommandSender::class.java
-        ) { SimpleCommandMeta.empty() }
-
-        commands.forEach { command ->
-            run {
-                val instance = command.getConstructor().newInstance()
-                annotationParser.parse(instance)
-            }
-        }
-    }
-
-    private fun setupCommandConfirmation(commandManager : PaperCommandManager<CommandSender>) {
-        logger.info("Setting up command confirmation...")
-        try {
-            val confirmationManager : CommandConfirmationManager<CommandSender> = CommandConfirmationManager(
-                30L, TimeUnit.SECONDS,
-                { context -> context.commandContext.sender.sendMessage(Component.text("Confirm command ", NamedTextColor.RED).append(Component.text("'/${context.command}' ", NamedTextColor.GREEN)).append(Component.text("by running ", NamedTextColor.RED)).append(Component.text("'/confirm' ", NamedTextColor.YELLOW)).append(Component.text("to execute.", NamedTextColor.RED))) },
-                { sender -> sender.sendMessage(Component.text("You do not have any pending commands.", NamedTextColor.RED)) }
-            )
-            confirmationManager.registerConfirmationProcessor(commandManager)
-
-            commandManager.command(commandManager.commandBuilder("confirm")
-                .meta(CommandMeta.DESCRIPTION, "Confirm a pending command.")
-                .handler(confirmationManager.createConfirmationExecutionHandler())
-                .permission("cheesehunt.confirm"))
-
-        } catch (e : Exception) {
-            logger.error("Failed to initialize command confirmation manager.")
-            return
         }
     }
 

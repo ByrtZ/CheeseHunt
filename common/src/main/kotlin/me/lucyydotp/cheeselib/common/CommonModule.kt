@@ -5,9 +5,10 @@ import me.lucyydotp.cheeselib.inject.bind
 import me.lucyydotp.cheeselib.module.ParentModule
 import org.bukkit.Server
 
-class CommonModule(parent: CommonPlugin) : ParentModule(parent) {
+class CommonModule(private val plugin: CommonPlugin) : ParentModule(plugin) {
 
     init {
-        GlobalInjectionContext.bind<Server>(parent.server)
+        GlobalInjectionContext.bind<Server>(plugin.server)
+        Commands(this).registerAsChild()
     }
 }

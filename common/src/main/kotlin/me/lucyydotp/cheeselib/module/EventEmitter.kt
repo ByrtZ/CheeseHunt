@@ -1,4 +1,4 @@
-package me.lucyydotp.cheeselib.game.nameformat
+package me.lucyydotp.cheeselib.module
 
 import com.google.common.collect.TreeMultiset
 
@@ -30,7 +30,7 @@ class EventEmitter<T : Any> {
         fun unsubscribe() = emitter.unsubscribe(this)
     }
 
-    private val handlers = TreeMultiset.create<Subscription<in T>> { first, second -> second.priority - first.priority }
+    private val handlers = TreeMultiset.create<Subscription<in T>> { first, second -> first.priority - second.priority }
 
     /**
      * Removes a subscription. It will no longer be invoked for events.

@@ -1,6 +1,14 @@
 [versions]
+cloud = "1.8.4"
 minecraft = "1.20.4"
+
+[libraries]
+cloud-annotations = { group = "cloud.commandframework", name = "cloud-annotations", version.ref = "cloud" }
+cloud-paper = { group = "cloud.commandframework", name = "cloud-paper", version.ref = "cloud" }
+
+[bundles]
+cloud = ["cloud-annotations", "cloud-paper"]
 
 [plugins]
 paperweight = { id = "io.papermc.paperweight.userdev", version = "1.5.15" }
-shadow = { id = "com.github.johnrengelman.shadow" , version = "7.1.2" }
+shadow = { id = "com.github.johnrengelman.shadow", version = "7.1.2" }

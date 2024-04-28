@@ -1,6 +1,7 @@
 package me.lucyydotp.cheeselib.game.nameformat
 
 import com.google.common.cache.CacheBuilder
+import me.lucyydotp.cheeselib.module.EventEmitter
 import me.lucyydotp.cheeselib.module.Module
 import me.lucyydotp.cheeselib.module.ModuleHolder
 import me.lucyydotp.cheeselib.module.installBukkitListeners

@@ -30,11 +30,8 @@ class PlayerDamageEvent : Listener {
                 e.isCancelled = false
             }
             if(e.entity is Player && e.damager is Player) {
-                val player = e.entity as Player
-                val damager = e.damager as Player
-                e.isCancelled =
-                    (CheeseHunt.getGame().teamManager.isInRedTeam(player.uniqueId) && CheeseHunt.getGame().teamManager.isInRedTeam(damager.uniqueId)
-                     || CheeseHunt.getGame().teamManager.isInBlueTeam(player.uniqueId) && CheeseHunt.getGame().teamManager.isInBlueTeam(damager.uniqueId))
+                val teamManager = CheeseHunt.getGame().teams
+                e.isCancelled = teamManager.getTeam(e.entity as Player) == teamManager.getTeam(e.damager as Player)
             }
         } else {
             if(CheeseHunt.getGame().gameManager.getGameState() == GameState.OVERTIME) {

@@ -36,7 +36,8 @@ class GameCommands : BaseCommand {
     @Confirmation
     fun start(sender : Player) {
         if(CheeseHunt.getGame().gameManager.getGameState() == GameState.IDLE) {
-            if(CheeseHunt.getGame().teamManager.getRedTeam().size >= 1 && CheeseHunt.getGame().teamManager.getBlueTeam().size >= 1) {
+            val teams = CheeseHunt.getGame().teams
+            if(teams.teams.all { teams.playersOnTeam(it).isNotEmpty() }) {
                 CheeseHunt.getGame().dev.parseDevMessage("${sender.name} started a Cheese Hunt game!", DevStatus.INFO_SUCCESS)
                 for(player in Bukkit.getOnlinePlayers()) {
                     player.sendMessage(Component.text("\nA Cheese Hunt game is starting!\n").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))

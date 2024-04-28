@@ -5,26 +5,20 @@ import dev.byrt.cheesehunt.game.Game
 import dev.byrt.cheesehunt.state.Sounds
 import dev.byrt.cheesehunt.state.Teams
 import me.lucyydotp.cheeselib.module.Module
-
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.ComponentLike
 import net.kyori.adventure.text.JoinConfiguration
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.title.Title
-
 import org.bukkit.Bukkit
 import org.bukkit.Color
-import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
-import org.bukkit.scoreboard.Criteria
 import org.bukkit.scoreboard.Team
-
 import java.time.Duration
-import java.util.*
+import java.util.UUID
 
-import kotlin.collections.ArrayList
-
+@Deprecated("Use common TeamManager.")
 class TeamManager(private val game : Game) : Module(game) {
     private var redTeam = ArrayList<UUID>()
     private var blueTeam = ArrayList<UUID>()

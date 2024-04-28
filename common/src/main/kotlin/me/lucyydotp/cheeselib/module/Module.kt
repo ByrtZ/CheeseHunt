@@ -1,6 +1,5 @@
 package me.lucyydotp.cheeselib.module
 
-import me.lucyydotp.cheeselib.game.nameformat.EventEmitter
 import me.lucyydotp.cheeselib.inject.InjectionSite
 import org.bukkit.Bukkit
 

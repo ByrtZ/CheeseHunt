@@ -8,6 +8,11 @@ import cloud.commandframework.annotations.Argument
 import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
+import dev.byrt.cheesehunt.util.Dev
+import me.lucyydotp.cheeselib.inject.context
+import me.lucyydotp.cheeselib.module.Module
+import me.lucyydotp.cheeselib.module.ModuleHolder
+import me.lucyydotp.cheeselib.module.installCommands
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -18,14 +23,20 @@ import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 
 @Suppress("unused")
-class Announce : BaseCommand {
+class Announce(parent: ModuleHolder) : Module(parent) {
+
+    private val dev: Dev by context()
     private val mm = MiniMessage.miniMessage()
+
+    init {
+        installCommands()
+    }
 
     @CommandMethod("announce <text>")
     @CommandDescription("Puts a formatted announcement message in chat.")
     @CommandPermission("cheesehunt.announce")
     fun announce(sender : Player, @Argument("text") text: Array<String>) {
-        CheeseHunt.getGame().dev.parseDevMessage("Announcement sent by ${sender.name}.", DevStatus.INFO)
+        dev.parseDevMessage("Announcement sent by ${sender.name}.", DevStatus.INFO)
         val rawAnnounceMessage = text.joinToString(" ")
         for(player in Bukkit.getServer().onlinePlayers) {
             player.playSound(player.location, Sounds.Alert.GENERAL_ALERT, 1.0f, 1.0f)

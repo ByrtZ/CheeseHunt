@@ -4,6 +4,11 @@ import dev.byrt.cheesehunt.CheeseHunt
 import dev.byrt.cheesehunt.game.Game
 import dev.byrt.cheesehunt.state.Sounds
 import dev.byrt.cheesehunt.state.Teams
+import me.lucyydotp.cheeselib.game.TeamManager
+import me.lucyydotp.cheeselib.game.nameformat.NameFormatter
+import me.lucyydotp.cheeselib.inject.context
+import me.lucyydotp.cheeselib.module.Module
+import me.lucyydotp.cheeselib.module.ModuleHolder
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -20,41 +25,32 @@ import org.bukkit.scheduler.BukkitRunnable
 import java.time.Duration
 import java.util.*
 
-class CheeseManager(private val game : Game) {
-    private var redCheeseEarned = 0
-    private var blueCheeseEarned = 0
-    private var tempRedCheeseEarned = 0
-    private var tempBlueCheeseEarned = 0
-    private var redTotalCheesePickedUp = 0
-    private var blueTotalCheesePickedUp = 0
-    private var playerHasCheese = mutableListOf<UUID>()
-    private var playersWithCheeseLoopMap = mutableMapOf<UUID, BukkitRunnable>()
+class CheeseManager(parent: ModuleHolder): Module(parent) {
+    private val totalCheesePickedUp = EnumMap<Teams, Int>(Teams::class.java)
+    private val playerHasCheese = mutableListOf<UUID>()
+    private val playersWithCheeseLoopMap = mutableMapOf<UUID, BukkitRunnable>()
+
+    private val infoBoardManager: InfoBoardManager by context()
+    private val itemManager: ItemManager by context()
+    private val nameFormatter: NameFormatter by context()
+    private val scoreManager: ScoreManager by context()
+    private val statsManager: StatisticsManager by context()
+    private val teamManager: TeamManager<Teams> by context()
 
     private fun incrementCheeseCollected(player : Player) {
-        when(CheeseHunt.getGame().teamManager.getPlayerTeam(player.uniqueId)) {
-            Teams.RED -> {
-                redTotalCheesePickedUp += 1
-                game.statsManager.updateStatistic(player.uniqueId, Statistic.CHEESE_PICKED_UP)
-            }
-            Teams.BLUE -> {
-                blueTotalCheesePickedUp += 1
-                game.statsManager.updateStatistic(player.uniqueId, Statistic.CHEESE_PICKED_UP)
-            }
-            Teams.SPECTATOR -> {
-                CheeseHunt.getPlugin().logger.info("[INCREMENTING ERROR] ${player.name} was on team ${Teams.SPECTATOR} when they collected cheese.")
-            }
-        }
+        val team = teamManager.getTeam(player) ?: return
+        statsManager.updateStatistic(player.uniqueId, Statistic.CHEESE_PICKED_UP)
+        totalCheesePickedUp[team] = (totalCheesePickedUp[team] ?: 0) + 1
     }
 
     fun countCheeseInBases(isSilent : Boolean) {
-        tempRedCheeseEarned = 0
-        tempBlueCheeseEarned = 0
+        var redCheeseEarned = 0
+        var blueCheeseEarned = 0
 
         for(x in 952..956) {
             for(z in 998..1002) {
                 if(Bukkit.getWorld("Cheese")?.getBlockAt(x, 0, z)?.type == Material.SPONGE) {
                     redCheeseEarned++
-                    tempRedCheeseEarned++
                     CheeseHunt.getPlugin().logger.info("Cheese claimed at $x, 0, $z by the RED team.")
                     Bukkit.getWorld("Cheese")?.getBlockAt(x, 0, z)?.type = Material.AIR
                 }
@@ -64,42 +60,41 @@ class CheeseManager(private val game : Game) {
             for(z in 998..1002) {
                 if(Bukkit.getWorld("Cheese")?.getBlockAt(x, 0, z)?.type == Material.SPONGE) {
                     blueCheeseEarned++
-                    tempBlueCheeseEarned++
                     CheeseHunt.getPlugin().logger.info("Cheese claimed at $x, 0, $z by the BLUE team.")
                     Bukkit.getWorld("Cheese")?.getBlockAt(x, 0, z)?.type = Material.AIR
                 }
             }
         }
 
-        if(tempRedCheeseEarned > 0) {
-            game.scoreManager.modifyScore(
-                tempRedCheeseEarned * 15 * game.scoreManager.getMultiplier(),
+        if(redCheeseEarned > 0) {
+            scoreManager.modifyScore(
+                redCheeseEarned * 15 * scoreManager.getMultiplier(),
                 ScoreMode.ADD,
                 Teams.RED
             )
         }
-        if(tempBlueCheeseEarned > 0) {
-            game.scoreManager.modifyScore(
-                tempBlueCheeseEarned * 15 * game.scoreManager.getMultiplier(),
+        if(blueCheeseEarned > 0) {
+            scoreManager.modifyScore(
+                blueCheeseEarned * 15 * scoreManager.getMultiplier(),
                 ScoreMode.ADD,
                 Teams.BLUE
             )
         }
 
-        CheeseHunt.getGame().infoBoardManager.updateScoreboardScores()
+        infoBoardManager.updateScoreboardScores()
 
         for(player in Bukkit.getOnlinePlayers()) {
-            if(tempRedCheeseEarned > 0) {
-                if(CheeseHunt.getGame().teamManager.isInRedTeam(player.uniqueId)) {
+            if(redCheeseEarned > 0) {
+                if(teamManager.getTeam(player) == Teams.RED) {
                     player.playSound(player.location, Sounds.Score.CLAIM_CHEESE, 1f, 1f)
-                    player.sendMessage(Component.text("[+${tempRedCheeseEarned * 15 * game.scoreManager.getMultiplier()} ").append(Component.text("coins", NamedTextColor.GOLD)).append(Component.text("] ", NamedTextColor.WHITE)).append(Component.text("Your team earned coins by claiming $tempRedCheeseEarned cheese!", NamedTextColor.GREEN)))
+                    player.sendMessage(Component.text("[+${redCheeseEarned * 15 * scoreManager.getMultiplier()} ").append(Component.text("coins", NamedTextColor.GOLD)).append(Component.text("] ", NamedTextColor.WHITE)).append(Component.text("Your team earned coins by claiming $redCheeseEarned cheese!", NamedTextColor.GREEN)))
                     teamFireworks(player, Teams.RED)
                 }
             }
-            if(tempBlueCheeseEarned > 0) {
-                if(CheeseHunt.getGame().teamManager.isInBlueTeam(player.uniqueId)) {
+            if(blueCheeseEarned > 0) {
+                if(teamManager.getTeam(player) == Teams.BLUE) {
                     player.playSound(player.location, Sounds.Score.CLAIM_CHEESE, 1f, 1f)
-                    player.sendMessage(Component.text("[+${tempBlueCheeseEarned * 15 * game.scoreManager.getMultiplier()} ").append(Component.text("coins", NamedTextColor.GOLD)).append(Component.text("] ", NamedTextColor.WHITE)).append(Component.text("Your team earned coins by claiming $tempBlueCheeseEarned cheese!", NamedTextColor.GREEN)))
+                    player.sendMessage(Component.text("[+${blueCheeseEarned * 15 * scoreManager.getMultiplier()} ").append(Component.text("coins", NamedTextColor.GOLD)).append(Component.text("] ", NamedTextColor.WHITE)).append(Component.text("Your team earned coins by claiming $blueCheeseEarned cheese!", NamedTextColor.GREEN)))
                     teamFireworks(player, Teams.BLUE)
                 }
             }
@@ -122,7 +117,7 @@ class CheeseManager(private val game : Game) {
             player.removePotionEffect(PotionEffectType.SLOW_DIGGING)
         }
         startHasCheeseLoop(player)
-        player.inventory.addItem(game.itemManager.getCheeseItem(CheeseHunt.getGame().teamManager.getPlayerTeam(player.uniqueId)))
+        player.inventory.addItem(itemManager.getCheeseItem(teamManager.getTeam(player) ?: return))
         collectCheeseFirework(blockBreakLocation, player)
         incrementCheeseCollected(player)
         playerHasCheese.add(player.uniqueId)
@@ -131,7 +126,7 @@ class CheeseManager(private val game : Game) {
                 allPlayers.sendMessage(Component.text("[")
                     .append(Component.text("▶").color(NamedTextColor.YELLOW))
                     .append(Component.text("] "))
-                    .append(Component.text(player.name, game.teamManager.getTeamNamedTextColor(player)))
+                    .append(nameFormatter.format(player))
                     .append(Component.text(" picked up a piece of cheese."))
                 )
             } else {
@@ -153,7 +148,7 @@ class CheeseManager(private val game : Game) {
                 allPlayers.sendMessage(Component.text("[")
                     .append(Component.text("▶").color(NamedTextColor.YELLOW))
                     .append(Component.text("] "))
-                    .append(Component.text(player.name, game.teamManager.getTeamNamedTextColor(player)))
+                    .append(nameFormatter.format(player))
                     .append(Component.text(" lost a piece of cheese."))
                 )
             } else {
@@ -167,7 +162,7 @@ class CheeseManager(private val game : Game) {
             }
         }
         player.inventory.remove(Material.SPONGE)
-        game.statsManager.updateStatistic(player.uniqueId, Statistic.CHEESE_DROPPED)
+        statsManager.updateStatistic(player.uniqueId, Statistic.CHEESE_DROPPED)
         if(playerHasCheese.contains(player.uniqueId)) {
             playerHasCheese.remove(player.uniqueId)
         }
@@ -215,15 +210,6 @@ class CheeseManager(private val game : Game) {
         playersWithCheeseLoopMap.remove(player.uniqueId)?.cancel()
         player.removePotionEffect(PotionEffectType.GLOWING)
         player.sendActionBar(Component.text(" "))
-    }
-
-    fun resetVars() {
-        redCheeseEarned = 0
-        blueCheeseEarned = 0
-        tempRedCheeseEarned = 0
-        tempBlueCheeseEarned = 0
-        redTotalCheesePickedUp = 0
-        blueTotalCheesePickedUp = 0
     }
 
     fun teamFireworks(player : Player, teams : Teams) {

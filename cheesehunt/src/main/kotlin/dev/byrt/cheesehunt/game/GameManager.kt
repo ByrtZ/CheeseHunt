@@ -107,7 +107,6 @@ class GameManager(private val game : Game) {
         game.playerManager.teleportSpectatorsToArena()
         game.playerManager.setPlayersAdventure()
         game.blockManager.resetAllBlocks()
-        game.teamManager.hideDisplayTeamNames()
         game.itemManager.clearFloorItems()
         game.scoreManager.setNewRandomMultiplierMinute()
     }

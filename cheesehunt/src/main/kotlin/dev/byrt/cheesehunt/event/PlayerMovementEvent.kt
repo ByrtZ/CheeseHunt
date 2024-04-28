@@ -1,12 +1,15 @@
 package dev.byrt.cheesehunt.event
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent
-
-import dev.byrt.cheesehunt.CheeseHunt
+import dev.byrt.cheesehunt.game.GameManager
 import dev.byrt.cheesehunt.game.GameState
+import dev.byrt.cheesehunt.manager.CheeseManager
 import dev.byrt.cheesehunt.state.Sounds
 import dev.byrt.cheesehunt.state.Teams
-
+import me.lucyydotp.cheeselib.game.TeamManager
+import me.lucyydotp.cheeselib.inject.context
+import me.lucyydotp.cheeselib.module.Module
+import me.lucyydotp.cheeselib.module.ModuleHolder
 import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.block.BlockFace
@@ -18,7 +21,12 @@ import org.bukkit.potion.PotionEffectType
 import org.bukkit.util.Vector
 
 @Suppress("unused")
-class PlayerMovementEvent : Listener {
+class PlayerMovementEvent(parent: ModuleHolder) : Module(parent), Listener {
+
+    private val cheeseManager: CheeseManager by context()
+    private val gameManager: GameManager by context()
+    private val teamManager: TeamManager<Teams> by context()
+
     @EventHandler
     private fun onMove(e : PlayerMoveEvent) {
         when(e.from.block.getRelative(BlockFace.DOWN).type) {
@@ -32,12 +40,12 @@ class PlayerMovementEvent : Listener {
             else -> {}
         }
 
-        if(CheeseHunt.getGame().gameManager.getGameState() == GameState.IN_GAME || CheeseHunt.getGame().gameManager.getGameState() == GameState.OVERTIME) {
-            if(e.player.location.block.type == Material.STRUCTURE_VOID && e.player.gameMode != GameMode.SPECTATOR && CheeseHunt.getGame().teamManager.getPlayerTeam(e.player.uniqueId) != Teams.SPECTATOR) {
+        if(gameManager.getGameState() == GameState.IN_GAME || gameManager.getGameState() == GameState.OVERTIME) {
+            if(e.player.location.block.type == Material.STRUCTURE_VOID && e.player.gameMode != GameMode.SPECTATOR && teamManager.getTeam(e.player) != null) {
                 e.player.damage(0.1)
                 e.player.health = 0.0
             }
-            if(CheeseHunt.getGame().cheeseManager.playerHasCheese(e.player)) {
+            if(cheeseManager.playerHasCheese(e.player)) {
                 e.player.addPotionEffect(PotionEffect(PotionEffectType.SLOW, 20, 3, false, false))
             }
         }

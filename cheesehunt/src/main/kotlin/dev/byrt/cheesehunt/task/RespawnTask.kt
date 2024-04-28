@@ -64,7 +64,7 @@ class RespawnTask(private val game: Game) {
 
     fun stopRespawnLoop(player : Player) {
         respawnLoopMap.remove(player.uniqueId)?.cancel()
-        game.itemManager.givePlayerTeamBoots(player, CheeseHunt.getGame().teamManager.getPlayerTeam(player.uniqueId))
+        game.itemManager.givePlayerTeamBoots(player, game.teams.getTeam(player))
         if(game.gameManager.getGameState() == GameState.OVERTIME) {
             game.itemManager.givePlayerPickaxe(player)
         } else {

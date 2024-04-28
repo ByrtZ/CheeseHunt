@@ -2,6 +2,11 @@ package dev.byrt.cheesehunt.manager
 
 import dev.byrt.cheesehunt.game.Game
 import dev.byrt.cheesehunt.state.Sounds
+import me.lucyydotp.cheeselib.game.nameformat.NameFormatter
+import me.lucyydotp.cheeselib.inject.context
+import me.lucyydotp.cheeselib.inject.inject
+import me.lucyydotp.cheeselib.module.Module
+import me.lucyydotp.cheeselib.module.ModuleHolder
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -13,12 +18,14 @@ import org.bukkit.entity.Player
 
 import java.util.*
 
-class StatisticsManager(private val game : Game) {
+class StatisticsManager(private val game : Game): Module(game) {
     private var playerCheesePickedUp = mutableMapOf<UUID, Int>()
     private var playerCheeseDropped = mutableMapOf<UUID, Int>()
     private var playerEliminations = mutableMapOf<UUID, Int>()
     private var playerDeaths = mutableMapOf<UUID, Int>()
     private var playerKillStreaks = mutableMapOf<UUID, Int>()
+
+    private val nameFormatter: NameFormatter by context()
 
     fun updateStatistic(uuid : UUID, stat : Statistic) {
         when(stat) {
@@ -64,7 +71,7 @@ class StatisticsManager(private val game : Game) {
                     allPlayers.sendMessage(Component.text("[")
                         .append(Component.text("▶").color(NamedTextColor.YELLOW))
                         .append(Component.text("] "))
-                        .append(Component.text(player.name, game.teamManager.getTeamNamedTextColor(player)))
+                        .append(nameFormatter.format(player))
                         .append(Component.text(" is on a ${playerKillStreaks[uuid]} kill streak!", TextColor.fromHexString("#ed4440"))))
                 }
             }
@@ -83,7 +90,7 @@ class StatisticsManager(private val game : Game) {
                         allPlayers.sendMessage(Component.text("[")
                             .append(Component.text("▶").color(NamedTextColor.YELLOW))
                             .append(Component.text("] "))
-                            .append(Component.text(player.name, game.teamManager.getTeamNamedTextColor(player)))
+                            .append(nameFormatter.format(player))
                             .append(Component.text(" is on a", TextColor.fromHexString("#ed4440")))
                             .append(Component.text(" RAMPAGE!", TextColor.fromHexString("#cc1100"), TextDecoration.BOLD)))
                     }

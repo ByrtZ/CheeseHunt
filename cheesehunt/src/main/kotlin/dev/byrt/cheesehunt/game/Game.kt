@@ -81,7 +81,6 @@ class Game(val plugin : CheeseHunt) : ParentModule(plugin) {
     fun cleanUp() {
         blockManager.resetAllBlocks()
         queueVisuals.removeQueueNPC()
-        teamManager.destroyDisplayTeams()
         infoBoardManager.destroyScoreboard()
         configManager.saveMapConfig()
     }

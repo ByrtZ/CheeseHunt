@@ -3,15 +3,16 @@ package dev.byrt.cheesehunt.manager
 import dev.byrt.cheesehunt.CheeseHunt
 import dev.byrt.cheesehunt.game.Game
 import dev.byrt.cheesehunt.state.Teams
-
-import org.bukkit.*
+import org.bukkit.Bukkit
+import org.bukkit.GameMode
+import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.util.Vector
 
-class PlayerManager(private var game : Game) {
+class PlayerManager(private var game: Game) {
     fun setPlayersNotFlying() {
-        Bukkit.getOnlinePlayers().stream().filter { player: Player -> player.allowFlight }.forEach {
-                player: Player -> disableFlightPlayers(player)
+        Bukkit.getOnlinePlayers().stream().filter { player: Player -> player.allowFlight }.forEach { player: Player ->
+            disableFlightPlayers(player)
         }
     }
 
@@ -23,8 +24,8 @@ class PlayerManager(private var game : Game) {
     }
 
     fun setPlayersFlying() {
-        Bukkit.getOnlinePlayers().stream().filter { player: Player -> !player.allowFlight }.forEach {
-                player: Player -> enableFlightPlayers(player)
+        Bukkit.getOnlinePlayers().stream().filter { player: Player -> !player.allowFlight }.forEach { player: Player ->
+            enableFlightPlayers(player)
         }
     }
 
@@ -42,7 +43,7 @@ class PlayerManager(private var game : Game) {
     }
 
     private fun giveItems(player: Player) {
-        if(game.teamManager.getPlayerTeam(player.uniqueId) != Teams.SPECTATOR) {
+        if (game.teams.getTeam(player) != null) {
             game.itemManager.givePlayerKit(player)
         }
     }
@@ -52,7 +53,7 @@ class PlayerManager(private var game : Game) {
             .forEach { player: Player -> clearSpongeItems(player) }
     }
 
-    private fun clearSpongeItems(player : Player) {
+    private fun clearSpongeItems(player: Player) {
         player.inventory.remove(Material.SPONGE)
     }
 
@@ -61,12 +62,12 @@ class PlayerManager(private var game : Game) {
             .forEach { player: Player -> clearWeaponry(player) }
     }
 
-    private fun clearWeaponry(player : Player) {
+    private fun clearWeaponry(player: Player) {
         player.inventory.remove(Material.STONE_SWORD)
         player.inventory.remove(Material.BOW)
         player.inventory.remove(Material.ARROW)
         player.inventory.setItemInOffHand(null)
-        for(item in PowerUpItem.values()) {
+        for (item in PowerUpItem.values()) {
             player.inventory.remove(item.material)
         }
     }
@@ -76,25 +77,25 @@ class PlayerManager(private var game : Game) {
             .forEach { player: Player -> clearNonCheese(player) }
     }
 
-    private fun clearNonCheese(player : Player) {
+    private fun clearNonCheese(player: Player) {
         player.inventory.remove(Material.STONE_SWORD)
         player.inventory.remove(Material.BOW)
         player.inventory.remove(Material.ARROW)
         player.inventory.remove(Material.WOODEN_PICKAXE)
         player.inventory.remove(Material.RED_DYE)
         player.inventory.setItemInOffHand(null)
-        for(item in PowerUpItem.values()) {
+        for (item in PowerUpItem.values()) {
             player.inventory.remove(item.material)
         }
     }
 
-    fun clearQueueItem(player : Player) {
+    fun clearQueueItem(player: Player) {
         player.inventory.remove(Material.RED_DYE)
         player.inventory.setItemInOffHand(null)
     }
 
     private fun clearAllItems() {
-        for(player in Bukkit.getOnlinePlayers()) {
+        for (player in Bukkit.getOnlinePlayers()) {
             player.inventory.clear()
         }
     }
@@ -104,63 +105,59 @@ class PlayerManager(private var game : Game) {
             .forEach { player: Player -> clearPotionEffects(player) }
     }
 
-    fun clearPotionEffects(player : Player) {
-        for(effect in player.activePotionEffects) {
+    fun clearPotionEffects(player: Player) {
+        for (effect in player.activePotionEffects) {
             player.removePotionEffect(effect.type)
         }
     }
 
     fun teleportPlayersToGame() {
-        Bukkit.getOnlinePlayers().stream().filter { player: Player? -> player?.let {
-            CheeseHunt.getGame().teamManager.getPlayerTeam(it.uniqueId) } != Teams.SPECTATOR}
-                .forEach{ player: Player -> teleportPlayers(player) }
-    }
-
-    private fun teleportPlayers(player : Player) {
-        if(CheeseHunt.getGame().teamManager.isInRedTeam(player.uniqueId)) {
-                for(redPlayerUUID in CheeseHunt.getGame().teamManager.getRedTeam()) {
-                    val redPlayer = Bukkit.getPlayer(redPlayerUUID)
-                    redPlayer!!.teleport(CheeseHunt.getGame().locationManager.getRedSpawns()[CheeseHunt.getGame().locationManager.getRedSpawnCounter()])
-                    CheeseHunt.getGame().locationManager.incrementSpawnCounter(Teams.RED)
+        Bukkit.getOnlinePlayers()
+            .groupBy(game.teams::getTeam)
+            .forEach { (team, players) ->
+                val spawns = when (team) {
+                    Teams.RED -> game.locationManager.getRedSpawns()
+                    Teams.BLUE -> game.locationManager.getBlueSpawns()
+                    else -> return@forEach
                 }
-        }
-        if(CheeseHunt.getGame().teamManager.isInBlueTeam(player.uniqueId)) {
-            for(bluePlayerUUID in CheeseHunt.getGame().teamManager.getBlueTeam()) {
-                val bluePlayer = Bukkit.getPlayer(bluePlayerUUID)
-                bluePlayer!!.teleport(CheeseHunt.getGame().locationManager.getBlueSpawns()[CheeseHunt.getGame().locationManager.getBlueSpawnCounter()])
-                CheeseHunt.getGame().locationManager.incrementSpawnCounter(Teams.BLUE)
+                players.forEachIndexed { i, player ->
+                    player.teleport(spawns[i])
+                }
             }
-        }
     }
 
     fun teleportSpectatorsToArena() {
-        for(player in Bukkit.getOnlinePlayers()) {
-            if(game.teamManager.getPlayerTeam(player.uniqueId) == Teams.SPECTATOR) {
+        for (player in Bukkit.getOnlinePlayers()) {
+            if (game.teams.getTeam(player) == null) {
                 player.teleport(game.locationManager.getArenaCentre())
             }
         }
     }
 
     private fun teleportPlayersToSpawn() {
-        for(player in Bukkit.getOnlinePlayers()) {
-            player.teleport(CheeseHunt.getGame().locationManager.getSpawn())
+        for (player in Bukkit.getOnlinePlayers()) {
+            player.teleport(game.locationManager.getSpawn())
         }
     }
 
     fun setSpectatorsGameMode() {
-        Bukkit.getOnlinePlayers().stream().filter { player: Player? -> player?.let {
-            CheeseHunt.getGame().teamManager.getPlayerTeam(it.uniqueId) } == Teams.SPECTATOR}
-            .forEach{ player: Player -> player.gameMode = GameMode.SPECTATOR }
+        Bukkit.getOnlinePlayers().forEach {
+            if (game.teams.getTeam(it) == null) {
+                it.gameMode = GameMode.SPECTATOR
+            }
+        }
     }
 
     fun setPlayersAdventure() {
-        Bukkit.getOnlinePlayers().stream().filter { player: Player? -> player?.let {
-            CheeseHunt.getGame().teamManager.getPlayerTeam(it.uniqueId) } != Teams.SPECTATOR}
-            .forEach{ player: Player -> player.gameMode = GameMode.ADVENTURE }
+        Bukkit.getOnlinePlayers().forEach {
+            if (game.teams.getTeam(it) != null) {
+                it.gameMode = GameMode.ADVENTURE
+            }
+        }
     }
 
     private fun setAllAdventure() {
-        for(player in Bukkit.getOnlinePlayers()) {
+        for (player in Bukkit.getOnlinePlayers()) {
             player.gameMode = GameMode.ADVENTURE
         }
     }

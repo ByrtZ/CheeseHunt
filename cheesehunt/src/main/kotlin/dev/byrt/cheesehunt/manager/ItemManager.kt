@@ -59,7 +59,7 @@ class ItemManager(private val game : Game) {
         }
     }
 
-    fun givePlayerTeamBoots(player : Player, team : Teams) {
+    fun givePlayerTeamBoots(player : Player, team : Teams?) {
         when(team) {
             Teams.RED -> {
                 val teamABoots = ItemStack(Material.LEATHER_BOOTS)
@@ -99,7 +99,8 @@ class ItemManager(private val game : Game) {
                 teamBBoots.itemMeta = lm
                 player.inventory.boots = teamBBoots
             }
-            Teams.SPECTATOR -> {
+            // TODO: admin boots
+            else -> {
                 val spectatorBoots = ItemStack(Material.LEATHER_BOOTS)
                 val spectatorBootsMeta = spectatorBoots.itemMeta
                 spectatorBootsMeta.isUnbreakable = true
@@ -287,7 +288,7 @@ class ItemManager(private val game : Game) {
     }
 
     private fun escapeToTeamBase(player : Player) {
-        when(game.teamManager.getPlayerTeam(player.uniqueId)) {
+        when(game.teams.getTeam(player)) {
             Teams.RED -> {
                 player.teleport(game.locationManager.getRedEscapeLoc())
                 val velocity = Vector(1.1, 1.45, 0.0)
@@ -298,7 +299,7 @@ class ItemManager(private val game : Game) {
                 val velocity = Vector(-1.1, 1.45, 0.0)
                 player.velocity = velocity
             }
-            Teams.SPECTATOR -> {
+            else -> {
                 player.teleport(game.locationManager.getArenaCentre())
             }
         }

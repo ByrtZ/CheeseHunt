@@ -70,7 +70,8 @@ class QueueTask(private val game : Game) {
         queueActive = false
 
         if(isGameStarting) {
-            game.teamManager.shuffle(game.queue.queuedPlayers())
+            // TODO(lucy)
+//            game.teamManager.shuffle(game.queue.queuedPlayers())
             game.queue.deleteQueue()
             game.queue.setQueueState(QueueState.NO_GAME_AVAILABLE)
         } else {

@@ -13,6 +13,9 @@ import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import dev.byrt.cheesehunt.CheeseHuntPlugin
+import me.lucyydotp.cheeselib.module.Module
+import me.lucyydotp.cheeselib.module.ModuleHolder
+import me.lucyydotp.cheeselib.module.installCommands
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -25,7 +28,12 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
 @Suppress("unused")
-class DebugCommands : BaseCommand {
+class DebugCommands(parent: ModuleHolder) : Module(parent) {
+
+    init {
+        installCommands()
+    }
+
     @CommandMethod("debug next_phase")
     @CommandDescription("Debug command to set game to its next phase.")
     @CommandPermission("cheesehunt.debug")

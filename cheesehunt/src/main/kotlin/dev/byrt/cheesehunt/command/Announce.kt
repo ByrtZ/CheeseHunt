@@ -1,28 +1,23 @@
 package dev.byrt.cheesehunt.command
 
-import dev.byrt.cheesehunt.CheeseHunt
-import dev.byrt.cheesehunt.util.DevStatus
-import dev.byrt.cheesehunt.state.Sounds
-
 import cloud.commandframework.annotations.Argument
 import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
+import dev.byrt.cheesehunt.state.Sounds
 import dev.byrt.cheesehunt.util.Dev
+import dev.byrt.cheesehunt.util.DevStatus
 import me.lucyydotp.cheeselib.inject.context
 import me.lucyydotp.cheeselib.module.Module
 import me.lucyydotp.cheeselib.module.ModuleHolder
 import me.lucyydotp.cheeselib.module.installCommands
-
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.minimessage.MiniMessage
-
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 
-@Suppress("unused")
 class Announce(parent: ModuleHolder) : Module(parent) {
 
     private val dev: Dev by context()

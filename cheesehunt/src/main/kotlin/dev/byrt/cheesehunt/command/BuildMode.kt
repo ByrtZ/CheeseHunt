@@ -19,7 +19,6 @@ import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 
-@Suppress("unused")
 class BuildMode(parent: ModuleHolder) : Module(parent) {
     private val buildToggleSuccessSound: Sound =
         Sound.sound(Key.key(Sounds.Command.BUILDMODE_SUCCESS), Sound.Source.MASTER, 1f, 1f)

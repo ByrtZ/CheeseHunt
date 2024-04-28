@@ -21,17 +21,15 @@ import java.time.Duration
 import me.lucyydotp.cheeselib.game.TeamManager as CommonTeamManager
 
 class Game(val plugin : CheeseHunt) : ParentModule(plugin) {
-    val gameManager = GameManager(this)
+    val gameManager = GameManager(this).also(::bind)
     val roundManager = Rounds(this)
     val timerManager = Timer(this)
     val playerManager = PlayerManager(this)
-    @Deprecated("Use new team manager")
-    val teamManager = TeamManager(this).registerAsChild()
     val teams = CommonTeamManager(this, Teams::class).registerAsChild().also(GlobalInjectionContext::bind)
     val itemManager = ItemManager(this).also(::bind)
     val blockManager = BlockManager(this)
     val cheeseManager = CheeseManager(this).registerAsChild()
-    val tabListManager = TabListManager(this)
+    val tabListManager = TabListManager(this).registerAsChild()
     val locationManager by lazy { LocationManager(this) }
     val scoreManager = ScoreManager(this).also(::bind)
     val statsManager = StatisticsManager(this).also(::bind)
@@ -52,7 +50,8 @@ class Game(val plugin : CheeseHunt) : ParentModule(plugin) {
 
     val buildMode = BuildMode(this).registerAsChild()
 
-    val dev = Dev(this)
+    // FIXME(lucy): move this up to parent module
+    val dev = parent.bind(Dev(this))
 
     fun startGame() {
         if(gameManager.getGameState() == GameState.IDLE) {
@@ -73,8 +72,6 @@ class Game(val plugin : CheeseHunt) : ParentModule(plugin) {
     fun setup() {
         locationManager.populateSpawns()
         locationManager.populateWinShowArea()
-        tabListManager.populateCheesePuns()
-        tabListManager.buildBase()
         queueVisuals.spawnQueueNPC()
     }
 

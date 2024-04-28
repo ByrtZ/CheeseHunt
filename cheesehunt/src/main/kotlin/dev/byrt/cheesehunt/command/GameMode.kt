@@ -7,12 +7,20 @@ import cloud.commandframework.annotations.Argument
 import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
+import me.lucyydotp.cheeselib.module.Module
+import me.lucyydotp.cheeselib.module.ModuleHolder
+import me.lucyydotp.cheeselib.module.installCommands
 
 import org.bukkit.GameMode
 import org.bukkit.entity.Player
 
 @Suppress("unused")
-class GameMode : BaseCommand {
+class GameMode(parent: ModuleHolder) : Module(parent) {
+
+    init {
+        installCommands()
+    }
+
     @CommandMethod("gm <mode>")
     @CommandDescription("Puts the executing player into the specified gamemode.")
     @CommandPermission("cheesehunt.gm")

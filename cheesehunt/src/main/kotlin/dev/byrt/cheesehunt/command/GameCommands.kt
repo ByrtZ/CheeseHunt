@@ -10,6 +10,9 @@ import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.Confirmation
 import dev.byrt.cheesehunt.game.GameState
+import me.lucyydotp.cheeselib.module.Module
+import me.lucyydotp.cheeselib.module.ModuleHolder
+import me.lucyydotp.cheeselib.module.installCommands
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
@@ -24,7 +27,12 @@ import org.bukkit.entity.Player
 import java.time.Duration
 
 @Suppress("unused")
-class GameCommands : BaseCommand {
+class GameCommands(parent: ModuleHolder) : Module(parent) {
+
+    init {
+        installCommands()
+    }
+
     private val startGameSuccessSound: Sound = Sound.sound(Key.key(Sounds.Start.START_GAME_SUCCESS), Sound.Source.MASTER, 1f, 1f)
     private val startGameFailSound: Sound = Sound.sound(Key.key(Sounds.Start.START_GAME_FAIL), Sound.Source.MASTER, 1f, 0f)
     private val reloadStartSound: Sound = Sound.sound(Key.key(Sounds.Command.SHUFFLE_START), Sound.Source.MASTER, 1f, 1f)

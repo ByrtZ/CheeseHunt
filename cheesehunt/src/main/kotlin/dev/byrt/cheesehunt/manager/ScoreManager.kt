@@ -1,5 +1,6 @@
 package dev.byrt.cheesehunt.manager
 
+import dev.byrt.cheesehunt.CheeseHunt
 import dev.byrt.cheesehunt.game.Game
 import dev.byrt.cheesehunt.state.Sounds
 import dev.byrt.cheesehunt.state.Teams
@@ -24,10 +25,6 @@ import kotlin.random.Random
 class ScoreManager(private val game : Game) {
     private var redScore = 0
     private var blueScore = 0
-    private var previousRedScore = 0
-    private var previousBlueScore = 0
-    private var placements = ArrayList<Teams>()
-    private var previousPlacements = ArrayList<Teams>()
     private var multiplier = 1
     private var multiplierMinute = 0
 
@@ -46,44 +43,73 @@ class ScoreManager(private val game : Game) {
     }
 
     private fun winCheck() {
-        if(redScore > blueScore) {
-            game.teamManager.redWinGame()
-            game.winShowTask.startWinShowLoop(game.plugin, Teams.RED)
+        if (redScore == blueScore) {
+            Bukkit.getOnlinePlayers().forEach {
+                it.playSound(it.location, Sounds.Round.DRAW_ROUND, 1f, 2f)
+                it.sendMessage(
+                    Component.text("\nNo team won!\n").color(NamedTextColor.YELLOW).decoration(
+                        TextDecoration.BOLD, true
+                    )
+                )
+                it.showTitle(
+                    Title.title(
+                        Component.text("No team won the game!").color(NamedTextColor.YELLOW),
+                        Component.text("It was a draw.").color(NamedTextColor.YELLOW),
+                        Title.Times.times(
+                            Duration.ofSeconds(1),
+                            Duration.ofSeconds(5),
+                            Duration.ofSeconds(1)
+                        )
+                    )
+                )
+            }
+            return
         }
-        if(redScore < blueScore) {
-            game.teamManager.blueWinGame()
-            game.winShowTask.startWinShowLoop(game.plugin, Teams.BLUE)
-        }
-        if(redScore == blueScore) {
-            game.teamManager.noWinGame()
-        }
-    }
 
-    fun calcPlacements() : ArrayList<Teams>? {
-        previousPlacements = placements
-        placements.clear()
-        if(redScore > blueScore) {
-            placements.add(0, Teams.RED)
-            placements.add(1, Teams.BLUE)
-            return placements
+        val winningTeam = if (redScore > blueScore) Teams.RED else Teams.BLUE
+
+        for (player in Bukkit.getOnlinePlayers()) {
+            val team = game.teams.getTeam(player) ?: continue
+            if(team == winningTeam) {
+                player.playSound(player.location, Sounds.Round.WIN_ROUND, 1f, 1f)
+                game.cheeseManager.teamFireworks(player, Teams.BLUE)
+                player.sendMessage(Component.text("\nYour team won the game!\n").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true))
+                player.showTitle(
+                    Title.title(
+                        Component.text("Your team won!").color(NamedTextColor.GREEN),
+                        Component.text("Well done!").color(NamedTextColor.GREEN),
+                        Title.Times.times(
+                            Duration.ofSeconds(1),
+                            Duration.ofSeconds(5),
+                            Duration.ofSeconds(1)
+                        )
+                    )
+                )
+            } else {
+                player.playSound(player.location, Sounds.Round.LOSE_ROUND, 1f, 1f)
+                player.sendMessage(Component.text("\nYour team lost the game!\n").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true))
+                player.showTitle(
+                    Title.title(
+                        Component.text("Your team lost!").color(NamedTextColor.RED),
+                        Component.text("Better luck next time.").color(NamedTextColor.RED),
+                        Title.Times.times(
+                            Duration.ofSeconds(1),
+                            Duration.ofSeconds(5),
+                            Duration.ofSeconds(1)
+                        )
+                    )
+                )
+            }
         }
-        if(blueScore > redScore) {
-            placements.add(0, Teams.BLUE)
-            placements.add(1, Teams.RED)
-            return placements
-        }
-        return null
     }
 
     fun modifyScore(score : Int, mode : ScoreMode, team : Teams) {
         when(mode) {
             ScoreMode.ADD -> {
                 if(team == Teams.RED) {
-                    previousRedScore = redScore
                     redScore += score
                 }
                 if(team == Teams.BLUE) {
-                    previousBlueScore = blueScore
                     blueScore += score
                 }
             }
@@ -166,23 +192,16 @@ class ScoreManager(private val game : Game) {
         return blueScore
     }
 
-    fun getPreviousRedScore() : Int {
-        return previousRedScore
-    }
-
-    fun getPreviousBlueScore() : Int {
-        return previousBlueScore
+    fun getScore(team: Teams) = when (team) {
+        Teams.RED -> getRedScore()
+        Teams.BLUE -> getBlueScore()
     }
 
     fun resetScores() {
         redScore = 0
         blueScore = 0
-        previousRedScore = 0
-        previousBlueScore = 0
         multiplier = 1
         multiplierMinute = 0
-        placements.clear()
-        previousPlacements.clear()
     }
 }
 

@@ -4,7 +4,6 @@ import me.lucyydotp.cheeselib.game.TeamMeta
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextColor
-import net.kyori.adventure.text.format.TextDecoration
 
 enum class Teams(
     override val displayName: Component,
@@ -21,9 +20,9 @@ enum class Teams(
         NamedTextColor.BLUE,
         Component.text("\uD005 ")
     ),
-    SPECTATOR(
-        Component.text("Spectators", NamedTextColor.GRAY),
-        NamedTextColor.GRAY,
-        Component.text("Spectator - something is broken!", NamedTextColor.RED, TextDecoration.BOLD)
-    )
+//    SPECTATOR(
+//        Component.text("Spectators", NamedTextColor.GRAY),
+//        NamedTextColor.GRAY,
+//        Component.text("Spectator - something is broken!", NamedTextColor.RED, TextDecoration.BOLD)
+//    )
 }

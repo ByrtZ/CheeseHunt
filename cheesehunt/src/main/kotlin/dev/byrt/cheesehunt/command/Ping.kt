@@ -4,6 +4,9 @@ import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 
 import dev.byrt.cheesehunt.state.Sounds
+import me.lucyydotp.cheeselib.module.Module
+import me.lucyydotp.cheeselib.module.ModuleHolder
+import me.lucyydotp.cheeselib.module.installCommands
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
@@ -14,7 +17,12 @@ import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.entity.Player
 
 @Suppress("unused")
-class Ping : BaseCommand {
+class Ping(parent: ModuleHolder) : Module(parent) {
+
+    init {
+        installCommands()
+    }
+
     private val pingSound: Sound = Sound.sound(Key.key(Sounds.Command.PING), Sound.Source.MASTER, 1f, 1f)
     @CommandMethod("ping")
     @CommandDescription("Returns the executing player's ping")

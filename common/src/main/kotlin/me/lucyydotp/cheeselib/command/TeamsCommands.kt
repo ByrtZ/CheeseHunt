@@ -15,7 +15,6 @@ import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-@Suppress("unused")
 class TeamsCommands<T>(parent: ModuleHolder) : Module(parent) where T : TeamMeta, T : Enum<T> {
 
 //    private val shuffleStartSound: Sound = Sound.sound(Key.key(Sounds.Command.SHUFFLE_START), Sound.Source.MASTER, 1f, 1f)

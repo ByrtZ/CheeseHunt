@@ -7,8 +7,6 @@ import cloud.commandframework.extra.confirmation.CommandConfirmationManager
 import cloud.commandframework.meta.CommandMeta
 import cloud.commandframework.meta.SimpleCommandMeta
 import cloud.commandframework.paper.PaperCommandManager
-import me.lucyydotp.cheeselib.command.TeamsCommands
-import me.lucyydotp.cheeselib.inject.GlobalInjectionContext
 import me.lucyydotp.cheeselib.inject.bind
 import me.lucyydotp.cheeselib.inject.context
 import me.lucyydotp.cheeselib.module.ModuleHolder
@@ -26,7 +24,6 @@ class Commands(parent: ModuleHolder) : ParentModule(parent) {
     init {
         onEnable {
             setupCommandManager()
-            TeamsCommands<Nothing>(this).registerAsChild().enable()
         }
     }
 
@@ -81,7 +78,7 @@ class Commands(parent: ModuleHolder) : ParentModule(parent) {
             CommandSender::class.java
         ) { SimpleCommandMeta.empty() }
 
-        GlobalInjectionContext.bind(annotationParser)
-        GlobalInjectionContext.bind<CommandManager<*>>(commandManager)
+        parent.bind(annotationParser)
+        parent.bind<CommandManager<*>>(commandManager)
     }
 }

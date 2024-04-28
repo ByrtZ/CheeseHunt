@@ -3,6 +3,9 @@ package dev.byrt.cheesehunt.command
 import cloud.commandframework.annotations.*
 
 import dev.byrt.cheesehunt.manager.Maps
+import me.lucyydotp.cheeselib.module.Module
+import me.lucyydotp.cheeselib.module.ModuleHolder
+import me.lucyydotp.cheeselib.module.installCommands
 
 import net.kyori.adventure.text.Component
 
@@ -10,7 +13,12 @@ import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.entity.Player
 
 @Suppress("unused")
-class MapCommands : BaseCommand {
+class MapCommands(parent: ModuleHolder) : Module(parent) {
+
+    init {
+        installCommands()
+    }
+
     @CommandMethod("map set <map>")
     @CommandDescription("Changes the map to be played.")
     @CommandPermission("cheesehunt.map.set")

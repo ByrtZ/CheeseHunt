@@ -23,9 +23,9 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
     compileOnly(project(":common"))
 
-    shade("org.reflections:reflections:0.10.2")
-    shade("cloud.commandframework:cloud-paper:1.8.4")
-    shade("cloud.commandframework:cloud-annotations:1.8.4")
+//    shade("org.reflections:reflections:0.10.2")
+//    shade("cloud.commandframework:cloud-paper:1.8.4")
+//    shade("cloud.commandframework:cloud-annotations:1.8.4")
     shade("org.incendo.interfaces:interfaces-paper:1.0.0-SNAPSHOT")
 }
 

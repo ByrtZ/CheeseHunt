@@ -7,6 +7,9 @@ import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import dev.byrt.cheesehunt.manager.ItemType
+import me.lucyydotp.cheeselib.module.Module
+import me.lucyydotp.cheeselib.module.ModuleHolder
+import me.lucyydotp.cheeselib.module.installCommands
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -20,8 +23,7 @@ import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 
-@Suppress("unused")
-class CustomItem : BaseCommand {
+class CustomItem(parent: ModuleHolder) : Module(parent) {
     @CommandMethod("givecustomitem <item>")
     @CommandDescription("Gives the executor the custom item specified")
     @CommandPermission("cheesehunt.customitem")
@@ -34,6 +36,10 @@ class CustomItem : BaseCommand {
                 createRayGun(sender)
             }
         }
+    }
+
+    init {
+        installCommands()
     }
 
     private fun createTeleportSpoon(player : Player) {

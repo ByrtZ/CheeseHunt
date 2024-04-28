@@ -5,6 +5,9 @@ import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 
 import dev.byrt.cheesehunt.CheeseHunt
+import me.lucyydotp.cheeselib.module.Module
+import me.lucyydotp.cheeselib.module.ModuleHolder
+import me.lucyydotp.cheeselib.module.installCommands
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -20,7 +23,12 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 @Suppress("unused")
-class Particle : BaseCommand {
+class Particle(parent: ModuleHolder) : Module(parent) {
+
+    init {
+        installCommands()
+    }
+
     @CommandMethod("particletest start tornado")
     @CommandDescription("Spawns a tornado particle.")
     @CommandPermission("cheesehunt.particle.test")

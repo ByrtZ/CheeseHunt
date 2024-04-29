@@ -1,28 +1,29 @@
 package dev.byrt.cheesehunt.manager
 
-import dev.byrt.cheesehunt.CheeseHunt
 import dev.byrt.cheesehunt.game.Game
 import dev.byrt.cheesehunt.state.Sounds
 import dev.byrt.cheesehunt.state.Teams
-import dev.byrt.cheesehunt.util.DevStatus
-
+import me.lucyydotp.cheeselib.inject.context
+import me.lucyydotp.cheeselib.module.Module
+import me.lucyydotp.cheeselib.module.ModuleHolder
+import me.lucyydotp.cheeselib.sys.AdminMessageStyles
+import me.lucyydotp.cheeselib.sys.AdminMessages
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.title.Title
-
 import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.FireworkEffect
 import org.bukkit.Location
 import org.bukkit.entity.Firework
 import org.bukkit.entity.Player
-
 import java.time.Duration
-
 import kotlin.random.Random
 
-class ScoreManager(private val game : Game) {
+class ScoreManager(parent: ModuleHolder, private val game : Game): Module(parent) {
+    private val adminMessages: AdminMessages by context()
+
     private var redScore = 0
     private var blueScore = 0
     private var multiplier = 1
@@ -177,7 +178,7 @@ class ScoreManager(private val game : Game) {
 
     fun setNewRandomMultiplierMinute() {
         multiplierMinute = Random.nextInt(1, 10)
-        game.dev.parseDevMessage("Multiplier minute will occur at $multiplierMinute.5 minutes remaining.", DevStatus.INFO)
+        adminMessages.sendDevMessage("Multiplier minute will occur at $multiplierMinute.5 minutes remaining.", AdminMessageStyles.INFO)
     }
 
     fun getMultiplierMinute() : Int {

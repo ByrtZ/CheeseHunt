@@ -8,6 +8,7 @@ import dev.byrt.cheesehunt.CheeseHunt
 import me.lucyydotp.cheeselib.module.Module
 import me.lucyydotp.cheeselib.module.ModuleHolder
 import me.lucyydotp.cheeselib.module.installCommands
+import me.lucyydotp.cheeselib.util.teleportWithPassengers
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Bukkit
@@ -138,7 +139,7 @@ class Worlds(parent: ModuleHolder) : Module(parent) {
                                 )
                                 for (player in Bukkit.getOnlinePlayers()) {
                                     if (player.world == Bukkit.getWorld("original")) {
-                                        player.teleport(
+                                        player.teleportWithPassengers(
                                             Location(
                                                 Bukkit.getWorld("Cheese"),
                                                 0.5,
@@ -169,7 +170,7 @@ class Worlds(parent: ModuleHolder) : Module(parent) {
                                 )
                                 for (player in Bukkit.getOnlinePlayers()) {
                                     if (player.world == Bukkit.getWorld("Valorant")) {
-                                        player.teleport(
+                                        player.teleportWithPassengers(
                                             Location(
                                                 Bukkit.getWorld("Cheese"),
                                                 0.5,
@@ -200,7 +201,7 @@ class Worlds(parent: ModuleHolder) : Module(parent) {
                                 )
                                 for (player in Bukkit.getOnlinePlayers()) {
                                     if (player.world == Bukkit.getWorld("eleos")) {
-                                        player.teleport(
+                                        player.teleportWithPassengers(
                                             Location(
                                                 Bukkit.getWorld("Cheese"),
                                                 0.5,
@@ -231,7 +232,7 @@ class Worlds(parent: ModuleHolder) : Module(parent) {
                                 )
                                 for (player in Bukkit.getOnlinePlayers()) {
                                     if (player.world == Bukkit.getWorld("dezzer")) {
-                                        player.teleport(
+                                        player.teleportWithPassengers(
                                             Location(
                                                 Bukkit.getWorld("Cheese"),
                                                 0.5,
@@ -262,7 +263,7 @@ class Worlds(parent: ModuleHolder) : Module(parent) {
                                 )
                                 for (player in Bukkit.getOnlinePlayers()) {
                                     if (player.world == Bukkit.getWorld("pkw")) {
-                                        player.teleport(
+                                        player.teleportWithPassengers(
                                             Location(
                                                 Bukkit.getWorld("Cheese"),
                                                 0.5,
@@ -291,7 +292,7 @@ class Worlds(parent: ModuleHolder) : Module(parent) {
                 when (world) {
                     WorldsList.CHEESE -> {
                         sender.sendMessage(Component.text("Attempting to join ${world}...").color(NamedTextColor.GRAY))
-                        sender.player?.teleport(Location(Bukkit.getWorld("Cheese"), 0.5, -52.0, 0.5, 0.0f, 0.0f))
+                        sender.player?.teleportWithPassengers(Location(Bukkit.getWorld("Cheese"), 0.5, -52.0, 0.5, 0.0f, 0.0f))
                         sender.sendMessage(Component.text("Successfully joined $world.").color(NamedTextColor.GREEN))
                     }
 
@@ -300,7 +301,7 @@ class Worlds(parent: ModuleHolder) : Module(parent) {
                             sender.sendMessage(
                                 Component.text("Attempting to join ${world}...").color(NamedTextColor.GRAY)
                             )
-                            sender.player?.teleport(
+                            sender.player?.teleportWithPassengers(
                                 Location(
                                     Bukkit.getWorld("original"),
                                     90.5,
@@ -324,7 +325,7 @@ class Worlds(parent: ModuleHolder) : Module(parent) {
                             sender.sendMessage(
                                 Component.text("Attempting to join ${world}...").color(NamedTextColor.GRAY)
                             )
-                            sender.player?.teleport(Location(Bukkit.getWorld("Valorant"), 0.5, 64.0, 0.5, 0.0f, 0.0f))
+                            sender.player?.teleportWithPassengers(Location(Bukkit.getWorld("Valorant"), 0.5, 64.0, 0.5, 0.0f, 0.0f))
                             sender.sendMessage(
                                 Component.text("Successfully joined $world.").color(NamedTextColor.GREEN)
                             )
@@ -339,7 +340,7 @@ class Worlds(parent: ModuleHolder) : Module(parent) {
                             sender.sendMessage(
                                 Component.text("Attempting to join ${world}...").color(NamedTextColor.GRAY)
                             )
-                            sender.player?.teleport(Location(Bukkit.getWorld("eleos"), 0.5, 64.0, 0.5, 0.0f, 0.0f))
+                            sender.player?.teleportWithPassengers(Location(Bukkit.getWorld("eleos"), 0.5, 64.0, 0.5, 0.0f, 0.0f))
                             sender.sendMessage(
                                 Component.text("Successfully joined $world.").color(NamedTextColor.GREEN)
                             )
@@ -354,7 +355,7 @@ class Worlds(parent: ModuleHolder) : Module(parent) {
                             sender.sendMessage(
                                 Component.text("Attempting to join ${world}...").color(NamedTextColor.GRAY)
                             )
-                            sender.player?.teleport(Location(Bukkit.getWorld("dezzer"), 69.5, 65.0, 186.5, 0.0f, 0.0f))
+                            sender.player?.teleportWithPassengers(Location(Bukkit.getWorld("dezzer"), 69.5, 65.0, 186.5, 0.0f, 0.0f))
                             sender.sendMessage(
                                 Component.text("Successfully joined $world.").color(NamedTextColor.GREEN)
                             )
@@ -369,7 +370,7 @@ class Worlds(parent: ModuleHolder) : Module(parent) {
                             sender.sendMessage(
                                 Component.text("Attempting to join ${world}...").color(NamedTextColor.GRAY)
                             )
-                            sender.player?.teleport(Location(Bukkit.getWorld("pkw"), 0.5, 128.0, 0.5, 0.0f, 0.0f))
+                            sender.player?.teleportWithPassengers(Location(Bukkit.getWorld("pkw"), 0.5, 128.0, 0.5, 0.0f, 0.0f))
                             sender.sendMessage(
                                 Component.text("Successfully joined $world.").color(NamedTextColor.GREEN)
                             )

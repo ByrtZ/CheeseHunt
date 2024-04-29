@@ -8,11 +8,12 @@ import com.destroystokyo.paper.profile.PlayerProfile
 import com.destroystokyo.paper.profile.ProfileProperty
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import dev.byrt.cheesehunt.CheeseHunt
-import dev.byrt.cheesehunt.util.DevStatus
+import me.lucyydotp.cheeselib.inject.context
 import me.lucyydotp.cheeselib.module.Module
 import me.lucyydotp.cheeselib.module.ModuleHolder
 import me.lucyydotp.cheeselib.module.installCommands
+import me.lucyydotp.cheeselib.sys.AdminMessageStyles
+import me.lucyydotp.cheeselib.sys.AdminMessages
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Bukkit
@@ -27,6 +28,8 @@ class SetSkin(parent: ModuleHolder) : Module(parent) {
         installCommands()
     }
 
+    private val adminMessages: AdminMessages by context()
+
     @CommandMethod("setskin <player> <skin>")
     @CommandDescription("Allows skin modification.")
     @CommandPermission("cheesehunt.setskin")
@@ -37,9 +40,9 @@ class SetSkin(parent: ModuleHolder) : Module(parent) {
                     .color(NamedTextColor.GRAY)
             )
             setPlayerSkin(player, skin)
-            CheeseHunt.getGame().dev.parseDevMessage(
+            adminMessages.sendDevMessage(
                 "${player.name}'s skin updated to ${skin}'s skin by ${sender.name}.",
-                DevStatus.INFO
+                AdminMessageStyles.INFO
             )
         } catch (e: Exception) {
             sender.sendMessage(

@@ -4,6 +4,7 @@ import dev.byrt.cheesehunt.CheeseHunt
 import dev.byrt.cheesehunt.game.GameState
 import dev.byrt.cheesehunt.state.Teams
 import dev.byrt.cheesehunt.task.Music
+import me.lucyydotp.cheeselib.util.teleportWithPassengers
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
@@ -21,7 +22,7 @@ class JoinQuitEvent : Listener {
     @EventHandler
     private fun onPlayerJoin(e : PlayerJoinEvent) {
         e.joinMessage(Component.text("${e.player.name} joined the game.").color(TextColor.fromHexString("#ffff00")))
-        e.player.teleport(Location(Bukkit.getWorld("Cheese"), 0.5, -52.0 ,0.5, 0.0f, 0.0f))
+        e.player.teleportWithPassengers(Location(Bukkit.getWorld("Cheese"), 0.5, -52.0 ,0.5, 0.0f, 0.0f))
         e.player.inventory.clear()
         CheeseHunt.getGame().tabListManager.updateAllTabList()
         if(CheeseHunt.getGame().gameManager.getGameState() == GameState.IDLE) {

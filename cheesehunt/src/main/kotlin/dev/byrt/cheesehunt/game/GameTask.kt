@@ -1,24 +1,27 @@
 package dev.byrt.cheesehunt.game
 
 import dev.byrt.cheesehunt.CheeseHunt
-import dev.byrt.cheesehunt.manager.*
-import dev.byrt.cheesehunt.state.*
+import dev.byrt.cheesehunt.manager.Statistic
+import dev.byrt.cheesehunt.state.RoundState
+import dev.byrt.cheesehunt.state.Sounds
+import dev.byrt.cheesehunt.state.TimerState
 import dev.byrt.cheesehunt.task.Music
-import dev.byrt.cheesehunt.util.DevStatus
-
+import me.lucyydotp.cheeselib.inject.context
+import me.lucyydotp.cheeselib.module.Module
+import me.lucyydotp.cheeselib.module.ModuleHolder
+import me.lucyydotp.cheeselib.sys.AdminMessageStyles
+import me.lucyydotp.cheeselib.sys.AdminMessages
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.title.Title
-
 import org.bukkit.Bukkit
 import org.bukkit.SoundCategory
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
-
 import java.time.Duration
 
-class GameTask(private var game : Game) {
+class GameTask(parent: ModuleHolder, private var game : Game) : Module(parent) {
     private var gameRunnableList = mutableMapOf<Int, BukkitRunnable>()
     private var currentGameTaskId = 0
     private var timeLeft = 0
@@ -26,6 +29,8 @@ class GameTask(private var game : Game) {
     private var displayTime: String = "00:00"
     private var previousDisplayTime: String = "00:00"
     private var gameSubtitle = ""
+
+    private val adminMessages: AdminMessages by context()
 
     fun gameLoop() {
         val gameRunnable = object : BukkitRunnable() {
@@ -350,9 +355,9 @@ class GameTask(private var game : Game) {
         game.infoBoardManager.updateScoreboardTimer()
         timeLeft = setTimeLeft
         if(sender != null) {
-            CheeseHunt.getGame().dev.parseDevMessage("Timer updated to $timeLeft seconds by ${sender.name}.", DevStatus.INFO)
+            adminMessages.sendDevMessage("Timer updated to $timeLeft seconds by ${sender.name}.", AdminMessageStyles.INFO)
         } else {
-            CheeseHunt.getGame().dev.parseDevMessage("Timer updated to $timeLeft seconds.", DevStatus.INFO)
+            adminMessages.sendDevMessage("Timer updated to $timeLeft seconds.", AdminMessageStyles.INFO)
         }
     }
 

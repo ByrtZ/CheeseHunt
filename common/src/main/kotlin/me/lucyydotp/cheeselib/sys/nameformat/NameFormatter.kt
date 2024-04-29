@@ -1,4 +1,4 @@
-package me.lucyydotp.cheeselib.game.nameformat
+package me.lucyydotp.cheeselib.sys.nameformat
 
 import com.google.common.cache.CacheBuilder
 import me.lucyydotp.cheeselib.module.EventEmitter
@@ -29,7 +29,7 @@ data class PlayerNameFormattedEvent(
     /**
      * The player's name.
      */
-    val name: Component
+    val name: Component,
 )
 
 /**
@@ -52,7 +52,7 @@ class NameFormatter(parent: ModuleHolder) : Module(parent), Listener {
         val player: Player,
         var prefixes: List<Component> = mutableListOf(),
         var usernameStyle: Style = Style.empty(),
-        var suffixes: List<Component> = mutableListOf()
+        var suffixes: List<Component> = mutableListOf(),
     )
 
     /**
@@ -71,14 +71,14 @@ class NameFormatter(parent: ModuleHolder) : Module(parent), Listener {
 
             format.emit(formattedName)
 
-            return@get text {
+            val text = text {
                 append(formattedName.prefixes)
                 append(Component.text(player.name, formattedName.usernameStyle))
                 append(formattedName.suffixes)
-            }.also {
-                player.displayName(it)
-                afterFormat.emit(PlayerNameFormattedEvent(player, it))
             }
+            player.displayName(text)
+            afterFormat.emit(PlayerNameFormattedEvent(player, text))
+            text
         }
     }
 

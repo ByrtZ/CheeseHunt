@@ -10,6 +10,7 @@ import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.format.TextColor
 
 import com.destroystokyo.paper.Namespaced
+import me.lucyydotp.cheeselib.util.teleportWithPassengers
 
 import org.bukkit.*
 import org.bukkit.entity.*
@@ -290,17 +291,17 @@ class ItemManager(private val game : Game) {
     private fun escapeToTeamBase(player : Player) {
         when(game.teams.getTeam(player)) {
             Teams.RED -> {
-                player.teleport(game.locationManager.getRedEscapeLoc())
+                player.teleportWithPassengers(game.locationManager.getRedEscapeLoc())
                 val velocity = Vector(1.1, 1.45, 0.0)
                 player.velocity = velocity
             }
             Teams.BLUE -> {
-                player.teleport(game.locationManager.getBlueEscapeLoc())
+                player.teleportWithPassengers(game.locationManager.getBlueEscapeLoc())
                 val velocity = Vector(-1.1, 1.45, 0.0)
                 player.velocity = velocity
             }
             else -> {
-                player.teleport(game.locationManager.getArenaCentre())
+                player.teleportWithPassengers(game.locationManager.getArenaCentre())
             }
         }
     }

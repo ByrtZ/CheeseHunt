@@ -1,4 +1,4 @@
-package me.lucyydotp.cheeselib.game.scoreboard
+package me.lucyydotp.cheeselib.sys.scoreboard
 
 import io.papermc.paper.adventure.PaperAdventure
 import me.lucyydotp.cheeselib.inject.context

@@ -4,7 +4,7 @@ import dev.byrt.cheesehunt.game.Game
 import dev.byrt.cheesehunt.game.GameState
 import dev.byrt.cheesehunt.state.RoundState
 import dev.byrt.cheesehunt.state.Teams
-import me.lucyydotp.cheeselib.game.scoreboard.Board
+import me.lucyydotp.cheeselib.sys.scoreboard.Board
 import me.lucyydotp.cheeselib.inject.context
 import me.lucyydotp.cheeselib.module.ParentModule
 import net.kyori.adventure.extra.kotlin.plus

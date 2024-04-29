@@ -1,23 +1,20 @@
 package dev.byrt.cheesehunt.task
 
-import dev.byrt.cheesehunt.CheeseHunt
 import dev.byrt.cheesehunt.game.Game
+import dev.byrt.cheesehunt.game.GameState
 import dev.byrt.cheesehunt.state.Sounds
 import dev.byrt.cheesehunt.state.Teams
-import dev.byrt.cheesehunt.game.GameState
-
+import me.lucyydotp.cheeselib.util.teleportWithPassengers
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.title.Title
-
 import org.bukkit.GameMode
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import org.bukkit.scheduler.BukkitRunnable
-
 import java.time.Duration
-import java.util.*
+import java.util.UUID
 
 class RespawnTask(private val game: Game) {
     private val respawnLoopMap = mutableMapOf<UUID, BukkitRunnable>()
@@ -43,11 +40,11 @@ class RespawnTask(private val game: Game) {
                 if(respawnTimer == 0) {
                     when(team) {
                         Teams.RED -> {
-                            player.teleport(game.locationManager.getRedSpawns()[game.locationManager.getRedSpawnCounter()])
+                            player.teleportWithPassengers(game.locationManager.getRedSpawns()[game.locationManager.getRedSpawnCounter()])
                             game.locationManager.incrementSpawnCounter(Teams.RED)
                         }
                         Teams.BLUE -> {
-                            player.teleport(game.locationManager.getBlueSpawns()[game.locationManager.getBlueSpawnCounter()])
+                            player.teleportWithPassengers(game.locationManager.getBlueSpawns()[game.locationManager.getBlueSpawnCounter()])
                             game.locationManager.incrementSpawnCounter(Teams.BLUE)
                         } else -> {
                             //no.

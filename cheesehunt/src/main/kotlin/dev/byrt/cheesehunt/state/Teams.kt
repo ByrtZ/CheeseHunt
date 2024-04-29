@@ -1,6 +1,6 @@
 package dev.byrt.cheesehunt.state
 
-import me.lucyydotp.cheeselib.game.TeamMeta
+import me.lucyydotp.cheeselib.sys.TeamMeta
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextColor

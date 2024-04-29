@@ -1,8 +1,8 @@
-package me.lucyydotp.cheeselib.game
+package me.lucyydotp.cheeselib.sys
 
 import com.google.common.collect.MultimapBuilder
 import me.lucyydotp.cheeselib.module.EventEmitter
-import me.lucyydotp.cheeselib.game.nameformat.NameFormatter
+import me.lucyydotp.cheeselib.sys.nameformat.NameFormatter
 import me.lucyydotp.cheeselib.inject.context
 import me.lucyydotp.cheeselib.module.Module
 import me.lucyydotp.cheeselib.module.ModuleHolder

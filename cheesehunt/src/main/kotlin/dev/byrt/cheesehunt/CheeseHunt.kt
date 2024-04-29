@@ -1,7 +1,6 @@
 package dev.byrt.cheesehunt
 
 import dev.byrt.cheesehunt.command.Announce
-import dev.byrt.cheesehunt.command.BuildMode
 import dev.byrt.cheesehunt.command.CustomItem
 import dev.byrt.cheesehunt.command.DebugCommands
 import dev.byrt.cheesehunt.command.GameCommands
@@ -37,13 +36,14 @@ import dev.byrt.cheesehunt.event.UseCustomItemEvent
 import dev.byrt.cheesehunt.game.Game
 import dev.byrt.cheesehunt.manager.Maps
 import me.lucyydotp.cheeselib.common.Commands
-import me.lucyydotp.cheeselib.game.nameformat.CustomNameTags
-import me.lucyydotp.cheeselib.game.nameformat.NameFormatter
+import me.lucyydotp.cheeselib.sys.nameformat.CustomNameTags
+import me.lucyydotp.cheeselib.sys.nameformat.NameFormatter
 import me.lucyydotp.cheeselib.inject.GlobalInjectionContext
 import me.lucyydotp.cheeselib.inject.bind
 import me.lucyydotp.cheeselib.inject.context
 import me.lucyydotp.cheeselib.module.ModuleHolder
 import me.lucyydotp.cheeselib.module.ParentModule
+import me.lucyydotp.cheeselib.sys.AnnounceClientBrand
 import org.bukkit.Bukkit
 import org.bukkit.Server
 import org.bukkit.plugin.Plugin
@@ -65,6 +65,7 @@ class CheeseHunt(parent: ModuleHolder) : ParentModule(parent) {
 
         game = Game(this).registerAsChild()
         CustomNameTags(this).registerAsChild()
+        AnnounceClientBrand(this).registerAsChild()
 
         // Module-based event listeners
         PlayerDeathEvent(this).registerAsChild()
@@ -112,7 +113,6 @@ class CheeseHunt(parent: ModuleHolder) : ParentModule(parent) {
             }
 
             setupConfigs()
-            setupPluginMessageListener()
             setupInterfaces()
             game.setup()
         }
@@ -120,13 +120,6 @@ class CheeseHunt(parent: ModuleHolder) : ParentModule(parent) {
         onDisable {
             game.cleanUp()
         }
-    }
-
-    private fun setupPluginMessageListener() {
-        // FIXME(lucy): no-op
-//        logger.info("Setting up plugin message channels...")
-//        messenger = Bukkit.getMessenger()
-//        messenger.registerIncomingPluginChannel(this, "minecraft:brand", PluginMessenger())
     }
 
     private fun setupInterfaces() {

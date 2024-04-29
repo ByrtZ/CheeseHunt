@@ -1,8 +1,8 @@
 package dev.byrt.cheesehunt.manager
 
-import dev.byrt.cheesehunt.CheeseHunt
 import dev.byrt.cheesehunt.game.Game
 import dev.byrt.cheesehunt.state.Teams
+import me.lucyydotp.cheeselib.util.teleportWithPassengers
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Material
@@ -121,7 +121,7 @@ class PlayerManager(private var game: Game) {
                     else -> return@forEach
                 }
                 players.forEachIndexed { i, player ->
-                    player.teleport(spawns[i])
+                    player.teleportWithPassengers(spawns[i])
                 }
             }
     }
@@ -129,14 +129,14 @@ class PlayerManager(private var game: Game) {
     fun teleportSpectatorsToArena() {
         for (player in Bukkit.getOnlinePlayers()) {
             if (game.teams.getTeam(player) == null) {
-                player.teleport(game.locationManager.getArenaCentre())
+                player.teleportWithPassengers(game.locationManager.getArenaCentre())
             }
         }
     }
 
     private fun teleportPlayersToSpawn() {
         for (player in Bukkit.getOnlinePlayers()) {
-            player.teleport(game.locationManager.getSpawn())
+            player.teleportWithPassengers(game.locationManager.getSpawn())
         }
     }
 

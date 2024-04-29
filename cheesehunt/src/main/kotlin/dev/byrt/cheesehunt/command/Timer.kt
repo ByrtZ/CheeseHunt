@@ -7,10 +7,12 @@ import cloud.commandframework.annotations.CommandPermission
 import dev.byrt.cheesehunt.CheeseHunt
 import dev.byrt.cheesehunt.game.GameState
 import dev.byrt.cheesehunt.state.TimerState
-import dev.byrt.cheesehunt.util.DevStatus
+import me.lucyydotp.cheeselib.inject.context
 import me.lucyydotp.cheeselib.module.Module
 import me.lucyydotp.cheeselib.module.ModuleHolder
 import me.lucyydotp.cheeselib.module.installCommands
+import me.lucyydotp.cheeselib.sys.AdminMessageStyles
+import me.lucyydotp.cheeselib.sys.AdminMessages
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.entity.Player
@@ -21,6 +23,8 @@ class Timer(parent: ModuleHolder) : Module(parent) {
     init {
         installCommands()
     }
+
+    private val adminMessages: AdminMessages by context()
 
     @CommandMethod("timer <setting> [seconds]")
     @CommandDescription("Allows timer modification.")
@@ -54,9 +58,9 @@ class Timer(parent: ModuleHolder) : Module(parent) {
                         )
                     } else {
                         CheeseHunt.getGame().timerManager.setTimerState(TimerState.PAUSED)
-                        CheeseHunt.getGame().dev.parseDevMessage(
+                        adminMessages.sendDevMessage(
                             "Timer state updated to ${CheeseHunt.getGame().timerManager.getTimerState()} by ${sender.name}.",
-                            DevStatus.INFO
+                            AdminMessageStyles.INFO
                         )
                     }
                 }
@@ -68,9 +72,9 @@ class Timer(parent: ModuleHolder) : Module(parent) {
                         )
                     } else {
                         CheeseHunt.getGame().timerManager.setTimerState(TimerState.ACTIVE)
-                        CheeseHunt.getGame().dev.parseDevMessage(
+                        adminMessages.sendDevMessage(
                             "Timer state updated to ${CheeseHunt.getGame().timerManager.getTimerState()} by ${sender.name}.",
-                            DevStatus.INFO
+                            AdminMessageStyles.INFO
                         )
                     }
                 }
@@ -98,9 +102,9 @@ class Timer(parent: ModuleHolder) : Module(parent) {
             )
         } else {
             CheeseHunt.getGame().timerManager.setTimerState(TimerState.PAUSED)
-            CheeseHunt.getGame().dev.parseDevMessage(
+            adminMessages.sendDevMessage(
                 "Timer state updated to ${CheeseHunt.getGame().timerManager.getTimerState()} by ${sender.name}.",
-                DevStatus.INFO
+                AdminMessageStyles.INFO
             )
         }
     }
@@ -113,9 +117,9 @@ class Timer(parent: ModuleHolder) : Module(parent) {
             sender.sendMessage(Component.text("Unable to resume timer when already active.").color(NamedTextColor.RED))
         } else {
             CheeseHunt.getGame().timerManager.setTimerState(TimerState.ACTIVE)
-            CheeseHunt.getGame().dev.parseDevMessage(
+            adminMessages.sendDevMessage(
                 "Timer state updated to ${CheeseHunt.getGame().timerManager.getTimerState()} by ${sender.name}.",
-                DevStatus.INFO
+                AdminMessageStyles.INFO
             )
         }
     }

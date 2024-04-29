@@ -6,7 +6,7 @@ import dev.byrt.cheesehunt.game.GameState
 import dev.byrt.cheesehunt.manager.CheeseManager
 import dev.byrt.cheesehunt.state.Sounds
 import dev.byrt.cheesehunt.state.Teams
-import me.lucyydotp.cheeselib.game.TeamManager
+import me.lucyydotp.cheeselib.sys.TeamManager
 import me.lucyydotp.cheeselib.inject.context
 import me.lucyydotp.cheeselib.module.Module
 import me.lucyydotp.cheeselib.module.ModuleHolder

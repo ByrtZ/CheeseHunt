@@ -4,21 +4,24 @@ import dev.byrt.cheesehunt.CheeseHunt
 import dev.byrt.cheesehunt.state.Sounds
 import dev.byrt.cheesehunt.state.TimerState
 import dev.byrt.cheesehunt.task.Music
-import dev.byrt.cheesehunt.util.DevStatus
-
+import me.lucyydotp.cheeselib.inject.context
+import me.lucyydotp.cheeselib.module.Module
+import me.lucyydotp.cheeselib.module.ModuleHolder
+import me.lucyydotp.cheeselib.sys.AdminMessageStyles
+import me.lucyydotp.cheeselib.sys.AdminMessages
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.title.Title
-
 import org.bukkit.Bukkit
 import org.bukkit.SoundCategory
-
 import java.time.Duration
 
-class GameManager(private val game : Game) {
+class GameManager(parent: ModuleHolder, private val game : Game): Module(parent) {
     private var gameState = GameState.IDLE
     private var overtimeActive = true
+
+    private val adminMessages: AdminMessages by context()
 
     fun nextState() {
         when(this.gameState) {
@@ -47,7 +50,7 @@ class GameManager(private val game : Game) {
 
     fun setGameState(newState : GameState) {
         if(newState == gameState) return
-        game.dev.parseDevMessage("Game state updated from $gameState to $newState.", DevStatus.INFO)
+        adminMessages.sendDevMessage("Game state updated from $gameState to $newState.", AdminMessageStyles.INFO)
         this.gameState = newState
         when(this.gameState) {
             GameState.IDLE -> {

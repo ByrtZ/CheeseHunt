@@ -6,12 +6,12 @@ import cloud.commandframework.annotations.CommandPermission
 import dev.byrt.cheesehunt.game.GameManager
 import dev.byrt.cheesehunt.game.GameState
 import dev.byrt.cheesehunt.state.Sounds
-import dev.byrt.cheesehunt.util.Dev
-import dev.byrt.cheesehunt.util.DevStatus
 import me.lucyydotp.cheeselib.inject.context
 import me.lucyydotp.cheeselib.module.Module
 import me.lucyydotp.cheeselib.module.ModuleHolder
 import me.lucyydotp.cheeselib.module.installCommands
+import me.lucyydotp.cheeselib.sys.AdminMessageStyles
+import me.lucyydotp.cheeselib.sys.AdminMessages
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
@@ -25,7 +25,7 @@ class BuildMode(parent: ModuleHolder) : Module(parent) {
     private val buildToggleFailSound: Sound =
         Sound.sound(Key.key(Sounds.Command.BUILDMODE_FAIL), Sound.Source.MASTER, 1f, 0f)
 
-    private val dev: Dev by context()
+    private val adminMessages: AdminMessages by context()
     private val gameManager: GameManager by context()
 
     var buildModeEnabled: Boolean = false
@@ -45,7 +45,7 @@ class BuildMode(parent: ModuleHolder) : Module(parent) {
                         player.playSound(buildToggleSuccessSound)
                     }
                 }
-                dev.parseDevMessage("Building disabled by ${sender.name}.", DevStatus.INFO_FAIL)
+               adminMessages.sendDevMessage("Building disabled by ${sender.name}.", AdminMessageStyles.INFO_FAIL)
                 buildModeEnabled = false
             } else {
                 for (player in Bukkit.getOnlinePlayers()) {
@@ -53,7 +53,7 @@ class BuildMode(parent: ModuleHolder) : Module(parent) {
                         player.playSound(buildToggleSuccessSound)
                     }
                 }
-                dev.parseDevMessage("Building enabled by ${sender.name}.", DevStatus.INFO_SUCCESS)
+                adminMessages.sendDevMessage("Building enabled by ${sender.name}.", AdminMessageStyles.INFO_SUCCESS)
                 buildModeEnabled = true
             }
         } else {

@@ -1,27 +1,25 @@
 package dev.byrt.cheesehunt.command
 
-import dev.byrt.cheesehunt.CheeseHunt
-import dev.byrt.cheesehunt.game.GameState
-import dev.byrt.cheesehunt.state.Teams
-import dev.byrt.cheesehunt.util.DevStatus
-import dev.byrt.cheesehunt.manager.PowerUpItem
-import dev.byrt.cheesehunt.manager.ItemRarity
-import dev.byrt.cheesehunt.manager.ItemType
-
 import cloud.commandframework.annotations.Argument
 import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
-import dev.byrt.cheesehunt.CheeseHuntPlugin
+import dev.byrt.cheesehunt.CheeseHunt
+import dev.byrt.cheesehunt.game.GameState
+import dev.byrt.cheesehunt.manager.ItemRarity
+import dev.byrt.cheesehunt.manager.ItemType
+import dev.byrt.cheesehunt.manager.PowerUpItem
+import dev.byrt.cheesehunt.state.Teams
+import me.lucyydotp.cheeselib.inject.context
 import me.lucyydotp.cheeselib.module.Module
 import me.lucyydotp.cheeselib.module.ModuleHolder
 import me.lucyydotp.cheeselib.module.installCommands
-
+import me.lucyydotp.cheeselib.sys.AdminMessageStyles
+import me.lucyydotp.cheeselib.sys.AdminMessages
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.format.TextDecoration
-
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -29,6 +27,8 @@ import org.bukkit.inventory.ItemStack
 
 @Suppress("unused")
 class DebugCommands(parent: ModuleHolder) : Module(parent) {
+
+    private val adminMessages: AdminMessages by context()
 
     init {
         installCommands()
@@ -38,7 +38,7 @@ class DebugCommands(parent: ModuleHolder) : Module(parent) {
     @CommandDescription("Debug command to set game to its next phase.")
     @CommandPermission("cheesehunt.debug")
     fun debugNextPhase(sender : Player) {
-        CheeseHunt.getGame().dev.parseDevMessage("Game pushed to next phase by ${sender.name}.", DevStatus.WARNING)
+        adminMessages.sendDevMessage("Game pushed to next phase by ${sender.name}.", AdminMessageStyles.WARNING)
         CheeseHunt.getGame().gameManager.nextState()
     }
 
@@ -46,7 +46,7 @@ class DebugCommands(parent: ModuleHolder) : Module(parent) {
     @CommandDescription("Debug command to force set game state.")
     @CommandPermission("cheesehunt.debug")
     fun debugForceState(sender : Player, @Argument("state") state : GameState) {
-        CheeseHunt.getGame().dev.parseDevMessage("Game state updated to $state by ${sender.name}.", DevStatus.SEVERE)
+        adminMessages.sendDevMessage("Game state updated to $state by ${sender.name}.", AdminMessageStyles.SEVERE)
         CheeseHunt.getGame().gameManager.forceState(state)
     }
 
@@ -54,7 +54,7 @@ class DebugCommands(parent: ModuleHolder) : Module(parent) {
     @CommandDescription("Debug command to force stop respawn loops.")
     @CommandPermission("cheesehunt.debug")
     fun debugStopRespawn(sender : Player, @Argument("player") player : Player) {
-        CheeseHunt.getGame().dev.parseDevMessage("${player.name}'s respawn loop force stopped by ${sender.name}.", DevStatus.SEVERE)
+        adminMessages.sendDevMessage("${player.name}'s respawn loop force stopped by ${sender.name}.", AdminMessageStyles.SEVERE)
         CheeseHunt.getGame().respawnTask.stopRespawnLoop(player)
     }
 
@@ -62,7 +62,7 @@ class DebugCommands(parent: ModuleHolder) : Module(parent) {
     @CommandDescription("Debug command to test the game win show.")
     @CommandPermission("cheesehunt.debug")
     fun debugWinShow(sender : Player, @Argument("team") team : Teams) {
-        CheeseHunt.getGame().dev.parseDevMessage("Win show ran for $team team by ${sender.name}.", DevStatus.INFO)
+        adminMessages.sendDevMessage("Win show ran for $team team by ${sender.name}.", AdminMessageStyles.INFO)
         CheeseHunt.getGame().winShowTask.stopWinShowLoop()
         CheeseHunt.getGame().winShowTask.startWinShowLoop(CheeseHunt.getPlugin().module, team)
     }
@@ -71,7 +71,7 @@ class DebugCommands(parent: ModuleHolder) : Module(parent) {
     @CommandDescription("Debug command to give players cheese.")
     @CommandPermission("cheesehunt.debug")
     fun debugGiveCheese(sender : Player, @Argument("player") player: Player) {
-        CheeseHunt.getGame().dev.parseDevMessage("${sender.name} gave ${player.name} cheese.", DevStatus.WARNING)
+        adminMessages.sendDevMessage("${sender.name} gave ${player.name} cheese.", AdminMessageStyles.WARNING)
         CheeseHunt.getGame().cheeseManager.playerPickupCheese(player, Location(player.world, 1000.0, 319.0, 1000.0))
     }
 
@@ -79,7 +79,7 @@ class DebugCommands(parent: ModuleHolder) : Module(parent) {
     @CommandDescription("Debug command to remove player's cheese.")
     @CommandPermission("cheesehunt.debug")
     fun debugRemoveCheese(sender : Player, @Argument("player") player: Player) {
-        CheeseHunt.getGame().dev.parseDevMessage("${sender.name} removed ${player.name}'s cheese.", DevStatus.WARNING)
+        adminMessages.sendDevMessage("${sender.name} removed ${player.name}'s cheese.", AdminMessageStyles.WARNING)
         CheeseHunt.getGame().cheeseManager.playerDropCheese(player)
     }
 
@@ -87,7 +87,7 @@ class DebugCommands(parent: ModuleHolder) : Module(parent) {
     @CommandDescription("Debug command to place a cheese square.")
     @CommandPermission("cheesehunt.debug")
     fun debugPlaceCheeseDrop(sender : Player) {
-        CheeseHunt.getGame().dev.parseDevMessage("${sender.name} placed a cheese drop.", DevStatus.WARNING)
+        adminMessages.sendDevMessage("${sender.name} placed a cheese drop.", AdminMessageStyles.WARNING)
         CheeseHunt.getGame().blockManager.placeCheeseSquare()
     }
 
@@ -95,7 +95,7 @@ class DebugCommands(parent: ModuleHolder) : Module(parent) {
     @CommandDescription("Debug command to place a cheese cube.")
     @CommandPermission("cheesehunt.debug")
     fun debugPlaceCheeseCube(sender : Player) {
-        CheeseHunt.getGame().dev.parseDevMessage("${sender.name} placed a cheese cube.", DevStatus.WARNING)
+        adminMessages.sendDevMessage("${sender.name} placed a cheese cube.", AdminMessageStyles.WARNING)
         CheeseHunt.getGame().blockManager.placeCheeseCube()
     }
 
@@ -111,7 +111,7 @@ class DebugCommands(parent: ModuleHolder) : Module(parent) {
     @CommandDescription("Debug command to test item spawns.")
     @CommandPermission("cheesehunt.debug")
     fun debugTestSkulls(sender : Player, @Argument("item") powerUpItem: PowerUpItem) {
-        CheeseHunt.getGame().dev.parseDevMessage("$powerUpItem items spawned on map sides by ${sender.name}.", DevStatus.WARNING)
+        adminMessages.sendDevMessage("$powerUpItem items spawned on map sides by ${sender.name}.", AdminMessageStyles.WARNING)
         CheeseHunt.getGame().itemManager.spawnSideItems(powerUpItem)
     }
 
@@ -150,7 +150,7 @@ class DebugCommands(parent: ModuleHolder) : Module(parent) {
     @CommandDescription("Debug command for queues.")
     @CommandPermission("cheesehunt.debug")
     fun debugForceJoinQueue(sender : Player, @Argument("player") player : Player) {
-        CheeseHunt.getGame().dev.parseDevMessage("${sender.name} pushed ${player.name} into the Queue.", DevStatus.INFO)
+        adminMessages.sendDevMessage("${sender.name} pushed ${player.name} into the Queue.", AdminMessageStyles.INFO)
         CheeseHunt.getGame().queue.joinQueue(player)
     }
 
@@ -158,7 +158,7 @@ class DebugCommands(parent: ModuleHolder) : Module(parent) {
     @CommandDescription("Debug command for queues.")
     @CommandPermission("cheesehunt.debug")
     fun debugForceLeaveQueue(sender : Player, @Argument("player") player : Player) {
-        CheeseHunt.getGame().dev.parseDevMessage("${sender.name} threw ${player.name} out of the Queue.", DevStatus.INFO)
+        adminMessages.sendDevMessage("${sender.name} threw ${player.name} out of the Queue.", AdminMessageStyles.INFO)
         CheeseHunt.getGame().queue.leaveQueue(player)
     }
 

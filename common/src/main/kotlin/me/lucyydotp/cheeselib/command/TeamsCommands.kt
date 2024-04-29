@@ -3,8 +3,8 @@ package me.lucyydotp.cheeselib.command
 import cloud.commandframework.annotations.*
 import cloud.commandframework.annotations.suggestions.Suggestions
 import cloud.commandframework.context.CommandContext
-import me.lucyydotp.cheeselib.game.TeamManager
-import me.lucyydotp.cheeselib.game.TeamMeta
+import me.lucyydotp.cheeselib.sys.TeamManager
+import me.lucyydotp.cheeselib.sys.TeamMeta
 import me.lucyydotp.cheeselib.inject.context
 import me.lucyydotp.cheeselib.module.Module
 import me.lucyydotp.cheeselib.module.ModuleHolder

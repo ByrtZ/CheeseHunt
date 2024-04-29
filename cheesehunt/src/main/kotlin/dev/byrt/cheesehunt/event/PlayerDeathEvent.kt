@@ -15,8 +15,8 @@ import dev.byrt.cheesehunt.manager.StatisticsManager
 import dev.byrt.cheesehunt.state.Sounds
 import dev.byrt.cheesehunt.state.Teams
 import dev.byrt.cheesehunt.task.RespawnTask
-import me.lucyydotp.cheeselib.game.TeamManager
-import me.lucyydotp.cheeselib.game.nameformat.NameFormatter
+import me.lucyydotp.cheeselib.sys.TeamManager
+import me.lucyydotp.cheeselib.sys.nameformat.NameFormatter
 import me.lucyydotp.cheeselib.inject.context
 import me.lucyydotp.cheeselib.module.Module
 import me.lucyydotp.cheeselib.module.ModuleHolder

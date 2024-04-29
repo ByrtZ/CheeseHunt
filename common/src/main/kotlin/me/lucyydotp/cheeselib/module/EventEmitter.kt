@@ -1,7 +1,5 @@
 package me.lucyydotp.cheeselib.module
 
-import com.google.common.collect.TreeMultiset
-
 /**
  * Emits custom events.
  */
@@ -30,13 +28,13 @@ class EventEmitter<T : Any> {
         fun unsubscribe() = emitter.unsubscribe(this)
     }
 
-    private val handlers = TreeMultiset.create<Subscription<in T>> { first, second -> first.priority - second.priority }
+    private var handlers = listOf<Subscription<in T>>()
 
     /**
      * Removes a subscription. It will no longer be invoked for events.
      */
     fun unsubscribe(subscription: Subscription<in T>) {
-        handlers.remove(subscription)
+        handlers -= subscription
     }
 
     /**
@@ -46,7 +44,7 @@ class EventEmitter<T : Any> {
      * @return a subscription object that can be used to cancel the subscription later
      */
     fun subscribe(handler: (T) -> Unit, priority: Int = 100): Subscription<T> = Subscription(this, handler, priority)
-        .also { handlers += it }
+        .also { handlers = (handlers + it).sortedBy(Subscription<in T>::priority) }
 
     /**
      * Emits an event.

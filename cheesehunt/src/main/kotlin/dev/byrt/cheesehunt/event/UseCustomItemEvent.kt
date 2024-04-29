@@ -1,6 +1,7 @@
 package dev.byrt.cheesehunt.event
 
 import dev.byrt.cheesehunt.manager.ItemRarity
+import me.lucyydotp.cheeselib.util.teleportWithPassengers
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
@@ -61,7 +62,7 @@ class UseCustomItemEvent : Listener {
         location.add(0.5, 1.0, 0.5)
         location.yaw = yaw
         location.pitch = pitch
-        player.teleport(location)
+        player.teleportWithPassengers(location)
         player.playSound(teleportSound)
 
         if(maxDistance == 80) {

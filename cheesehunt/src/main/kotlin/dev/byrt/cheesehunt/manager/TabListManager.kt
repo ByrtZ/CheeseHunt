@@ -1,8 +1,8 @@
 package dev.byrt.cheesehunt.manager
 
 import dev.byrt.cheesehunt.state.Teams
-import me.lucyydotp.cheeselib.game.TeamManager
-import me.lucyydotp.cheeselib.game.nameformat.NameFormatter
+import me.lucyydotp.cheeselib.sys.TeamManager
+import me.lucyydotp.cheeselib.sys.nameformat.NameFormatter
 import me.lucyydotp.cheeselib.inject.context
 import me.lucyydotp.cheeselib.module.Module
 import me.lucyydotp.cheeselib.module.ModuleHolder

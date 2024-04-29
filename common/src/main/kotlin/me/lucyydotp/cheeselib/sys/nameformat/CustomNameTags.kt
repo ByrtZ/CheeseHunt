@@ -1,4 +1,4 @@
-package me.lucyydotp.cheeselib.game.nameformat
+package me.lucyydotp.cheeselib.sys.nameformat
 
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent
 import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent
@@ -6,12 +6,14 @@ import me.lucyydotp.cheeselib.inject.context
 import me.lucyydotp.cheeselib.module.Module
 import me.lucyydotp.cheeselib.module.ModuleHolder
 import me.lucyydotp.cheeselib.module.installBukkitListeners
+import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Server
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Interaction
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerGameModeChangeEvent
 import org.bukkit.event.player.PlayerToggleSneakEvent
@@ -34,7 +36,8 @@ class CustomNameTags(parent: ModuleHolder) : Module(parent), Listener {
         installBukkitListeners()
 
         // Update name when it changes
-        listen(nameFormatter.afterFormat) {
+        listen(nameFormatter.afterFormat, 1000) {
+            Bukkit.getLogger().info("Updating custom name for ${it.player.name}")
             it.player.nametagEntity?.customName(it.name)
         }
     }
@@ -87,23 +90,24 @@ class CustomNameTags(parent: ModuleHolder) : Module(parent), Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     fun onPlayerSpawn(event: EntityAddToWorldEvent) {
         (event.entity as? Player)?.let {
+            if (it.gameMode == GameMode.SPECTATOR) return
             server.scheduler.runTask(plugin, Runnable {
                 spawnForPlayer(it)
             })
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     fun onPlayerShift(event: PlayerToggleSneakEvent) {
         val entity = event.player.nametagEntity ?: return
         // Mirror the player's sneaking state.
         entity.isSneaking = event.isSneaking
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     fun onGameModeChange(event: PlayerGameModeChangeEvent) {
         // Remove the tag in spectator mode.
         if (event.newGameMode == GameMode.SPECTATOR) {

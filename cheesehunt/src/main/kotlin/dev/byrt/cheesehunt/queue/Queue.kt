@@ -3,18 +3,21 @@ package dev.byrt.cheesehunt.queue
 import dev.byrt.cheesehunt.game.Game
 import dev.byrt.cheesehunt.game.GameState
 import dev.byrt.cheesehunt.state.Sounds
-import dev.byrt.cheesehunt.util.DevStatus
-
+import me.lucyydotp.cheeselib.inject.context
+import me.lucyydotp.cheeselib.module.Module
+import me.lucyydotp.cheeselib.module.ModuleHolder
+import me.lucyydotp.cheeselib.sys.AdminMessageStyles
+import me.lucyydotp.cheeselib.sys.AdminMessages
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
-
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
-
 import java.util.UUID
 
-class Queue(private val game : Game) {
+class Queue(parent: ModuleHolder, private val game : Game): Module(parent) {
+    private val adminMessages: AdminMessages by context()
+
     private var queue= mutableSetOf<UUID>()
     private var queueState = QueueState.IDLE
 
@@ -35,7 +38,7 @@ class Queue(private val game : Game) {
         }
 
         player.sendMessage(Component.text("You joined the queue for Cheese Hunt.", NamedTextColor.GREEN))
-        game.dev.parseDevMessage("${player.name} joined the queue.", DevStatus.INFO)
+        adminMessages.sendDevMessage("${player.name} joined the queue.", AdminMessageStyles.INFO)
         game.plugin.logger.info("[QUEUE] ${player.name} joined the queue (Queue: ${queue}).")
     }
 
@@ -52,7 +55,7 @@ class Queue(private val game : Game) {
             }
 
             player.sendMessage(Component.text("You left the queue for Cheese Hunt.", NamedTextColor.RED))
-            game.dev.parseDevMessage("${player.name} left the queue.", DevStatus.INFO)
+            adminMessages.sendDevMessage("${player.name} left the queue.", AdminMessageStyles.INFO)
             game.plugin.logger.info("[QUEUE] ${player.name} left the queue (Queue: ${queue}).")
         } else {
             return
@@ -81,7 +84,7 @@ class Queue(private val game : Game) {
 
     fun setQueueState(newState : QueueState) {
         if(newState != queueState) {
-            game.dev.parseDevMessage("Queue State updated from $queueState to $newState.", DevStatus.INFO)
+            adminMessages.sendDevMessage("Queue State updated from $queueState to $newState.", AdminMessageStyles.INFO)
             queueState = newState
             game.queueVisuals.updateQueueStatus()
         }

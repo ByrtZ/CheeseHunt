@@ -10,7 +10,12 @@ import dev.byrt.cheesehunt.task.*
 import dev.byrt.cheesehunt.util.*
 import me.lucyydotp.cheeselib.inject.GlobalInjectionContext
 import me.lucyydotp.cheeselib.inject.bind
+import me.lucyydotp.cheeselib.inject.bindGlobally
+import me.lucyydotp.cheeselib.inject.context
+import me.lucyydotp.cheeselib.inject.inject
 import me.lucyydotp.cheeselib.module.ParentModule
+import me.lucyydotp.cheeselib.sys.AdminMessageStyles
+import me.lucyydotp.cheeselib.sys.AdminMessages
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
@@ -18,25 +23,25 @@ import net.kyori.adventure.title.Title
 import org.bukkit.Bukkit
 
 import java.time.Duration
-import me.lucyydotp.cheeselib.game.TeamManager as CommonTeamManager
+import me.lucyydotp.cheeselib.sys.TeamManager as CommonTeamManager
 
 class Game(val plugin : CheeseHunt) : ParentModule(plugin) {
-    val gameManager = GameManager(this).also(::bind)
+    val gameManager = GameManager(this, this).registerAsChild().also(::bind)
     val roundManager = Rounds(this)
     val timerManager = Timer(this)
     val playerManager = PlayerManager(this)
-    val teams = CommonTeamManager(this, Teams::class).registerAsChild().also(GlobalInjectionContext::bind)
+    val teams = CommonTeamManager(this, Teams::class).registerAsChild().bindGlobally()
     val itemManager = ItemManager(this).also(::bind)
     val blockManager = BlockManager(this)
     val cheeseManager = CheeseManager(this).registerAsChild()
     val tabListManager = TabListManager(this).registerAsChild()
     val locationManager by lazy { LocationManager(this) }
-    val scoreManager = ScoreManager(this).also(::bind)
+    val scoreManager = ScoreManager(this, this).also(::bind)
     val statsManager = StatisticsManager(this).also(::bind)
     val configManager = ConfigManager(this)
     val mapManager = MapManager(this)
     val cooldownManager = CooldownManager(this)
-    val queue = Queue(this)
+    val queue = Queue(this, this)
     val queueVisuals = QueueVisuals(this)
     val queueTask = QueueTask(this)
     val infoBoardManager = InfoBoardManager(this).registerAsChild().also(::bind)
@@ -44,26 +49,25 @@ class Game(val plugin : CheeseHunt) : ParentModule(plugin) {
     val interfaceManager = InterfaceManager(this)
 
     val respawnTask = RespawnTask(this)
-    val gameTask = GameTask(this)
+    val gameTask = GameTask(this, this)
     val musicTask = MusicTask(this)
     val winShowTask = WinShowTask(this)
 
     val buildMode = BuildMode(this).registerAsChild()
 
-    // FIXME(lucy): move this up to parent module
-    val dev = parent.bind(Dev(this))
+    private val adminMessages: AdminMessages by context()
 
     fun startGame() {
         if(gameManager.getGameState() == GameState.IDLE) {
             gameManager.nextState()
         } else {
-            dev.parseDevMessage("Unable to start, as game is already running.", DevStatus.SEVERE)
+            adminMessages.sendDevMessage("Unable to start, as game is already running.", AdminMessageStyles.SEVERE)
         }
     }
 
     fun stopGame() {
         if(gameManager.getGameState() == GameState.IDLE) {
-            dev.parseDevMessage("Unable to stop, as no game is running.", DevStatus.SEVERE)
+            adminMessages.sendDevMessage("Unable to stop, as no game is running.", AdminMessageStyles.SEVERE)
         } else {
             gameManager.setGameState(GameState.GAME_END)
         }

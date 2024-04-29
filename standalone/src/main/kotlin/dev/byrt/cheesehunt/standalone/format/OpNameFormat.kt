@@ -1,6 +1,6 @@
 package dev.byrt.cheesehunt.standalone.format
 
-import me.lucyydotp.cheeselib.game.nameformat.NameFormatter
+import me.lucyydotp.cheeselib.sys.nameformat.NameFormatter
 import me.lucyydotp.cheeselib.inject.context
 import me.lucyydotp.cheeselib.module.Module
 import me.lucyydotp.cheeselib.module.ModuleHolder

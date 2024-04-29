@@ -3,16 +3,18 @@ package dev.byrt.cheesehunt.command
 import dev.byrt.cheesehunt.CheeseHunt
 import dev.byrt.cheesehunt.state.Sounds
 import dev.byrt.cheesehunt.state.*
-import dev.byrt.cheesehunt.util.DevStatus
 
 import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.Confirmation
 import dev.byrt.cheesehunt.game.GameState
+import me.lucyydotp.cheeselib.inject.context
 import me.lucyydotp.cheeselib.module.Module
 import me.lucyydotp.cheeselib.module.ModuleHolder
 import me.lucyydotp.cheeselib.module.installCommands
+import me.lucyydotp.cheeselib.sys.AdminMessageStyles
+import me.lucyydotp.cheeselib.sys.AdminMessages
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
@@ -33,6 +35,8 @@ class GameCommands(parent: ModuleHolder) : Module(parent) {
         installCommands()
     }
 
+    private val adminMessages: AdminMessages by context()
+
     private val startGameSuccessSound: Sound = Sound.sound(Key.key(Sounds.Start.START_GAME_SUCCESS), Sound.Source.MASTER, 1f, 1f)
     private val startGameFailSound: Sound = Sound.sound(Key.key(Sounds.Start.START_GAME_FAIL), Sound.Source.MASTER, 1f, 0f)
     private val reloadStartSound: Sound = Sound.sound(Key.key(Sounds.Command.SHUFFLE_START), Sound.Source.MASTER, 1f, 1f)
@@ -46,7 +50,7 @@ class GameCommands(parent: ModuleHolder) : Module(parent) {
         if(CheeseHunt.getGame().gameManager.getGameState() == GameState.IDLE) {
             val teams = CheeseHunt.getGame().teams
             if(teams.teams.all { teams.playersOnTeam(it).isNotEmpty() }) {
-                CheeseHunt.getGame().dev.parseDevMessage("${sender.name} started a Cheese Hunt game!", DevStatus.INFO_SUCCESS)
+                adminMessages.sendDevMessage("${sender.name} started a Cheese Hunt game!", AdminMessageStyles.INFO_SUCCESS)
                 for(player in Bukkit.getOnlinePlayers()) {
                     player.sendMessage(Component.text("\nA Cheese Hunt game is starting!\n").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
                     player.playSound(startGameSuccessSound)
@@ -71,7 +75,7 @@ class GameCommands(parent: ModuleHolder) : Module(parent) {
     @Confirmation
     fun forceStartGame(sender : Player) {
         if(CheeseHunt.getGame().gameManager.getGameState() == GameState.IDLE) {
-            CheeseHunt.getGame().dev.parseDevMessage("${sender.name} forcefully started a Cheese Hunt game!", DevStatus.WARNING)
+            adminMessages.sendDevMessage("${sender.name} forcefully started a Cheese Hunt game!", AdminMessageStyles.WARNING)
             CheeseHunt.getGame().startGame()
             for(player in Bukkit.getOnlinePlayers()) {
                 player.sendMessage(Component.text("\nA Cheese Hunt game is starting!\n").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
@@ -90,7 +94,7 @@ class GameCommands(parent: ModuleHolder) : Module(parent) {
     fun forceStopGame(sender : Player) {
         if(CheeseHunt.getGame().gameManager.getGameState() != GameState.IDLE) {
             if(CheeseHunt.getGame().gameManager.getGameState() != GameState.GAME_END) {
-                CheeseHunt.getGame().dev.parseDevMessage("${sender.name} force stopped the current Cheese Hunt game.", DevStatus.WARNING)
+                adminMessages.sendDevMessage("${sender.name} force stopped the current Cheese Hunt game.", AdminMessageStyles.WARNING)
                 CheeseHunt.getGame().stopGame()
             } else {
                 sender.sendMessage(Component.text("Game currently ending.").color(NamedTextColor.RED))
@@ -112,7 +116,7 @@ class GameCommands(parent: ModuleHolder) : Module(parent) {
             CheeseHunt.getGame().reload()
             sender.showTitle(Title.title(Component.text(""), Component.text("Game reloaded!", NamedTextColor.GREEN), Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(1), Duration.ofSeconds(1))))
             sender.playSound(reloadCompleteSound)
-            CheeseHunt.getGame().dev.parseDevMessage("${sender.name} reloaded the game.", DevStatus.INFO)
+            adminMessages.sendDevMessage("${sender.name} reloaded the game.", AdminMessageStyles.INFO)
         } else {
             sender.sendMessage(Component.text("Unable to reload game.", NamedTextColor.RED))
         }
@@ -125,11 +129,11 @@ class GameCommands(parent: ModuleHolder) : Module(parent) {
         if(CheeseHunt.getGame().gameManager.getGameState() == GameState.IDLE) {
             if(CheeseHunt.getGame().gameManager.isOvertimeActive()) {
                 CheeseHunt.getGame().gameManager.setOvertimeState(false)
-                CheeseHunt.getGame().dev.parseDevMessage("Overtime disabled for next game by ${sender.name}.", DevStatus.INFO_FAIL)
+                adminMessages.sendDevMessage("Overtime disabled for next game by ${sender.name}.", AdminMessageStyles.INFO_FAIL)
                 sender.playSound(reloadStartSound)
             } else {
                 CheeseHunt.getGame().gameManager.setOvertimeState(true)
-                CheeseHunt.getGame().dev.parseDevMessage("Overtime enabled for next game by ${sender.name}.", DevStatus.INFO_SUCCESS)
+                adminMessages.sendDevMessage("Overtime enabled for next game by ${sender.name}.", AdminMessageStyles.INFO_SUCCESS)
                 sender.playSound(reloadCompleteSound)
             }
         } else {

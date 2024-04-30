@@ -2,9 +2,9 @@ package dev.byrt.cheesehunt.game
 
 import dev.byrt.cheesehunt.CheeseHunt
 import dev.byrt.cheesehunt.state.Sounds
-import dev.byrt.cheesehunt.state.TimerState
 import dev.byrt.cheesehunt.task.Music
 import me.lucyydotp.cheeselib.inject.context
+import me.lucyydotp.cheeselib.module.EventEmitter
 import me.lucyydotp.cheeselib.module.Module
 import me.lucyydotp.cheeselib.module.ModuleHolder
 import me.lucyydotp.cheeselib.sys.AdminMessageStyles
@@ -18,40 +18,52 @@ import org.bukkit.SoundCategory
 import java.time.Duration
 
 class GameManager(parent: ModuleHolder, private val game : Game): Module(parent) {
+
+    /**
+     * Emits events when the game's state changes.
+     */
+    val onStateChange = EventEmitter<GameState>()
+
     private var gameState = GameState.IDLE
+        set(value) {
+            if(value == field) return
+            adminMessages.sendDevMessage("Game state updated from $field to $value.", AdminMessageStyles.INFO)
+            field = value
+            onStateChange.emit(value)
+        }
     private var overtimeActive = true
 
     private val adminMessages: AdminMessages by context()
 
     fun nextState() {
         when(this.gameState) {
-            GameState.IDLE -> { setGameState(GameState.STARTING) }
-            GameState.STARTING -> { setGameState(GameState.IN_GAME) }
+            GameState.IDLE -> { changeGameState(GameState.STARTING) }
+            GameState.STARTING -> { changeGameState(GameState.IN_GAME) }
             GameState.IN_GAME -> {
                 if(overtimeActive) {
-                    setGameState(GameState.OVERTIME)
+                    changeGameState(GameState.OVERTIME)
                 } else if(game.roundManager.getRoundState().ordinal + 1 >= game.roundManager.getTotalRounds()) {
-                    setGameState(GameState.GAME_END)
+                    changeGameState(GameState.GAME_END)
                 } else {
-                    setGameState(GameState.ROUND_END)
+                    changeGameState(GameState.ROUND_END)
                 }
             }
-            GameState.ROUND_END -> { setGameState(GameState.STARTING) }
-            GameState.GAME_END -> { setGameState(GameState.IDLE) }
+            GameState.ROUND_END -> { changeGameState(GameState.STARTING) }
+            GameState.GAME_END -> { changeGameState(GameState.IDLE) }
             GameState.OVERTIME -> {
                 if(game.roundManager.getRoundState().ordinal + 1 >= game.roundManager.getTotalRounds()) {
-                    setGameState(GameState.GAME_END)
+                    changeGameState(GameState.GAME_END)
                 } else {
-                    setGameState(GameState.ROUND_END)
+                    changeGameState(GameState.ROUND_END)
                 }
             }
         }
     }
 
-    fun setGameState(newState : GameState) {
-        if(newState == gameState) return
-        adminMessages.sendDevMessage("Game state updated from $gameState to $newState.", AdminMessageStyles.INFO)
-        this.gameState = newState
+    // Renamed from `setGameState` to avoid sig clash with property setter
+    fun changeGameState(newState : GameState) {
+        gameState = newState
+        // TODO: move this to an event handler
         when(this.gameState) {
             GameState.IDLE -> {
                 game.reload()
@@ -59,28 +71,23 @@ class GameManager(parent: ModuleHolder, private val game : Game): Module(parent)
             }
             GameState.STARTING -> {
                 game.setBuildMode(false)
-                game.timerManager.setTimerState(TimerState.ACTIVE)
                 game.gameTask.setTimeLeft(STARTING_TIME, null)
                 game.gameTask.gameLoop()
                 starting()
             }
             GameState.IN_GAME -> {
-                game.timerManager.setTimerState(TimerState.ACTIVE)
                 game.gameTask.setTimeLeft(IN_GAME_TIME, null)
                 startRound()
             }
             GameState.ROUND_END -> {
-                game.timerManager.setTimerState(TimerState.ACTIVE)
                 game.gameTask.setTimeLeft(ROUND_END_TIME, null)
                 roundEnd()
             }
             GameState.GAME_END -> {
-                game.timerManager.setTimerState(TimerState.ACTIVE)
                 game.gameTask.setTimeLeft(GAME_END_TIME, null)
                 gameEnd()
             }
             GameState.OVERTIME -> {
-                game.timerManager.setTimerState(TimerState.ACTIVE)
                 game.gameTask.setTimeLeft(OVERTIME_TIME, null)
                 startOvertime()
             }
@@ -214,7 +221,7 @@ class GameManager(parent: ModuleHolder, private val game : Game): Module(parent)
 
     // Dangerous method call, can cause unresolvable issues.
     fun forceState(forcedState : GameState) {
-        setGameState(forcedState)
+        changeGameState(forcedState)
     }
 
     companion object {

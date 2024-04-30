@@ -10,3 +10,6 @@ dependencies:
     cheeselib:
       load: BEFORE
       join-classpath: true
+    CheeseHunt:
+      load: BEFORE
+      join-classpath: true

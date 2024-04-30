@@ -1,11 +1,11 @@
 package dev.byrt.cheesehunt.manager
 
 import dev.byrt.cheesehunt.state.Teams
-import me.lucyydotp.cheeselib.sys.TeamManager
-import me.lucyydotp.cheeselib.sys.nameformat.NameFormatter
 import me.lucyydotp.cheeselib.inject.context
 import me.lucyydotp.cheeselib.module.Module
 import me.lucyydotp.cheeselib.module.ModuleHolder
+import me.lucyydotp.cheeselib.sys.TeamManager
+import me.lucyydotp.cheeselib.sys.nameformat.NameFormatter
 import me.lucyydotp.cheeselib.util.calculateOrdinalRanking
 import net.kyori.adventure.extra.kotlin.text
 import net.kyori.adventure.text.Component
@@ -64,13 +64,16 @@ class TabListManager(parent: ModuleHolder) : Module(parent) {
     private val noTeamsAvailable = Component.text("No teams available.", NamedTextColor.GRAY)
     private val onlineAdmins = Component.text("Online Admins:", NamedTextColor.DARK_RED)
 
-
     private val nameFormatter: NameFormatter by context()
     private val scoreManager: ScoreManager by context()
     private val teamManager: TeamManager<Teams> by context()
 
     init {
-        listen(nameFormatter.afterFormat) {
+        listen({ nameFormatter.afterFormat }) {
+            updateAllTabList()
+        }
+
+        listen({ scoreManager.onScoreChange }) {
             updateAllTabList()
         }
     }

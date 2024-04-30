@@ -1,12 +1,18 @@
-package dev.byrt.cheesehunt.manager
+package dev.byrt.cheesehunt.standalone.visuals
 
 import dev.byrt.cheesehunt.game.Game
+import dev.byrt.cheesehunt.game.GameManager
 import dev.byrt.cheesehunt.game.GameState
+import dev.byrt.cheesehunt.game.GameTask
+import dev.byrt.cheesehunt.manager.MapManager
+import dev.byrt.cheesehunt.manager.ScoreManager
 import dev.byrt.cheesehunt.state.RoundState
+import dev.byrt.cheesehunt.state.Rounds
 import dev.byrt.cheesehunt.state.Teams
-import me.lucyydotp.cheeselib.sys.scoreboard.Board
-import me.lucyydotp.cheeselib.inject.context
+import me.lucyydotp.cheeselib.inject.injectInScope
+import me.lucyydotp.cheeselib.module.ModuleHolder
 import me.lucyydotp.cheeselib.module.ParentModule
+import me.lucyydotp.cheeselib.sys.scoreboard.Board
 import net.kyori.adventure.extra.kotlin.plus
 import net.kyori.adventure.extra.kotlin.text
 import net.kyori.adventure.text.Component
@@ -15,14 +21,19 @@ import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.format.TextDecoration
 import java.text.DecimalFormat
 
-class InfoBoardManager(private val game: Game) : ParentModule(game) {
+class InfoBoardManager(parent: ModuleHolder) : ParentModule(parent) {
 
     private val board = Board(
         this,
         Component.text("Byrt's Server", NamedTextColor.YELLOW, TextDecoration.BOLD)
     ).registerAsChild()
 
-    private val mapManager: MapManager by context()
+    private val gameManager: GameManager by injectInScope(Game::class)
+    private val gameTask: GameTask by injectInScope(Game::class)
+    private val mapManager: MapManager by injectInScope(Game::class)
+    private val roundManager: Rounds by injectInScope(Game::class)
+    private val scoreManager: ScoreManager by injectInScope(Game::class)
+
     private val multiplierNumberFormat = DecimalFormat("##0.0")
 
     private var gameMapInfo by board.section(defaultLines = gameMapInfo())
@@ -33,10 +44,26 @@ class InfoBoardManager(private val game: Game) : ParentModule(game) {
     private var teamScores by board.section(defaultLines = teamScores())
     private val _newline2 = board.section(defaultLines = listOf(Board.Line(Component.empty())))
 
-    fun destroyScoreboard() {
-        // TODO(lucy): no-op
-//        cheeseHuntBoard.displaySlot = null
-//        cheeseHuntBoard.unregister()
+    init {
+        listen(gameManager.onStateChange) {
+            timer = timer()
+        }
+
+        listen(gameTask.onTimerChange) {
+            timer = timer()
+        }
+
+        listen(scoreManager.onScoreChange) {
+            teamScores = teamScores()
+        }
+
+        listen(scoreManager.onMultiplierChange) {
+            multiplier = multiplier()
+        }
+
+        listen(mapManager.onChange) {
+            gameMapInfo = gameMapInfo()
+        }
     }
 
     private fun withColoredPrefix(prefix: String, message: String, color: TextColor) = text {
@@ -46,18 +73,23 @@ class InfoBoardManager(private val game: Game) : ParentModule(game) {
 
     private fun gameMapInfo() = listOf(
         Board.Line(withColoredPrefix("Game", "Cheese Hunt", NamedTextColor.AQUA)),
-        // FIXME(lucy): make mapManager injectable
-        Board.Line(withColoredPrefix("Map", /*mapManager.getCurrentMap().mapName*/"Reforged", NamedTextColor.AQUA))
+        Board.Line(withColoredPrefix("Map", mapManager.getCurrentMap().mapName, NamedTextColor.AQUA))
     )
 
-    private val formattedTimeLeft: String get() {
-        val timeLeft = game.gameTask.getTimeLeft()
-        return String.format("%02d:%02d", timeLeft / 60, timeLeft % 60)
-    }
+    private val formattedTimeLeft: String
+        get() {
+            val timeLeft = gameTask.getTimeLeft()
+            return String.format("%02d:%02d", timeLeft / 60, timeLeft % 60)
+        }
 
-    private fun timer() = when (game.gameManager.getGameState()) {
+    private fun timer() = when (gameManager.getGameState()) {
         GameState.IDLE -> withColoredPrefix("Game status", "Waiting...", NamedTextColor.RED)
-        GameState.STARTING -> withColoredPrefix(if (game.roundManager.getRoundState() == RoundState.ONE) "Game begins" else "Round begins", formattedTimeLeft, NamedTextColor.RED)
+        GameState.STARTING -> withColoredPrefix(
+            if (roundManager.getRoundState() == RoundState.ONE) "Game begins" else "Round begins",
+            formattedTimeLeft,
+            NamedTextColor.RED
+        )
+
         GameState.IN_GAME -> withColoredPrefix("Time left", formattedTimeLeft, NamedTextColor.RED)
         GameState.OVERTIME -> withColoredPrefix("OVERTIME", formattedTimeLeft, NamedTextColor.RED)
         GameState.ROUND_END -> withColoredPrefix("Next round", formattedTimeLeft, NamedTextColor.RED)
@@ -70,15 +102,15 @@ class InfoBoardManager(private val game: Game) : ParentModule(game) {
     private fun multiplier() = text {
         append(Component.text("Game Coins: ", NamedTextColor.AQUA, TextDecoration.BOLD))
         append(Component.text("("))
-        append(Component.text("x" + multiplierNumberFormat.format(game.scoreManager.getMultiplier()), NamedTextColor.YELLOW))
+        append(Component.text("x" + multiplierNumberFormat.format(scoreManager.getMultiplier()), NamedTextColor.YELLOW))
         append(Component.text(")"))
     }.let {
         listOf(Board.Line(it))
     }
 
     private fun teamScores() = listOf(
-        Teams.RED to game.scoreManager.getRedScore(),
-        Teams.BLUE to game.scoreManager.getBlueScore(),
+        Teams.RED to scoreManager.getRedScore(),
+        Teams.BLUE to scoreManager.getBlueScore(),
     ).sortedByDescending(Pair<Teams, Int>::second)
         .mapIndexed { index, (team, score) ->
             Board.Line(
@@ -86,20 +118,4 @@ class InfoBoardManager(private val game: Game) : ParentModule(game) {
                 Component.text("${score}c  ")
             )
         }
-
-    fun updateScoreboardScores() {
-        teamScores = teamScores()
-    }
-
-    fun updateScoreboardTimer() {
-        timer = timer()
-    }
-
-    fun updateScoreboardMultiplier() {
-        multiplier = multiplier()
-    }
-
-    fun updateCurrentMap() {
-        gameMapInfo = gameMapInfo()
-    }
 }

@@ -6,7 +6,7 @@ import org.bukkit.Bukkit
 /**
  * A component that can be enabled and disabled.
  */
-abstract class Module(val parent: ModuleHolder): InjectionSite by parent {
+abstract class Module(val parent: ModuleHolder) : InjectionSite by parent {
 
     enum class State {
         Enabled,
@@ -34,15 +34,22 @@ abstract class Module(val parent: ModuleHolder): InjectionSite by parent {
     }
 
     /** Listens for an event while the module is active. */
-    fun <T : Any> listen(eventEmitter: EventEmitter<T>, priority: Int = 100, handler: (T) -> Unit) {
+    inline fun <T : Any> listen(
+        crossinline eventEmitterProvider: () -> EventEmitter<T>,
+        priority: Int = 100,
+        noinline handler: (T) -> Unit,
+    ) {
         var subscription: EventEmitter.Subscription<T>? = null
         onEnable {
-            subscription = eventEmitter.subscribe(handler, priority)
+            subscription = eventEmitterProvider().subscribe(handler, priority)
         }
         onDisable {
             subscription?.unsubscribe()
         }
     }
+
+    /** Listens for an event while the module is active. */
+    fun <T : Any> listen(eventEmitter: EventEmitter<T>, priority: Int = 100, handler: (T) -> Unit) = listen({ eventEmitter }, priority, handler)
 
     /**
      * The module's current state.

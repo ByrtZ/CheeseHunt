@@ -35,6 +35,14 @@ inline fun <reified T : Any> InjectionSite.injectOrNull() = injectOrNull(T::clas
 
 /**
  * Creates a delegate that gets the bound value for [T] on each access.
+ * @param scope if set, the scope will be injected first, and then the requested type injected through that scope.
+ * Intended for cross-scope injection, i.e. adding visuals to a game in a separate plugin.
  * @see InjectionSite.inject
  */
-inline fun <reified T : Any> InjectionSite.context() = ReadOnlyDelegate { inject<T>() }
+inline fun <reified T : Any> InjectionSite.context() = ReadOnlyDelegate {
+    inject<T>()
+}
+
+inline fun <reified T : Any> InjectionSite.injectInScope(clazz: KClass<out InjectionSite>) = ReadOnlyDelegate {
+    inject(clazz).inject<T>()
+}

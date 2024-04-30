@@ -4,6 +4,7 @@ import dev.byrt.cheesehunt.game.Game
 import dev.byrt.cheesehunt.state.Sounds
 import dev.byrt.cheesehunt.state.Teams
 import me.lucyydotp.cheeselib.inject.context
+import me.lucyydotp.cheeselib.module.EventEmitter
 import me.lucyydotp.cheeselib.module.Module
 import me.lucyydotp.cheeselib.module.ModuleHolder
 import me.lucyydotp.cheeselib.sys.AdminMessageStyles
@@ -22,6 +23,16 @@ import java.time.Duration
 import kotlin.random.Random
 
 class ScoreManager(parent: ModuleHolder, private val game : Game): Module(parent) {
+    /**
+     * Emits [Unit] when a team's score changes.
+     */
+    val onScoreChange = EventEmitter<Unit>()
+
+    /**
+     * Emits when the multiplier changes.
+     */
+    val onMultiplierChange = EventEmitter<Int>()
+
     private val adminMessages: AdminMessages by context()
 
     private var redScore = 0
@@ -119,12 +130,12 @@ class ScoreManager(parent: ModuleHolder, private val game : Game): Module(parent
                 if(team == Teams.BLUE) blueScore -= score
             }
         }
-        game.tabListManager.updateAllTabList()
+        onScoreChange.emit(Unit)
     }
 
     fun setMultiplier(newMultiplier : Int) {
         multiplier = newMultiplier
-        game.infoBoardManager.updateScoreboardMultiplier()
+        onMultiplierChange.emit(newMultiplier)
         if(newMultiplier == 1) {
             for(player in Bukkit.getOnlinePlayers()) {
                 player.playSound(player.location, Sounds.Score.MULTIPLIER_RESET, 1f, 1f)

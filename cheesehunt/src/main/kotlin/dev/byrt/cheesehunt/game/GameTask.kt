@@ -7,6 +7,7 @@ import dev.byrt.cheesehunt.state.Sounds
 import dev.byrt.cheesehunt.state.TimerState
 import dev.byrt.cheesehunt.task.Music
 import me.lucyydotp.cheeselib.inject.context
+import me.lucyydotp.cheeselib.module.EventEmitter
 import me.lucyydotp.cheeselib.module.Module
 import me.lucyydotp.cheeselib.module.ModuleHolder
 import me.lucyydotp.cheeselib.sys.AdminMessageStyles
@@ -22,12 +23,15 @@ import org.bukkit.scheduler.BukkitRunnable
 import java.time.Duration
 
 class GameTask(parent: ModuleHolder, private var game : Game) : Module(parent) {
+
+    /**
+     * Emits the remaining time whenever the timer updates, either through ticking or a manual update.
+     */
+    val onTimerChange: EventEmitter<Int> = EventEmitter()
+
     private var gameRunnableList = mutableMapOf<Int, BukkitRunnable>()
     private var currentGameTaskId = 0
     private var timeLeft = 0
-    private var previousTimeLeft = 0
-    private var displayTime: String = "00:00"
-    private var previousDisplayTime: String = "00:00"
     private var gameSubtitle = ""
 
     private val adminMessages: AdminMessages by context()
@@ -35,13 +39,7 @@ class GameTask(parent: ModuleHolder, private var game : Game) : Module(parent) {
     fun gameLoop() {
         val gameRunnable = object : BukkitRunnable() {
             override fun run() {
-                // Formatting variables
-                previousTimeLeft = timeLeft + 1
-                displayTime = String.format("%02d:%02d", timeLeft / 60, timeLeft % 60)
-                previousDisplayTime = String.format("%02d:%02d", previousTimeLeft / 60, previousTimeLeft % 60)
-
-                // Update scoreboard timer
-                game.infoBoardManager.updateScoreboardTimer()
+                onTimerChange.emit(timeLeft)
 
                 // Game/round starting front end
                 if(game.gameManager.getGameState() == GameState.STARTING && game.timerManager.getTimerState() == TimerState.ACTIVE) {
@@ -351,9 +349,8 @@ class GameTask(parent: ModuleHolder, private var game : Game) : Module(parent) {
     }
 
     fun setTimeLeft(setTimeLeft: Int, sender : Player?) {
-        val setTimerTimeLeft = String.format("%02d:%02d", setTimeLeft / 60, setTimeLeft % 60)
-        game.infoBoardManager.updateScoreboardTimer()
         timeLeft = setTimeLeft
+        onTimerChange.emit(timeLeft)
         if(sender != null) {
             adminMessages.sendDevMessage("Timer updated to $timeLeft seconds by ${sender.name}.", AdminMessageStyles.INFO)
         } else {
@@ -371,9 +368,6 @@ class GameTask(parent: ModuleHolder, private var game : Game) : Module(parent) {
 
     fun resetVars() {
         timeLeft = 0
-        previousTimeLeft = 0
-        displayTime = "00:00"
-        previousDisplayTime = "00:00"
         gameSubtitle = ""
     }
 }

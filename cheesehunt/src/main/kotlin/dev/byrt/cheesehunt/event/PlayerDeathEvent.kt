@@ -4,7 +4,6 @@ import dev.byrt.cheesehunt.CheeseHunt
 import dev.byrt.cheesehunt.game.GameManager
 import dev.byrt.cheesehunt.game.GameState
 import dev.byrt.cheesehunt.manager.CheeseManager
-import dev.byrt.cheesehunt.manager.InfoBoardManager
 import dev.byrt.cheesehunt.manager.ItemManager
 import dev.byrt.cheesehunt.manager.PlayerManager
 import dev.byrt.cheesehunt.manager.PowerUpItem
@@ -38,7 +37,6 @@ import java.time.Duration
 class PlayerDeathEvent(parent: ModuleHolder) : Module(parent), Listener {
     private val cheeseManager: CheeseManager by context()
     private val gameManager: GameManager by context()
-    private val infoBoardManager: InfoBoardManager by context()
     private val itemManager: ItemManager by context()
     private val nameFormatter: NameFormatter by context()
     private val playerManager: PlayerManager by context()
@@ -118,7 +116,6 @@ class PlayerDeathEvent(parent: ModuleHolder) : Module(parent), Listener {
             ScoreMode.ADD,
             team
         )
-        infoBoardManager.updateScoreboardScores()
         statsManager.updateStatistic(player.uniqueId, Statistic.ELIMINATIONS)
         statsManager.updateStatistic(player.uniqueId, Statistic.KILL_STREAKS)
         player.playSound(player.location, Sounds.Score.ELIMINATION, 1f, 1.25f)

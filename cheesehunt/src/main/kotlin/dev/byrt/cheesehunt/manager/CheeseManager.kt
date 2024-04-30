@@ -29,7 +29,6 @@ class CheeseManager(parent: ModuleHolder): Module(parent) {
     private val playerHasCheese = mutableListOf<UUID>()
     private val playersWithCheeseLoopMap = mutableMapOf<UUID, BukkitRunnable>()
 
-    private val infoBoardManager: InfoBoardManager by context()
     private val itemManager: ItemManager by context()
     private val nameFormatter: NameFormatter by context()
     private val scoreManager: ScoreManager by context()
@@ -79,8 +78,6 @@ class CheeseManager(parent: ModuleHolder): Module(parent) {
                 Teams.BLUE
             )
         }
-
-        infoBoardManager.updateScoreboardScores()
 
         for(player in Bukkit.getOnlinePlayers()) {
             if(redCheeseEarned > 0) {

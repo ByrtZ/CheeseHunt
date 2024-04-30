@@ -73,7 +73,9 @@ class NameFormatter(parent: ModuleHolder) : Module(parent), Listener {
 
             val text = text {
                 append(formattedName.prefixes)
+                if (formattedName.prefixes.isNotEmpty()) appendSpace()
                 append(Component.text(player.name, formattedName.usernameStyle))
+                if (formattedName.suffixes.isNotEmpty()) appendSpace()
                 append(formattedName.suffixes)
             }
             player.displayName(text)

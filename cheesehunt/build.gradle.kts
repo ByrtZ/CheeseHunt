@@ -43,7 +43,11 @@ tasks {
         minecraftVersion("1.20.4")
 
         pluginJars(
-            *listOf("common", "standalone")
+            *listOf(
+                "common",
+//                "standalone",
+                "networked",
+            )
                 .map { project(":$it").tasks.getByName("reobfJar").outputs.files }
                 .toTypedArray()
         )

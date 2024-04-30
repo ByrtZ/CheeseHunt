@@ -3,18 +3,21 @@ package me.lucyydotp.cheeselib.command
 import cloud.commandframework.annotations.*
 import cloud.commandframework.annotations.suggestions.Suggestions
 import cloud.commandframework.context.CommandContext
-import me.lucyydotp.cheeselib.sys.TeamManager
-import me.lucyydotp.cheeselib.sys.TeamMeta
 import me.lucyydotp.cheeselib.inject.context
 import me.lucyydotp.cheeselib.module.Module
 import me.lucyydotp.cheeselib.module.ModuleHolder
 import me.lucyydotp.cheeselib.module.installCommands
+import me.lucyydotp.cheeselib.sys.TeamManager
+import me.lucyydotp.cheeselib.sys.TeamMeta
 import net.kyori.adventure.extra.kotlin.text
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextDecoration
+import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
+@CommandMethod("teams")
 class TeamsCommands<T>(parent: ModuleHolder) : Module(parent) where T : TeamMeta, T : Enum<T> {
 
 //    private val shuffleStartSound: Sound = Sound.sound(Key.key(Sounds.Command.SHUFFLE_START), Sound.Source.MASTER, 1f, 1f)
@@ -33,10 +36,10 @@ class TeamsCommands<T>(parent: ModuleHolder) : Module(parent) where T : TeamMeta
     // TODO(lucy): check game state
     private val canAlterTeams = true
 
-    @CommandMethod("teams set <player> <team>")
+    @CommandMethod("set <player> <team>")
     @CommandDescription("Puts the specified player on the specified team.")
     @CommandPermission("cheesehunt.jointeam")
-    fun <T> setTeam(
+    fun setTeam(
         sender: Player,
         @Argument("player") player: Player,
         @Argument("team", suggestions = "teams") teamName: String,
@@ -70,7 +73,23 @@ class TeamsCommands<T>(parent: ModuleHolder) : Module(parent) where T : TeamMeta
 //        )
     }
 
-    @CommandMethod("teams shuffle")
+    @CommandMethod("unset <player>")
+    @CommandDescription("Removes a player from their current team.")
+    @CommandPermission("cheesehunt.jointeam")
+    fun unsetTeam(
+        sender: Player,
+        @Argument("player") player: Player,
+    ) {
+        if (teamManager.getTeam(sender) == null) {
+            sender.sendMessage(Component.text("That player is not on a team.", NamedTextColor.RED))
+            return
+        }
+
+        teamManager.setTeam(player, null)
+    }
+
+
+    @CommandMethod("shuffle")
     @CommandDescription("Automatically assigns everyone online to a team.")
     @CommandPermission("cheesehunt.autoteam")
     fun autoTeam(sender: Player, @Flag("ignoreAdmins") doesIgnoreAdmins: Boolean) {
@@ -168,58 +187,29 @@ class TeamsCommands<T>(parent: ModuleHolder) : Module(parent) where T : TeamMeta
 //        player.playSound(shuffleFailSound)
 //    }
 
-    @CommandMethod("teams list <option>")
+    @CommandMethod("list")
     @CommandDescription("Allows the executing player to see the array of the specified team.")
     @CommandPermission("cheesehunt.teamlist")
-    fun teamList(sender: Player, @Argument("option") option: TeamsListOptions) {
-        TODO()
-//        when (option) {
-//            TeamsListOptions.RED -> {
-//                sender.sendMessage(
-//                    Component.text("DISPLAYING RED TEAM UUIDS:").color(NamedTextColor.RED)
-//                        .decoration(TextDecoration.BOLD, true)
-//                )
-//                sender.sendMessage(Component.text("${CheeseHunt.getGame().teamManager.getRedTeam()}"))
-//            }
-//
-//            TeamsListOptions.BLUE -> {
-//                sender.sendMessage(
-//                    Component.text("DISPLAYING BLUE TEAM UUIDS:").color(NamedTextColor.BLUE)
-//                        .decoration(TextDecoration.BOLD, true)
-//                )
-//                sender.sendMessage(Component.text("${CheeseHunt.getGame().teamManager.getBlueTeam()}"))
-//            }
-//
-//            TeamsListOptions.SPECTATOR -> {
-//                sender.sendMessage(
-//                    Component.text("DISPLAYING SPECTATOR TEAM UUIDS:").decoration(TextDecoration.BOLD, true)
-//                )
-//                sender.sendMessage(Component.text("${CheeseHunt.getGame().teamManager.getSpectators()}"))
-//            }
-//
-//            TeamsListOptions.ALL -> {
-//                sender.sendMessage(
-//                    Component.text("\nDISPLAYING RED TEAM UUIDS:").color(NamedTextColor.RED)
-//                        .decoration(TextDecoration.BOLD, true)
-//                )
-//                sender.sendMessage(Component.text("${CheeseHunt.getGame().teamManager.getRedTeam()}\n"))
-//                sender.sendMessage(
-//                    Component.text("\nDISPLAYING BLUE TEAM UUIDS:").color(NamedTextColor.BLUE)
-//                        .decoration(TextDecoration.BOLD, true)
-//                )
-//                sender.sendMessage(Component.text("${CheeseHunt.getGame().teamManager.getBlueTeam()}\n"))
-//                sender.sendMessage(
-//                    Component.text("\nDISPLAYING SPECTATOR TEAM UUIDS:").decoration(TextDecoration.BOLD, true)
-//                )
-//                sender.sendMessage(Component.text("${CheeseHunt.getGame().teamManager.getSpectators()}\n"))
-//            }
-//        }
-    }
-}
+    fun teamList(sender: Player) {
+        text {
+            teamManager.teams.forEach { team ->
+                append(team.displayName)
+                val players = teamManager.playersOnTeam(team)
 
-enum class TeamsListOptions {
-    SPECTATOR,
-    RED,
-    BLUE,
-    ALL
+                append(Component.text(" (${players.size})", NamedTextColor.GRAY))
+                appendNewline()
+                if (players.size > 0) {
+                    append(
+                        players
+                            .map(Bukkit::getPlayer).joinToString(", ") { it?.name ?: "Unknown player" }
+                            .let(Component::text)
+                    )
+                    appendNewline()
+                }
+                append(Component.text("     ", NamedTextColor.GRAY, TextDecoration.STRIKETHROUGH))
+                appendNewline()
+            }
+        }.let(sender::sendMessage)
+
+    }
 }

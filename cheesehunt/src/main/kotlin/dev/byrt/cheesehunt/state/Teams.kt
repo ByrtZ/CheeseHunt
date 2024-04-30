@@ -13,16 +13,11 @@ enum class Teams(
     RED(
         Component.text("Red Team", NamedTextColor.RED),
         NamedTextColor.RED,
-        Component.text("\uD004 ")
+        Component.text("\uD004")
     ),
     BLUE(
         Component.text("Blue Team", NamedTextColor.BLUE),
         NamedTextColor.BLUE,
-        Component.text("\uD005 ")
+        Component.text("\uD005")
     ),
-//    SPECTATOR(
-//        Component.text("Spectators", NamedTextColor.GRAY),
-//        NamedTextColor.GRAY,
-//        Component.text("Spectator - something is broken!", NamedTextColor.RED, TextDecoration.BOLD)
-//    )
 }

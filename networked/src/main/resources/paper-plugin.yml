@@ -1,0 +1,17 @@
+name: CheeseHuntNetworked
+version: '2.0'
+main: me.lucyydotp.cheesehunt.networked.NetworkedPlugin
+api-version: '1.20'
+authors: [ Byrt, 'lucyy.p' ]
+description: Cheese Hunt networked server components
+
+dependencies:
+  server:
+    cheeselib:
+      load: BEFORE
+      join-classpath: true
+    CheeseHunt:
+      load: BEFORE
+      join-classpath: true
+    LuckPerms:
+      load: BEFORE

@@ -8,6 +8,7 @@ import me.lucyydotp.cheeselib.module.Module
 import me.lucyydotp.cheeselib.module.ModuleHolder
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
+import org.slf4j.Logger
 
 abstract class ModuleEntrypointPlugin<T> :
     JavaPlugin(),
@@ -18,6 +19,7 @@ abstract class ModuleEntrypointPlugin<T> :
 
     init {
         bind<Plugin>(this)
+        bind<Logger>(slF4JLogger)
     }
 
     override val modules: Set<Module>

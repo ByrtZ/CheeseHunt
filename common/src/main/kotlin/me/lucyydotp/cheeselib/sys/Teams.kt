@@ -70,7 +70,7 @@ class TeamManager<T>(
         if (team == currentTeam) return
 
         teamMembers.remove(currentTeam, player.uniqueId)
-        teamMembers.put(team, player.uniqueId)
+        if (team != null) teamMembers.put(team, player.uniqueId)
 
         onTeamChange.emit(TeamChangeEvent(player, currentTeam, team))
         nameFormatter.format(player, force = true)

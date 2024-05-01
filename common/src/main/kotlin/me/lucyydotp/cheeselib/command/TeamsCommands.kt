@@ -31,7 +31,7 @@ class TeamsCommands<T>(parent: ModuleHolder) : Module(parent) where T : TeamMeta
     private val teamManager: TeamManager<T> by context()
 
     @Suggestions("teams")
-    fun suggestTeams(context: CommandContext<CommandSender>, input: String)= teamManager.teams.map(Enum<*>::name)
+    fun suggestTeams(context: CommandContext<CommandSender>, input: String) = teamManager.teams.map(Enum<*>::name)
 
     // TODO(lucy): check game state
     private val canAlterTeams = true
@@ -93,99 +93,23 @@ class TeamsCommands<T>(parent: ModuleHolder) : Module(parent) where T : TeamMeta
     @CommandDescription("Automatically assigns everyone online to a team.")
     @CommandPermission("cheesehunt.autoteam")
     fun autoTeam(sender: Player, @Flag("ignoreAdmins") doesIgnoreAdmins: Boolean) {
-        TODO()
-//        if (CheeseHunt.getGame().gameManager.getGameState() == GameState.IDLE) {
-//            shuffleStartDisplay(sender)
-//            if (!doesIgnoreAdmins) {
-//                shuffle(CheeseHunt.getPlugin().server.onlinePlayers)
-//                CheeseHunt.getGame().dev.parseDevMessage(
-//                    "All online players successfully split into teams by ${sender.name}.",
-//                    DevStatus.INFO
-//                )
-//                shuffleCompleteDisplay(sender)
-//            } else {
-//                try {
-//                    val nonAdmins = mutableListOf<Player>()
-//                    for (player in Bukkit.getOnlinePlayers()) {
-//                        if (!player.isOp) {
-//                            nonAdmins.add(player)
-//                        }
-//                    }
-//                    if (nonAdmins.isEmpty()) {
-//                        sender.sendMessage(
-//                            Component.text("Unable to shuffle teams due to no non-admin players online.")
-//                                .color(NamedTextColor.RED)
-//                        )
-//                        shuffleFailDisplay(sender)
-//                    } else {
-//                        shuffle(nonAdmins)
-//                        CheeseHunt.getGame().dev.parseDevMessage(
-//                            "All online non-admin players successfully split into teams by ${sender.name}.",
-//                            DevStatus.INFO
-//                        )
-//                        shuffleCompleteDisplay(sender)
-//                    }
-//                } catch (e: Exception) {
-//                    sender.sendMessage(
-//                        Component.text("Unable to shuffle teams as an error occurred.").color(NamedTextColor.RED)
-//                    )
-//                    shuffleFailDisplay(sender)
-//                }
-//            }
-//        } else {
-//            sender.sendMessage(Component.text("Unable to modify teams in this state.", NamedTextColor.RED))
-//        }
+
+        val players = Bukkit.getOnlinePlayers().let {
+            if (doesIgnoreAdmins) it.filterNot(Player::isOp) else it
+        }
+
+        if (players.isEmpty()) {
+            sender.sendMessage(Component.text("There are no players online to shuffle into teams.", NamedTextColor.RED))
+            return
+        }
+
+        players.shuffled()
+            .withIndex()
+            .groupBy(keySelector = { it.index % teamManager.teams.size }, valueTransform = IndexedValue<Player>::value)
+
+
+        sender.sendMessage(Component.text("Shuffled teams.", NamedTextColor.GREEN))
     }
-//
-//    private fun shuffle(players: Collection<Player>) {
-//        var i = 0
-//        players.shuffled().forEach {
-//            CheeseHunt.getGame().teamManager.removeFromTeam(
-//                it,
-//                it.uniqueId,
-//                CheeseHunt.getGame().teamManager.getPlayerTeam(it.uniqueId)
-//            )
-//            if (i % 2 == 0) {
-//                CheeseHunt.getGame().teamManager.addToTeam(it, it.uniqueId, Teams.RED)
-//            } else {
-//                CheeseHunt.getGame().teamManager.addToTeam(it, it.uniqueId, Teams.BLUE)
-//            }
-//            i++
-//        }
-//    }
-//
-//    private fun shuffleStartDisplay(player: Player) {
-//        player.showTitle(
-//            Title.title(
-//                Component.text(""),
-//                Component.text("Shuffling teams...").color(NamedTextColor.RED),
-//                Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(3), Duration.ofSeconds(1))
-//            )
-//        )
-//        player.playSound(shuffleStartSound)
-//    }
-//
-//    private fun shuffleCompleteDisplay(player: Player) {
-//        player.showTitle(
-//            Title.title(
-//                Component.text(""),
-//                Component.text("Teams shuffled randomly!").color(NamedTextColor.GREEN),
-//                Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(1), Duration.ofSeconds(1))
-//            )
-//        )
-//        player.playSound(shuffleCompleteSound)
-//    }
-//
-//    private fun shuffleFailDisplay(player: Player) {
-//        player.showTitle(
-//            Title.title(
-//                Component.text(""),
-//                Component.text("Team shuffling failed.").color(NamedTextColor.RED),
-//                Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(1), Duration.ofSeconds(1))
-//            )
-//        )
-//        player.playSound(shuffleFailSound)
-//    }
 
     @CommandMethod("list")
     @CommandDescription("Allows the executing player to see the array of the specified team.")

@@ -9,8 +9,8 @@ import me.lucyydotp.cheeselib.module.installBukkitListeners
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Server
+import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.Entity
-import org.bukkit.entity.Interaction
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -21,7 +21,7 @@ import org.bukkit.plugin.Plugin
 import java.util.UUID
 
 /**
- * Creates custom nametags for players using interaction entities as passengers.
+ * Creates custom nametags for players using invisible armorstands as passengers.
  * This class expects players to be in teams with nametags turned off already.
  * TODO(lucy): implement team visibility checking, also hide your own nametag
  */
@@ -49,18 +49,14 @@ class CustomNameTags(parent: ModuleHolder) : Module(parent), Listener {
         // If they already have an entity, don't spawn a new one
         if (player.uniqueId in entities) return
 
-        val entity = player.world.spawn(player.location, Interaction::class.java)
+        val entity = player.world.spawn(player.location, ArmorStand::class.java)
         player.addPassenger(entity)
 
         entity.customName(nameFormatter.format(player))
+        entity.isMarker = true
+        entity.isInvisible = true
         entity.isCustomNameVisible = true
         entity.isPersistent = false
-        // Make it nice and tall, so it's big enough to avoid client-side culling.
-        // This does come with the unfortunate side effect of making players look like unicorns in f3+b,
-        // but we can live with that.
-        entity.interactionHeight = 2f
-        entity.interactionWidth = 0f
-
         entities[player.uniqueId] = entity.uniqueId
     }
 

@@ -9,8 +9,6 @@ import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.format.TextColor
 
-import com.destroystokyo.paper.Namespaced
-
 import org.bukkit.*
 import org.bukkit.entity.*
 import org.bukkit.inventory.ItemFlag
@@ -196,7 +194,7 @@ class ItemManager(private val game : Game) {
         )
         cheeseCollectorMeta.lore(cheeseCollectorLore)
         cheeseCollectorMeta.isUnbreakable = true
-        cheeseCollectorMeta.setDestroyableKeys(Collections.singletonList(Material.SPONGE.key) as Collection<Namespaced>)
+        //cheeseCollectorMeta.setDestroyableKeys(Collections.singletonList(Material.SPONGE.key) as Collection<Namespaced>)
         cheeseCollectorMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_DESTROYS)
         cheeseCollector.itemMeta = cheeseCollectorMeta
         player.inventory.addItem(cheeseCollector)
@@ -213,10 +211,10 @@ class ItemManager(private val game : Game) {
         )
         when(team) {
             Teams.RED -> {
-                cheeseMeta.setPlaceableKeys(Collections.singletonList(Material.RED_WOOL.key) as Collection<Namespaced>)
+                //cheeseMeta.setPlaceableKeys(Collections.singletonList(Material.RED_WOOL.key) as Collection<Namespaced>)
             }
             Teams.BLUE -> {
-                cheeseMeta.setPlaceableKeys(Collections.singletonList(Material.BLUE_WOOL.key) as Collection<Namespaced>)
+                //cheeseMeta.setPlaceableKeys(Collections.singletonList(Material.BLUE_WOOL.key) as Collection<Namespaced>)
             } else -> {
                 //no.
             }
@@ -281,7 +279,7 @@ class ItemManager(private val game : Game) {
                 player.playSound(player.location, Sounds.Item.ESCAPE, 1.0f, 1.0f)
             }
             PowerUpItem.HASTE_CHARM -> {
-                player.addPotionEffect(PotionEffect(PotionEffectType.FAST_DIGGING, 160, 9, false, false))
+                player.addPotionEffect(PotionEffect(PotionEffectType.HASTE, 160, 9, false, false))
             }
         }
     }
@@ -335,7 +333,7 @@ class ItemManager(private val game : Game) {
 
     fun getRandomItem() : PowerUpItem {
         val random = Random()
-        return PowerUpItem.values()[random.nextInt(PowerUpItem.values().size)]
+        return PowerUpItem.entries[random.nextInt(PowerUpItem.entries.size)]
     }
 }
 

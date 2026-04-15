@@ -4,6 +4,7 @@ import dev.byrt.cheesehunt.game.Game
 import dev.byrt.cheesehunt.game.GameState
 import dev.byrt.cheesehunt.state.RoundState
 import dev.byrt.cheesehunt.state.Teams
+import io.papermc.paper.scoreboard.numbers.NumberFormat
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -67,6 +68,7 @@ class InfoBoardManager(private val game : Game) {
 
     fun showScoreboard() {
         cheeseHuntBoard.displaySlot = DisplaySlot.SIDEBAR
+        cheeseHuntBoard.numberFormat(NumberFormat.blank())
     }
 
     fun updateScoreboardTimer(displayTime : String, previousDisplayTime : String, gameState : GameState) {

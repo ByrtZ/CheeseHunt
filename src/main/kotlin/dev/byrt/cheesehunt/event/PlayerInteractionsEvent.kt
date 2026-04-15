@@ -34,7 +34,7 @@ class PlayerInteractionsEvent : Listener {
             }
             // Cheese Mining
             if(e.action.isLeftClick && e.clickedBlock?.type == Material.SPONGE && e.player.inventory.itemInMainHand.type == Material.WOODEN_PICKAXE) {
-                e.player.addPotionEffect(PotionEffect(PotionEffectType.SLOW_DIGGING, Int.MAX_VALUE, 0, false, false))
+                e.player.addPotionEffect(PotionEffect(PotionEffectType.MINING_FATIGUE, Int.MAX_VALUE, 0, false, false))
             }
             // Item Usage
             if(Main.getGame().gameManager.getGameState() == GameState.IN_GAME && e.action.isRightClick && e.player.inventory.itemInMainHand.type == Material.TNT) {

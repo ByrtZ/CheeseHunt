@@ -156,7 +156,7 @@ class PlayerManager(private var game : Game) {
     fun setPlayersAdventure() {
         Bukkit.getOnlinePlayers().stream().filter { player: Player? -> player?.let {
             Main.getGame().teamManager.getPlayerTeam(it.uniqueId) } != Teams.SPECTATOR}
-            .forEach{ player: Player -> player.gameMode = GameMode.ADVENTURE }
+            .forEach{ player: Player -> player.gameMode = GameMode.SURVIVAL }
     }
 
     private fun setAllAdventure() {

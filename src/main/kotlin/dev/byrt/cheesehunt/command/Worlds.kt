@@ -1,11 +1,7 @@
 package dev.byrt.cheesehunt.command
 
 import dev.byrt.cheesehunt.Main
-
-import cloud.commandframework.annotations.Argument
-import cloud.commandframework.annotations.CommandDescription
-import cloud.commandframework.annotations.CommandMethod
-import cloud.commandframework.annotations.CommandPermission
+import io.papermc.paper.command.brigadier.CommandSourceStack
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -14,13 +10,20 @@ import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.WorldCreator
 import org.bukkit.entity.Player
+import org.incendo.cloud.annotations.Argument
+import org.incendo.cloud.annotations.Command
+import org.incendo.cloud.annotations.CommandDescription
+import org.incendo.cloud.annotations.Permission
+import org.incendo.cloud.annotations.processing.CommandContainer
 
-@Suppress("unused")
-class Worlds : BaseCommand {
-    @CommandMethod("world <option> <world>")
+@Suppress("unused", "unstableApiUsage")
+@CommandContainer
+class Worlds {
+    @Command("world <option> <world>")
     @CommandDescription("Puts the specified player on the specified team.")
-    @CommandPermission("cheesehunt.worlds")
-    private fun world(sender : Player, @Argument("option") option : WorldOptions, @Argument("world") world : WorldsList) {
+    @Permission("cheesehunt.worlds")
+    fun world(css: CommandSourceStack, @Argument("option") option : WorldOptions, @Argument("world") world : WorldsList) {
+        val sender = css.sender as Player
         when(option) {
             WorldOptions.OPEN -> {
                 when(world) {

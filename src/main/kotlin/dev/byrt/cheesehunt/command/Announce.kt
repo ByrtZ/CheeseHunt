@@ -3,11 +3,7 @@ package dev.byrt.cheesehunt.command
 import dev.byrt.cheesehunt.Main
 import dev.byrt.cheesehunt.util.DevStatus
 import dev.byrt.cheesehunt.state.Sounds
-
-import cloud.commandframework.annotations.Argument
-import cloud.commandframework.annotations.CommandDescription
-import cloud.commandframework.annotations.CommandMethod
-import cloud.commandframework.annotations.CommandPermission
+import io.papermc.paper.command.brigadier.CommandSourceStack
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -16,16 +12,19 @@ import net.kyori.adventure.text.minimessage.MiniMessage
 
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
+import org.incendo.cloud.annotations.Argument
+import org.incendo.cloud.annotations.Command
+import org.incendo.cloud.annotations.Permission
+import org.incendo.cloud.annotations.processing.CommandContainer
 
-@Suppress("unused")
-class Announce : BaseCommand {
+@Suppress("unused", "unstableApiUsage")
+@CommandContainer
+class Announce {
     private val mm = MiniMessage.miniMessage()
-
-    @CommandMethod("announce <text>")
-    @CommandDescription("Puts a formatted announcement message in chat.")
-    @CommandPermission("cheesehunt.announce")
-    fun announce(sender : Player, @Argument("text") text: Array<String>) {
-        Main.getGame().dev.parseDevMessage("Announcement sent by ${sender.name}.", DevStatus.INFO)
+    @Command("announce <text>")
+    @Permission("cheesehunt.announce")
+    fun announce(css: CommandSourceStack, @Argument("text") text: Array<String>) {
+        Main.getGame().dev.parseDevMessage("Announcement sent by ${css.sender.name}.", DevStatus.INFO)
         val rawAnnounceMessage = text.joinToString(" ")
         for(player in Bukkit.getServer().onlinePlayers) {
             player.playSound(player.location, Sounds.Alert.GENERAL_ALERT, 1.0f, 1.0f)

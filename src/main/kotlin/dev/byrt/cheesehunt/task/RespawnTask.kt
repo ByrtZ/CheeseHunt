@@ -70,7 +70,7 @@ class RespawnTask(private val game: Game) {
         } else {
             game.itemManager.givePlayerKit(player)
         }
-        player.gameMode = GameMode.ADVENTURE
+        player.gameMode = GameMode.SURVIVAL
         game.tabListManager.updateAllTabList()
     }
 

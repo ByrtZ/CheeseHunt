@@ -1,11 +1,10 @@
 package dev.byrt.cheesehunt.command
 
-import cloud.commandframework.annotations.*
-
 import dev.byrt.cheesehunt.Main
 import dev.byrt.cheesehunt.state.Sounds
 import dev.byrt.cheesehunt.manager.WhitelistGroup
 import dev.byrt.cheesehunt.util.DevStatus
+import io.papermc.paper.command.brigadier.CommandSourceStack
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
@@ -15,21 +14,29 @@ import net.kyori.adventure.title.Title
 
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
+import org.incendo.cloud.annotations.Argument
+import org.incendo.cloud.annotations.Command
+import org.incendo.cloud.annotations.CommandDescription
+import org.incendo.cloud.annotations.Permission
+import org.incendo.cloud.annotations.processing.CommandContainer
+import org.incendo.cloud.processors.confirmation.annotation.Confirmation
 
 import java.time.Duration
 import java.util.*
 
-@Suppress("unused")
-class WhitelistCommands : BaseCommand {
+@Suppress("unused", "unstableApiUsage")
+@CommandContainer
+class WhitelistCommands {
     private val whitelistStartSound: Sound = Sound.sound(Key.key(Sounds.Command.WHITELIST_START), Sound.Source.MASTER, 1f, 1f)
     private val whitelistCompleteSound: Sound = Sound.sound(Key.key(Sounds.Command.WHITELIST_COMPLETE), Sound.Source.MASTER, 1f, 2f)
     private val whitelistFailSound: Sound = Sound.sound(Key.key(Sounds.Command.WHITELIST_FAIL), Sound.Source.MASTER, 1f, 0f)
 
-    @CommandMethod("whitelist set <group>")
+    @Command("whitelist set <group>")
     @CommandDescription("Sets whitelisted players to the specified group.")
-    @CommandPermission("cheesehunt.whitelist.setgroup")
+    @Permission("cheesehunt.whitelist.setgroup")
     @Confirmation
-    fun whitelistGroup(sender : Player, @Argument("group") group : WhitelistGroup) {
+    fun whitelistGroup(css: CommandSourceStack, @Argument("group") group : WhitelistGroup) {
+        val sender = css.sender as Player
         whitelistStartDisplay(sender, group)
         try {
             Main.getGame().whitelistManager.setWhitelist(group)
@@ -56,10 +63,11 @@ class WhitelistCommands : BaseCommand {
         player.playSound(whitelistFailSound)
     }
 
-    @CommandMethod("whitelist add <player> <group>")
+    @Command("whitelist add <player> <group>")
     @CommandDescription("Adds the specified player to the specified whitelist group.")
-    @CommandPermission("cheesehunt.whitelist.add")
-    fun addPlayerToWhitelistGroup(sender : Player, @Argument("player") player : String, @Argument("group") group : WhitelistGroup) {
+    @Permission("cheesehunt.whitelist.add")
+    fun addPlayerToWhitelistGroup(css: CommandSourceStack, @Argument("player") player : String, @Argument("group") group : WhitelistGroup) {
+        val sender = css.sender as Player
         try {
             when(group) {
                 WhitelistGroup.OFF -> {
@@ -81,10 +89,11 @@ class WhitelistCommands : BaseCommand {
         }
     }
 
-    @CommandMethod("whitelist remove <player> <group>")
+    @Command("whitelist remove <player> <group>")
     @CommandDescription("Removes the specified player from the specified whitelist group.")
-    @CommandPermission("cheesehunt.whitelist.remove")
-    fun removePlayerFromWhitelistGroup(sender : Player, @Argument("player") player : String, @Argument("group") group : WhitelistGroup) {
+    @Permission("cheesehunt.whitelist.remove")
+    fun removePlayerFromWhitelistGroup(css: CommandSourceStack, @Argument("player") player : String, @Argument("group") group : WhitelistGroup) {
+        val sender = css.sender as Player
         try {
             when(group) {
                 WhitelistGroup.OFF -> {
@@ -106,10 +115,11 @@ class WhitelistCommands : BaseCommand {
         }
     }
 
-    @CommandMethod("whitelist tempadd <player>")
+    @Command("whitelist tempadd <player>")
     @CommandDescription("Temporarily adds the specified player to the server whitelist until removal or restart.")
-    @CommandPermission("cheesehunt.whitelist.tempadd")
-    fun addPlayerTempWhitelist(sender : Player, @Argument("player") player : String) {
+    @Permission("cheesehunt.whitelist.tempadd")
+    fun addPlayerTempWhitelist(css: CommandSourceStack, @Argument("player") player : String) {
+        val sender = css.sender as Player
         try {
             if(!Main.getPlugin().server.whitelistedPlayers.contains(Bukkit.getOfflinePlayer(player))) {
                 Main.getGame().whitelistManager.tempWhitelistPlayer(player)
@@ -122,10 +132,11 @@ class WhitelistCommands : BaseCommand {
         }
     }
 
-    @CommandMethod("whitelist tempremove <player>")
+    @Command("whitelist tempremove <player>")
     @CommandDescription("Temporarily remove the specified player to the server whitelist.")
-    @CommandPermission("cheesehunt.whitelist.tempremove")
-    fun removePlayerTempWhitelist(sender : Player, @Argument("player") player : String) {
+    @Permission("cheesehunt.whitelist.tempremove")
+    fun removePlayerTempWhitelist(css: CommandSourceStack, @Argument("player") player : String) {
+        val sender = css.sender as Player
         try {
             if(Main.getPlugin().server.whitelistedPlayers.contains(Bukkit.getOfflinePlayer(player))) {
                 Main.getGame().whitelistManager.removeTempWhitelistPlayer(player)
@@ -138,11 +149,12 @@ class WhitelistCommands : BaseCommand {
         }
     }
 
-    @CommandMethod("whitelist reload")
+    @Command("whitelist reload")
     @CommandDescription("Reloads the whitelist.yml file and re-applies the current whitelist group.")
-    @CommandPermission("cheesehunt.whitelist.reload")
+    @Permission("cheesehunt.whitelist.reload")
     @Confirmation
-    fun whitelistReload(sender : Player) {
+    fun whitelistReload(css: CommandSourceStack) {
+        val sender = css.sender as Player
         try {
             Main.getGame().configManager.saveWhitelistConfig()
             Main.getGame().configManager.reloadWhitelistConfig()
@@ -160,10 +172,11 @@ class WhitelistCommands : BaseCommand {
         }
     }
 
-    @CommandMethod("whitelist list")
+    @Command("whitelist list")
     @CommandDescription("Lists the currently whitelisted players and group.")
-    @CommandPermission("cheesehunt.whitelist.list")
-    fun whitelistList(sender : Player) {
+    @Permission("cheesehunt.whitelist.list")
+    fun whitelistList(css: CommandSourceStack) {
+        val sender = css.sender as Player
         try {
             sender.sendMessage(Component.text("Current whitelisted group: ${Main.getGame().whitelistManager.getWhitelistedGroup()}\n", NamedTextColor.GOLD)
                 .append(Component.text("Players: ${Main.getGame().configManager.getWhitelistConfig().getStringList("group.${Main.getGame().whitelistManager.getWhitelistedGroup().toString().lowercase()}")}", NamedTextColor.YELLOW)))

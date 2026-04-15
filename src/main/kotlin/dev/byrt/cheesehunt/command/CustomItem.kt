@@ -1,12 +1,8 @@
 package dev.byrt.cheesehunt.command
 
 import dev.byrt.cheesehunt.manager.ItemRarity
-
-import cloud.commandframework.annotations.Argument
-import cloud.commandframework.annotations.CommandDescription
-import cloud.commandframework.annotations.CommandMethod
-import cloud.commandframework.annotations.CommandPermission
 import dev.byrt.cheesehunt.manager.ItemType
+import io.papermc.paper.command.brigadier.CommandSourceStack
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -19,19 +15,23 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
+import org.incendo.cloud.annotations.Argument
+import org.incendo.cloud.annotations.Command
+import org.incendo.cloud.annotations.Permission
+import org.incendo.cloud.annotations.processing.CommandContainer
 
-@Suppress("unused")
-class CustomItem : BaseCommand {
-    @CommandMethod("givecustomitem <item>")
-    @CommandDescription("Gives the executor the custom item specified")
-    @CommandPermission("cheesehunt.customitem")
-    fun customItem(sender: Player, @Argument("item") item: CustomItems) {
+@Suppress("unused", "unstableApiUsage")
+@CommandContainer
+class CustomItem {
+    @Command("givecustomitem <item>")
+    @Permission("cheesehunt.customitem")
+    fun customItem(css: CommandSourceStack, @Argument("item") item: CustomItems) {
         when(item) {
             CustomItems.ASPECT_OF_THE_VOID -> {
-                createTeleportSpoon(sender)
+                createTeleportSpoon(css.sender as Player)
             }
             CustomItems.RAYGUN -> {
-                createRayGun(sender)
+                createRayGun(css.sender as Player)
             }
         }
     }

@@ -1,7 +1,6 @@
 package dev.byrt.cheesehunt.game
 
 import dev.byrt.cheesehunt.Main
-import dev.byrt.cheesehunt.interfaces.*
 import dev.byrt.cheesehunt.manager.*
 import dev.byrt.cheesehunt.queue.*
 import dev.byrt.cheesehunt.state.*
@@ -36,8 +35,6 @@ class Game(val plugin : Main) {
     val queue = Queue(this)
     val queueVisuals = QueueVisuals(this)
     val queueTask = QueueTask(this)
-
-    val interfaceManager = InterfaceManager(this)
 
     val respawnTask = RespawnTask(this)
     val gameTask = GameTask(this)

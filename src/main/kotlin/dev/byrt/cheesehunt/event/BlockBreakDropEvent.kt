@@ -46,7 +46,7 @@ class BlockBreakDropEvent : Listener {
     @EventHandler
     private fun onAbortBlockBreak(e : BlockDamageAbortEvent) {
         if(Main.getGame().gameManager.getGameState() != GameState.IDLE && e.block.type == Material.SPONGE && e.itemInHand.type == Material.WOODEN_PICKAXE) {
-            e.player.removePotionEffect(PotionEffectType.SLOW_DIGGING)
+            e.player.removePotionEffect(PotionEffectType.MINING_FATIGUE)
         }
     }
 

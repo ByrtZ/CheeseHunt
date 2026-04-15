@@ -1,10 +1,7 @@
 package dev.byrt.cheesehunt.command
 
-import cloud.commandframework.annotations.CommandDescription
-import cloud.commandframework.annotations.CommandMethod
-import cloud.commandframework.annotations.CommandPermission
-
 import dev.byrt.cheesehunt.Main
+import io.papermc.paper.command.brigadier.CommandSourceStack
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -15,17 +12,23 @@ import org.bukkit.Particle
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import org.bukkit.scheduler.BukkitRunnable
+import org.incendo.cloud.annotations.Command
+import org.incendo.cloud.annotations.CommandDescription
+import org.incendo.cloud.annotations.Permission
+import org.incendo.cloud.annotations.processing.CommandContainer
 
 import java.util.*
 import kotlin.math.cos
 import kotlin.math.sin
 
-@Suppress("unused")
-class Particle : BaseCommand {
-    @CommandMethod("particletest start tornado")
+@Suppress("unused", "unstableApiUsage")
+@CommandContainer
+class Particle {
+    @Command("particletest start tornado")
     @CommandDescription("Spawns a tornado particle.")
-    @CommandPermission("cheesehunt.particle.test")
-    fun testParticleStart(sender : Player) {
+    @Permission("cheesehunt.particle.test")
+    fun testParticleStart(css: CommandSourceStack) {
+        val sender = css.sender as Player
         if(sender.name != "Byrt") {
             sender.sendMessage(Component.text("No funny test particles for you.", NamedTextColor.RED))
         } else {
@@ -59,7 +62,7 @@ class Particle : BaseCommand {
                 val z = radius * sin(y)
                 val dust = Particle.DustOptions(Color.fromRGB(133, 217, 54), 2F)
                 loc.world.spawnParticle<Any>(
-                    Particle.REDSTONE,
+                    Particle.DUST,
                     loc.x + x,
                     loc.y + y,
                     loc.z + z,

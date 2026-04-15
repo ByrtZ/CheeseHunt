@@ -118,8 +118,8 @@ class CheeseManager(private val game : Game) {
     }
 
     fun playerPickupCheese(player : Player, blockBreakLocation : Location) {
-        if(player.hasPotionEffect(PotionEffectType.SLOW_DIGGING)) {
-            player.removePotionEffect(PotionEffectType.SLOW_DIGGING)
+        if(player.hasPotionEffect(PotionEffectType.MINING_FATIGUE)) {
+            player.removePotionEffect(PotionEffectType.MINING_FATIGUE)
         }
         startHasCheeseLoop(player)
         player.inventory.addItem(game.itemManager.getCheeseItem(Main.getGame().teamManager.getPlayerTeam(player.uniqueId)))
@@ -146,7 +146,7 @@ class CheeseManager(private val game : Game) {
     }
 
     fun playerDropCheese(player : Player) {
-        player.addPotionEffect(PotionEffect(PotionEffectType.SLOW, 30, 1, false, false))
+        player.addPotionEffect(PotionEffect(PotionEffectType.SLOWNESS, 30, 1, false, false))
         player.addPotionEffect(PotionEffect(PotionEffectType.DARKNESS, 40, 255, false, false))
         for(allPlayers in Bukkit.getOnlinePlayers()) {
             if(allPlayers != player) {
@@ -182,9 +182,9 @@ class CheeseManager(private val game : Game) {
             playerHasCheese.remove(player.uniqueId)
             stopHasCheeseLoop(player)
             player.inventory.remove(Material.SPONGE)
-            player.removePotionEffect(PotionEffectType.SLOW)
+            player.removePotionEffect(PotionEffectType.SLOWNESS)
             player.removePotionEffect(PotionEffectType.DARKNESS)
-            player.removePotionEffect(PotionEffectType.SLOW_DIGGING)
+            player.removePotionEffect(PotionEffectType.MINING_FATIGUE)
         }
     }
 

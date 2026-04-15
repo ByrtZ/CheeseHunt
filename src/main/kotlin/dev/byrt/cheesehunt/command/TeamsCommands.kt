@@ -1,12 +1,11 @@
 package dev.byrt.cheesehunt.command
 
-import cloud.commandframework.annotations.*
-
 import dev.byrt.cheesehunt.Main
 import dev.byrt.cheesehunt.game.GameState
 import dev.byrt.cheesehunt.state.*
 import dev.byrt.cheesehunt.state.Sounds
 import dev.byrt.cheesehunt.util.DevStatus
+import io.papermc.paper.command.brigadier.CommandSourceStack
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
@@ -17,20 +16,28 @@ import net.kyori.adventure.title.Title
 
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
+import org.incendo.cloud.annotations.Argument
+import org.incendo.cloud.annotations.Command
+import org.incendo.cloud.annotations.CommandDescription
+import org.incendo.cloud.annotations.Flag
+import org.incendo.cloud.annotations.Permission
+import org.incendo.cloud.annotations.processing.CommandContainer
 
 import java.time.Duration
 import java.util.*
 
-@Suppress("unused")
-class TeamsCommands : BaseCommand {
+@Suppress("unused", "unstableApiUsage")
+@CommandContainer
+class TeamsCommands {
     private val shuffleStartSound: Sound = Sound.sound(Key.key(Sounds.Command.SHUFFLE_START), Sound.Source.MASTER, 1f, 1f)
     private val shuffleCompleteSound: Sound = Sound.sound(Key.key(Sounds.Command.SHUFFLE_COMPLETE), Sound.Source.MASTER, 1f, 2f)
     private val shuffleFailSound: Sound = Sound.sound(Key.key(Sounds.Command.SHUFFLE_FAIL), Sound.Source.MASTER, 1f, 0f)
 
-    @CommandMethod("teams set <player> <team>")
+    @Command("teams set <player> <team>")
     @CommandDescription("Puts the specified player on the specified team.")
-    @CommandPermission("cheesehunt.jointeam")
-    fun setTeam(sender : Player, @Argument("player") player : Player, @Argument("team") team : Teams) {
+    @Permission("cheesehunt.jointeam")
+    fun setTeam(css: CommandSourceStack, @Argument("player") player : Player, @Argument("team") team : Teams) {
+        val sender = css.sender as Player
         if(Main.getGame().gameManager.getGameState() == GameState.IDLE) {
             if(Main.getGame().teamManager.getPlayerTeam(player.uniqueId) == Teams.RED && team == Teams.RED || Main.getGame().teamManager.getPlayerTeam(player.uniqueId) == Teams.BLUE && team == Teams.BLUE || Main.getGame().teamManager.getPlayerTeam(player.uniqueId) == Teams.SPECTATOR && team == Teams.SPECTATOR) {
                 sender.sendMessage(Component.text("This player is already on ${team.toString().lowercase()} team.").color(NamedTextColor.RED))
@@ -43,10 +50,11 @@ class TeamsCommands : BaseCommand {
         }
     }
 
-    @CommandMethod("teams shuffle")
+    @Command("teams shuffle")
     @CommandDescription("Automatically assigns everyone online to a team.")
-    @CommandPermission("cheesehunt.autoteam")
-    fun autoTeam(sender : Player, @Flag("ignoreAdmins") doesIgnoreAdmins: Boolean) {
+    @Permission("cheesehunt.autoteam")
+    fun autoTeam(css: CommandSourceStack, @Flag("ignoreAdmins") doesIgnoreAdmins: Boolean) {
+        val sender = css.sender as Player
         if(Main.getGame().gameManager.getGameState() == GameState.IDLE) {
             shuffleStartDisplay(sender)
             if(!doesIgnoreAdmins) {
@@ -107,10 +115,11 @@ class TeamsCommands : BaseCommand {
         player.playSound(shuffleFailSound)
     }
 
-    @CommandMethod("teams list <option>")
+    @Command("teams list <option>")
     @CommandDescription("Allows the executing player to see the array of the specified team.")
-    @CommandPermission("cheesehunt.teamlist")
-    fun teamList(sender : Player, @Argument("option") option : TeamsListOptions) {
+    @Permission("cheesehunt.teamlist")
+    fun teamList(css: CommandSourceStack, @Argument("option") option : TeamsListOptions) {
+        val sender = css.sender as Player
         when(option) {
             TeamsListOptions.RED -> {
                 sender.sendMessage(Component.text("DISPLAYING RED TEAM UUIDS:").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true))

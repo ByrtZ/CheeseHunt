@@ -27,7 +27,7 @@ class PlayerMovementEvent : Listener {
                 e.player.playSound(e.player.location, Sounds.Movement.USE_SPEED_PAD, 0.35f, 1.0f)
             }
             Material.LIME_CONCRETE_POWDER -> {
-                e.player.addPotionEffect(PotionEffect(PotionEffectType.JUMP, 5, 7, false, false))
+                e.player.addPotionEffect(PotionEffect(PotionEffectType.JUMP_BOOST, 5, 7, false, false))
             }
             else -> {}
         }
@@ -38,7 +38,7 @@ class PlayerMovementEvent : Listener {
                 e.player.health = 0.0
             }
             if(Main.getGame().cheeseManager.playerHasCheese(e.player)) {
-                e.player.addPotionEffect(PotionEffect(PotionEffectType.SLOW, 20, 3, false, false))
+                e.player.addPotionEffect(PotionEffect(PotionEffectType.SLOWNESS, 20, 3, false, false))
             }
         }
     }

@@ -4,23 +4,26 @@ import dev.byrt.cheesehunt.Main
 import dev.byrt.cheesehunt.game.GameState
 import dev.byrt.cheesehunt.state.TimerState
 import dev.byrt.cheesehunt.util.DevStatus
-
-import cloud.commandframework.annotations.Argument
-import cloud.commandframework.annotations.CommandDescription
-import cloud.commandframework.annotations.CommandMethod
-import cloud.commandframework.annotations.CommandPermission
+import io.papermc.paper.command.brigadier.CommandSourceStack
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 
 import org.bukkit.entity.Player
+import org.incendo.cloud.annotations.Argument
+import org.incendo.cloud.annotations.Command
+import org.incendo.cloud.annotations.CommandDescription
+import org.incendo.cloud.annotations.Permission
+import org.incendo.cloud.annotations.processing.CommandContainer
 
-@Suppress("unused")
-class Timer : BaseCommand {
-    @CommandMethod("timer <setting> [seconds]")
+@Suppress("unused", "unstableApiUsage")
+@CommandContainer
+class Timer {
+    @Command("timer <setting> [seconds]")
     @CommandDescription("Allows timer modification.")
-    @CommandPermission("cheesehunt.timer")
-    fun timer(sender : Player, @Argument("setting") option : TimerOptions, @Argument("seconds") time : Int?) {
+    @Permission("cheesehunt.timer")
+    fun timer(css: CommandSourceStack, @Argument("setting") option : TimerOptions, @Argument("seconds") time : Int?) {
+        val sender = css.sender as Player
         if(Main.getGame().timerManager.getTimerState() == TimerState.INACTIVE) {
             sender.sendMessage(Component.text("Unable to manipulate timer when inactive.").color(NamedTextColor.RED))
         } else {
@@ -63,10 +66,11 @@ class Timer : BaseCommand {
         }
     }
 
-    @CommandMethod("p")
+    @Command("p")
     @CommandDescription("Allows quick timer pausing.")
-    @CommandPermission("cheesehunt.timer.pause")
-    fun quickPause(sender : Player) {
+    @Permission("cheesehunt.timer.pause")
+    fun quickPause(css: CommandSourceStack) {
+        val sender = css.sender as Player
         if(Main.getGame().timerManager.getTimerState() != TimerState.ACTIVE) {
             sender.sendMessage(Component.text("Unable to pause timer when timer is not active.").color(NamedTextColor.RED))
         } else {
@@ -75,10 +79,11 @@ class Timer : BaseCommand {
         }
     }
 
-    @CommandMethod("s")
+    @Command("s")
     @CommandDescription("Allows quick timer resuming.")
-    @CommandPermission("cheesehunt.timer.resume")
-    fun quickResume(sender : Player) {
+    @Permission("cheesehunt.timer.resume")
+    fun quickResume(css: CommandSourceStack) {
+        val sender = css.sender as Player
         if(Main.getGame().timerManager.getTimerState() != TimerState.PAUSED) {
             sender.sendMessage(Component.text("Unable to resume timer when already active.").color(NamedTextColor.RED))
         } else {

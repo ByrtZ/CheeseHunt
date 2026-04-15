@@ -3,33 +3,36 @@ package dev.byrt.cheesehunt.command
 import dev.byrt.cheesehunt.Main
 import dev.byrt.cheesehunt.util.DevStatus
 
-import cloud.commandframework.annotations.Argument
-import cloud.commandframework.annotations.CommandDescription
-import cloud.commandframework.annotations.CommandMethod
-import cloud.commandframework.annotations.CommandPermission
-
 import com.destroystokyo.paper.profile.PlayerProfile
 import com.destroystokyo.paper.profile.ProfileProperty
 
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import io.papermc.paper.command.brigadier.CommandSourceStack
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
+import org.incendo.cloud.annotations.Argument
+import org.incendo.cloud.annotations.Command
+import org.incendo.cloud.annotations.CommandDescription
+import org.incendo.cloud.annotations.Permission
+import org.incendo.cloud.annotations.processing.CommandContainer
 
 import java.io.InputStreamReader
 
 import java.net.URL
 
-@Suppress("unused")
-class SetSkin : BaseCommand {
-    @CommandMethod("setskin <player> <skin>")
+@Suppress("unused", "unstableApiUsage")
+@CommandContainer
+class SetSkin {
+    @Command("setskin <player> <skin>")
     @CommandDescription("Allows skin modification.")
-    @CommandPermission("cheesehunt.setskin")
-    fun skin(sender : Player, @Argument("player") player : Player, @Argument("skin") skin : String) {
+    @Permission("cheesehunt.setskin")
+    fun skin(css: CommandSourceStack, @Argument("player") player : Player, @Argument("skin") skin : String) {
+        val sender = css.sender as Player
         try {
             sender.sendMessage(Component.text("Attempting to change ${player.name}'s skin to ${skin}'s skin...").color(NamedTextColor.GRAY))
             setPlayerSkin(player, skin)

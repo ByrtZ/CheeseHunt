@@ -4,12 +4,8 @@ import dev.byrt.cheesehunt.Main
 import dev.byrt.cheesehunt.state.Sounds
 import dev.byrt.cheesehunt.state.*
 import dev.byrt.cheesehunt.util.DevStatus
-
-import cloud.commandframework.annotations.CommandDescription
-import cloud.commandframework.annotations.CommandMethod
-import cloud.commandframework.annotations.CommandPermission
-import cloud.commandframework.annotations.Confirmation
 import dev.byrt.cheesehunt.game.GameState
+import io.papermc.paper.command.brigadier.CommandSourceStack
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
@@ -20,21 +16,28 @@ import net.kyori.adventure.title.Title
 
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
+import org.incendo.cloud.annotations.Command
+import org.incendo.cloud.annotations.CommandDescription
+import org.incendo.cloud.annotations.Permission
+import org.incendo.cloud.annotations.processing.CommandContainer
+import org.incendo.cloud.processors.confirmation.annotation.Confirmation
 
 import java.time.Duration
 
-@Suppress("unused")
-class GameCommands : BaseCommand {
+@Suppress("unused", "unstableApiUsage")
+@CommandContainer
+class GameCommands {
     private val startGameSuccessSound: Sound = Sound.sound(Key.key(Sounds.Start.START_GAME_SUCCESS), Sound.Source.MASTER, 1f, 1f)
     private val startGameFailSound: Sound = Sound.sound(Key.key(Sounds.Start.START_GAME_FAIL), Sound.Source.MASTER, 1f, 0f)
     private val reloadStartSound: Sound = Sound.sound(Key.key(Sounds.Command.SHUFFLE_START), Sound.Source.MASTER, 1f, 1f)
     private val reloadCompleteSound: Sound = Sound.sound(Key.key(Sounds.Command.SHUFFLE_COMPLETE), Sound.Source.MASTER, 1f, 2f)
 
-    @CommandMethod("game start")
+    @Command("game start")
     @CommandDescription("Starts a game of Cheese Hunt.")
-    @CommandPermission("cheesehunt.startgame")
+    @Permission("cheesehunt.startgame")
     @Confirmation
-    fun start(sender : Player) {
+    fun start(css: CommandSourceStack) {
+        val sender = css.sender as Player
         if(Main.getGame().gameManager.getGameState() == GameState.IDLE) {
             if(Main.getGame().teamManager.getRedTeam().size >= 1 && Main.getGame().teamManager.getBlueTeam().size >= 1) {
                 Main.getGame().dev.parseDevMessage("${sender.name} started a Cheese Hunt game!", DevStatus.INFO_SUCCESS)
@@ -56,11 +59,12 @@ class GameCommands : BaseCommand {
         }
     }
 
-    @CommandMethod("game force start")
+    @Command("game force start")
     @CommandDescription("Force starts the game, may have unintended consequences.")
-    @CommandPermission("cheesehunt.force.start")
+    @Permission("cheesehunt.force.start")
     @Confirmation
-    fun forceStartGame(sender : Player) {
+    fun forceStartGame(css: CommandSourceStack) {
+        val sender = css.sender as Player
         if(Main.getGame().gameManager.getGameState() == GameState.IDLE) {
             Main.getGame().dev.parseDevMessage("${sender.name} forcefully started a Cheese Hunt game!", DevStatus.WARNING)
             Main.getGame().startGame()
@@ -74,11 +78,12 @@ class GameCommands : BaseCommand {
         }
     }
 
-    @CommandMethod("game force stop")
+    @Command("game force stop")
     @CommandDescription("Force stops the game, may have unintended consequences.")
-    @CommandPermission("cheesehunt.force.stop")
+    @Permission("cheesehunt.force.stop")
     @Confirmation
-    fun forceStopGame(sender : Player) {
+    fun forceStopGame(css: CommandSourceStack) {
+        val sender = css.sender as Player
         if(Main.getGame().gameManager.getGameState() != GameState.IDLE) {
             if(Main.getGame().gameManager.getGameState() != GameState.GAME_END) {
                 Main.getGame().dev.parseDevMessage("${sender.name} force stopped the current Cheese Hunt game.", DevStatus.WARNING)
@@ -92,11 +97,12 @@ class GameCommands : BaseCommand {
         }
     }
 
-    @CommandMethod("game reload")
+    @Command("game reload")
     @CommandDescription("Allows the executing player to reset the game.")
-    @CommandPermission("cheesehunt.reloadgame")
+    @Permission("cheesehunt.reloadgame")
     @Confirmation
-    fun reloadGame(sender : Player) {
+    fun reloadGame(css: CommandSourceStack) {
+        val sender = css.sender as Player
         if(Main.getGame().gameManager.getGameState() == GameState.GAME_END && Main.getGame().timerManager.getTimerState() == TimerState.INACTIVE) {
             sender.showTitle(Title.title(Component.text(""), Component.text("Reloading...", NamedTextColor.RED), Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(3), Duration.ofSeconds(1))))
             sender.playSound(reloadStartSound)
@@ -109,10 +115,11 @@ class GameCommands : BaseCommand {
         }
     }
 
-    @CommandMethod("game toggle overtime")
+    @Command("game toggle overtime")
     @CommandDescription("Toggles whether overtime should occur or not.")
-    @CommandPermission("cheesehunt.overtime")
-    fun overtime(sender : Player) {
+    @Permission("cheesehunt.overtime")
+    fun overtime(css: CommandSourceStack) {
+        val sender = css.sender as Player
         if(Main.getGame().gameManager.getGameState() == GameState.IDLE) {
             if(Main.getGame().gameManager.isOvertimeActive()) {
                 Main.getGame().gameManager.setOvertimeState(false)

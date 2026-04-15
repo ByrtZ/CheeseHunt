@@ -2,23 +2,26 @@ package dev.byrt.cheesehunt.command
 
 import dev.byrt.cheesehunt.Main
 import dev.byrt.cheesehunt.game.GameState
-
-import cloud.commandframework.annotations.Argument
-import cloud.commandframework.annotations.CommandDescription
-import cloud.commandframework.annotations.CommandMethod
-import cloud.commandframework.annotations.CommandPermission
+import io.papermc.paper.command.brigadier.CommandSourceStack
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 
 import org.bukkit.entity.Player
+import org.incendo.cloud.annotations.Argument
+import org.incendo.cloud.annotations.Command
+import org.incendo.cloud.annotations.CommandDescription
+import org.incendo.cloud.annotations.Permission
+import org.incendo.cloud.annotations.processing.CommandContainer
 
-@Suppress("unused")
-class SetGameTitle : BaseCommand {
-    @CommandMethod("setgametitle <text>")
+@Suppress("unused", "unstableApiUsage")
+@CommandContainer
+class SetGameTitle {
+    @Command("setgametitle <text>")
     @CommandDescription("Sets the new game's subtitle to the specified string.")
-    @CommandPermission("cheesehunt.setgametitle")
-    fun setGameTitle(sender : Player, @Argument("text") text : Array<String>) {
+    @Permission("cheesehunt.setgametitle")
+    fun setGameTitle(css: CommandSourceStack, @Argument("text") text : Array<String>) {
+        val sender = css.sender as Player
         if(Main.getGame().gameManager.getGameState() == GameState.IDLE) {
             val newSubtitle = text.joinToString(" ")
             if(newSubtitle == "reset") {
